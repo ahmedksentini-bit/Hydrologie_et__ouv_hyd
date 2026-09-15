@@ -149,3 +149,51 @@ test("le tableau des trois effets publié dans le cours vient bien du solveur", 
       `pentes ${fr3(a.J * 100)} → ${fr3(b.J * 100)} absentes du cours`);
   }
 });
+
+test("aligner l'ouvrage sur le talweg coûte exactement 1/sin de longueur", () => {
+  // Le tableau d'arbitrage publié dans le cours, recalculé.
+  const droit = precaler({ ...BASE, biaisDeg: 90 });
+  proche(droit.L, 14.20, 0.01, "ouvrage droit");
+  const attendus = [[80, 14.41], [70, 15.07], [60, 16.30], [50, 18.35], [40, 21.76]];
+  const html = readFileSync(new URL("../cours.html", import.meta.url), "utf-8");
+  const bloc = html.slice(html.indexOf("Aligner l'ouvrage sur l'écoulement"),
+                          html.indexOf("Le second maillon est le levé"));
+  for (const [angle, L] of attendus) {
+    const r = precaler({ ...BASE, biaisDeg: angle });
+    proche(r.L, L, 0.01, `aligné sur un talweg à ${angle}°`);
+    assert.ok(bloc.includes(`${L.toFixed(2).replace(".", ",")} m`),
+      `la longueur ${L} m à ${angle}° manque au tableau du cours`);
+    assert.ok(bloc.includes(`+${(L - droit.L).toFixed(2).replace(".", ",")} m`),
+      `le surcoût à ${angle}° manque au tableau du cours`);
+  }
+});
+
+test("rehausser la chaussée allonge l'ouvrage de 2m/sin(biais) par mètre", () => {
+  // Le fruit des talus est constant : un mètre de remblai en plus donne un
+  // mètre de couverture en plus à CHAQUE bout.
+  for (const [m, biais] of [[1.5, 70], [1.5, 90], [2, 60], [1, 110]]) {
+    const pente = (2 * m) / Math.sin((biais * Math.PI) / 180);
+    const a = precaler({ ...BASE, fruitTalus: m, biaisDeg: biais, hauteurRemblai: 2.5 });
+    const b = precaler({ ...BASE, fruitTalus: m, biaisDeg: biais, hauteurRemblai: 3.5 });
+    proche(b.L - a.L, pente, 1e-9, `dL/dH à m=${m}, biais=${biais}°`);
+    assert.ok(b.J < a.J, "rehausser adoucit la pente, puisque la chute ne change pas");
+  }
+  // Le chiffre cité dans le cours.
+  proche((2 * 1.5) / Math.sin((70 * Math.PI) / 180), 3.19, 5e-3, "3,19 m par mètre");
+});
+
+test("le désalignement ne change ni la pente critique ni le régime", () => {
+  // Il coûte de la charge et de l'affouillement, pas un changement de régime :
+  // I_c ne dépend que de la section, du débit et de la rugosité.
+  const sec = sectionRectangulaire(2, 1.5);
+  const Ic = penteCritique(sec, 6, 70);
+  for (const biais of [50, 70, 90, 110]) {
+    proche(penteCritique(sec, 6, 70), Ic, 0, `I_c indépendante du biais (${biais}°)`);
+  }
+  // En revanche le biais change J, donc il PEUT faire basculer le régime.
+  const raide = precaler({ ...BASE, biaisDeg: 90 });
+  const long = precaler({ ...BASE, biaisDeg: 40 });
+  assert.ok(long.J < raide.J, "un ouvrage plus biais est plus long, donc moins pentu");
+  proche(raide.J * 100, 0.986, 2e-3, "J d'un ouvrage droit");
+  proche(long.J * 100, 0.643, 2e-3, "J à 40° de biais");
+});

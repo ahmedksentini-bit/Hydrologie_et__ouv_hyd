@@ -41,8 +41,22 @@ function etat() {
   const yc = Math.min(sec.profondeurCritique(q), sec.hauteur);
   const yn = pre.J > 0 ? profondeurNormale(sec, q, K, pre.J) : NaN;
   const hc = num("pcChaussee") / 2, ha = hc + num("pcAccotement");
+  // L'alignement : le talweg est donné par le terrain, le biais est choisi.
+  const biais = num("pcBiais"), talweg = num("pcTalweg");
+  const commun = {
+    chaussee: num("pcChaussee"), accotement: num("pcAccotement"),
+    hauteurRemblai: num("pcRemblai"), fruitTalus: m,
+    zTnEntree: num("pcZam"), zTnSortie: num("pcZav"),
+    decaissement: num("pcDecaissement") || 0, hauteurOuvrage: D,
+  };
   return {
     forme, B, D, n, Q, q, K, m, pre, sec, Ic, yc, yn,
+    biais, talweg, desalignement: Math.abs(biais - talweg),
+    Laligne: precaler({ ...commun, biaisDeg: talweg }).L,
+    Ldroit: precaler({ ...commun, biaisDeg: 90 }).L,
+    // Rehausser la chaussée de 1 m ajoute 1 m de couverture à CHAQUE bout,
+    // donc m mètres de talus de chaque côté, le tout allongé par le biais.
+    dLdH: (2 * m) / Math.sin((Math.min(Math.max(biais, 20), 160) * Math.PI) / 180),
     Fr: Number.isFinite(yn) ? froude(sec, Math.min(yn, sec.hauteur), q) : NaN,
     reg: regimeDePente(pre.J, Ic),
     hc, ha,
@@ -68,8 +82,10 @@ function vueEnPlan(e) {
     `<rect x="${gauche}" y="${Y(v1).toFixed(1)}" width="${(droite - gauche).toFixed(1)}"
        height="${((v1 - v0) * ech).toFixed(1)}" fill="${fill}"/>`;
 
-  const beta = (Math.min(Math.max(num("pcBiais"), 35), 145) * Math.PI) / 180;
-  const d = { u: Math.cos(beta), v: Math.sin(beta) };
+  const rad = (deg) => (Math.min(Math.max(deg, 35), 145) * Math.PI) / 180;
+  const beta = rad(e.biais), theta = rad(e.talweg);
+  const d = { u: Math.cos(beta), v: Math.sin(beta) };          // axe de l'ouvrage
+  const dt = { u: Math.cos(theta), v: Math.sin(theta) };       // talweg, imposé par le terrain
   const perp = { u: -d.v, v: d.u };
   const tAm = -e.vAmont / d.v, tAv = e.vAval / d.v;        // abscisses des deux têtes
   const w = e.largeurPlan / 2;
@@ -90,25 +106,72 @@ function vueEnPlan(e) {
       ${xy(t + sens * ep, -aile)}" fill="${T.mur}" stroke="#64748b" stroke-width="0.8"/>`;
   };
 
-  const tLoin = (e.hTalus + 0.35 * marge) / d.v;
-  const talweg = `<line x1="${pt(-tLoin)[0].toFixed(1)}" y1="${pt(-tLoin)[1].toFixed(1)}"
-      x2="${pt(tLoin)[0].toFixed(1)}" y2="${pt(tLoin)[1].toFixed(1)}"
-      stroke="${T.eau}" stroke-width="1.4" stroke-dasharray="7 4" opacity=".75"/>`;
+  // Le talweg court dans SA direction, l'ouvrage dans la sienne. Quand les deux
+  // coïncident, l'eau va tout droit ; sinon elle doit tourner deux fois, et
+  // c'est tout l'objet de cette figure de le rendre visible.
+  const portee = (dir) => (e.hTalus + 0.35 * marge) / Math.abs(dir.v);
+  const Rt = portee(dt);
+  const ptT = (r) => [X(dt.u * r), Y(dt.v * r)];
+  const [axT, ayT] = ptT(-Rt), [bxT, byT] = ptT(Rt);
+  const talweg = `<line x1="${axT.toFixed(1)}" y1="${ayT.toFixed(1)}" x2="${bxT.toFixed(1)}"
+      y2="${byT.toFixed(1)}" stroke="#78716c" stroke-width="1.3" stroke-dasharray="8 4"
+      opacity=".7"/>
+    <text x="${(bxT + 6).toFixed(1)}" y="${(byT + 11).toFixed(1)}" font-size="9" fill="#64748b"
+      paint-order="stroke" stroke="#fff" stroke-width="3">talweg</text>`;
 
-  // Cotes TN : le talweg est supposé de pente constante entre les deux points
-  // levés aux têtes — c'est écrit sous la figure, parce que ce n'est pas donné.
-  const zDe = (t) => num("pcZam") - e.pre.J * ((t - tAm) / (tAv - tAm)) * e.pre.L;
-  const leves = [-tLoin, tAm, (tAm + tAv) / 2, tAv, tLoin].map((t, i) => {
-    const [x, y] = pt(t);
-    const cle = i === 1 || i === 3;
-    const aGauche = d.u * t > 0;
+  // Trace de l'écoulement : elle suit le talweg, se plie pour entrer dans
+  // l'ouvrage, le traverse, se plie encore pour le rejoindre.
+  const A = ptT(-Rt), Bp = ptT(Rt), Pam = pt(tAm), Pav = pt(tAv);
+  const fleche = (p0, p1, frac = 0.55) => {
+    const x = p0[0] + (p1[0] - p0[0]) * frac, y = p0[1] + (p1[1] - p0[1]) * frac;
+    const a = (Math.atan2(p1[1] - p0[1], p1[0] - p0[0]) * 180) / Math.PI;
+    return `<path d="M-5,-3.4 L4.2,0 L-5,3.4 Z" fill="${T.eau}"
+      transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${a.toFixed(1)})"/>`;
+  };
+  const trace = `<polyline points="${[A, Pam, Pav, Bp].map((z) => z.map((n2) => n2.toFixed(1)).join(",")).join(" ")}"
+      fill="none" stroke="${T.eau}" stroke-width="2.4" stroke-linejoin="round" opacity=".9"/>
+    ${fleche(A, Pam)}${fleche(Pam, Pav)}${fleche(Pav, Bp, 0.5)}`;
+
+  // Cotes TN : trois levés sur le talweg, et les deux cotes retenues aux têtes.
+  // Désaligné, les têtes ne sont plus sur la ligne levée — la figure le montre.
+  const croix = (x, y, z, cle) => {
+    const aGauche = x > cx;
     return `<path d="M${(x - 3.4).toFixed(1)},${y.toFixed(1)} h6.8 M${x.toFixed(1)},${(y - 3.4).toFixed(1)} v6.8"
         stroke="${cle ? T.leve : T.cote}" stroke-width="${cle ? 1.7 : 1.1}"/>
       <text x="${(x + (aGauche ? -6 : 6)).toFixed(1)}" y="${(y + 3.2).toFixed(1)}"
         text-anchor="${aGauche ? "end" : "start"}" font-size="9.5"
         font-weight="${cle ? 800 : 600}" fill="${cle ? T.leve : T.cote}"
-        paint-order="stroke" stroke="#fff" stroke-width="2.8">${fr(zDe(t), 2)}</text>`;
-  }).join("");
+        paint-order="stroke" stroke="#fff" stroke-width="2.8">${fr(z, 2)}</text>`;
+  };
+  const zMilieu = (num("pcZam") + num("pcZav")) / 2;
+  const leves = [-Rt, 0, Rt].map((r) => {
+    const [x, y] = ptT(r);
+    return croix(x, y, zMilieu - e.pre.J * r, false);
+  }).join("")
+    + croix(Pam[0], Pam[1], num("pcZam"), true)
+    + croix(Pav[0], Pav[1], num("pcZav"), true);
+
+  // L'angle que l'eau doit tourner à l'entrée, marqué là où elle le tourne.
+  const coude = e.desalignement < 0.5 ? "" : (() => {
+    const r0 = 22;
+    const a1 = Math.atan2(Pam[1] - A[1], Pam[0] - A[0]);
+    const a2 = Math.atan2(Pav[1] - Pam[1], Pav[0] - Pam[0]);
+    const u1 = [Math.cos(a1 + Math.PI), Math.sin(a1 + Math.PI)];
+    const u2 = [Math.cos(a2), Math.sin(a2)];
+    const p1 = [Pam[0] + r0 * u1[0], Pam[1] + r0 * u1[1]];
+    const p2 = [Pam[0] + r0 * u2[0], Pam[1] + r0 * u2[1]];
+    // Bissectrice par les VECTEURS : moyenner deux angles se trompe de 180°
+    // dès qu'ils encadrent la coupure de atan2, et l'étiquette part à l'opposé.
+    const h = Math.hypot(u1[0] + u2[0], u1[1] + u2[1]) || 1;
+    const bis = [(u1[0] + u2[0]) / h, (u1[1] + u2[1]) / h];
+    const sens = ((a2 - (a1 + Math.PI) + 3 * Math.PI) % (2 * Math.PI)) - Math.PI > 0 ? 1 : 0;
+    return `<path d="M${p1[0].toFixed(1)},${p1[1].toFixed(1)} A${r0},${r0} 0 0 ${sens}
+        ${p2[0].toFixed(1)},${p2[1].toFixed(1)}" fill="none" stroke="#b91c1c" stroke-width="1.4"/>
+      <text x="${(Pam[0] + (r0 + 12) * bis[0]).toFixed(1)}"
+        y="${(Pam[1] + (r0 + 12) * bis[1] + 3).toFixed(1)}" font-size="10"
+        font-weight="800" fill="#b91c1c" text-anchor="middle" paint-order="stroke"
+        stroke="#fff" stroke-width="3.2">${fr(e.desalignement, 0)}°</text>`;
+  })();
 
   /** Cotation portée parallèlement à l'axe de l'ouvrage, décalée de `s`. */
   const coteLongue = (t0, t1, s, texte, couleur) => {
@@ -144,7 +207,7 @@ function vueEnPlan(e) {
     <text x="${(cx + (r + 9) * Math.cos(-beta / 2)).toFixed(1)}"
       y="${(cy + (r + 9) * Math.sin(-beta / 2) + 3).toFixed(1)}" font-size="9.5"
       font-weight="800" fill="${T.leve}" text-anchor="middle" paint-order="stroke"
-      stroke="#fff" stroke-width="3">${fr(num("pcBiais"), 0)}°</text>`;
+      stroke="#fff" stroke-width="3">${fr(e.biais, 0)}°</text>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
       aria-label="Vue en plan : la route, ses talus, l'ouvrage en biais entre ses deux têtes, et les cotes de terrain naturel levées le long du talweg">
@@ -168,6 +231,7 @@ function vueEnPlan(e) {
       <line x1="${gauche}" y1="${cy}" x2="${droite}" y2="${cy}" stroke="#fff" stroke-width="1"
         stroke-dasharray="12 4 2 4" opacity=".85"/>
       ${talweg}${ouvrage}${voiles}${tete(tAm, -1)}${tete(tAv, 1)}${arc}
+      ${trace}${coude}
       ${coteLongue(tAm, tAv, w + 2.7, `L = ${fr(e.pre.L, 2)} m`, T.leve)}
       ${leves}
     </g>
@@ -178,10 +242,12 @@ function vueEnPlan(e) {
     <text x="${(pt(tAv)[0] + 13).toFixed(1)}" y="${(pt(tAv)[1] - 10).toFixed(1)}" font-size="9.5"
       font-weight="800" fill="${T.eau}" paint-order="stroke" stroke="#fff" stroke-width="3">sortie</text>
     <text x="${gauche + 6}" y="${(cy - 5).toFixed(1)}" font-size="9" fill="#fff" opacity=".9">axe de la route</text>
-    <text x="6" y="${H - 30}" font-size="9.5" fill="${T.cote}">L'ouvrage est plus court que
-      l'emprise : ses têtes percent le talus au-dessus du pied, là où l'intrados sort.</text>
-    <text x="6" y="${H - 16}" font-size="9.5" fill="${T.leve}">⊹ cotes TN levées le long du
-      talweg — en gras les deux qui donnent la pente, les autres interpolées</text>
+    <text x="6" y="${H - 30}" font-size="9.5" fill="${e.desalignement < 0.5 ? T.cote : "#b91c1c"}">
+      ${e.desalignement < 0.5
+        ? "Ouvrage aligné sur le talweg : l'eau entre et sort sans tourner."
+        : `L'eau doit tourner de ${fr(e.desalignement, 0)}° pour entrer, et d'autant pour ressortir.`}</text>
+    <text x="6" y="${H - 16}" font-size="9.5" fill="${T.leve}">⊹ levés du talweg en gris ·
+      en gras les deux cotes retenues aux têtes, qui donnent la pente</text>
   </svg>`;
 }
 
@@ -192,7 +258,7 @@ function vueEnPlan(e) {
 
 function profilEnLong(e) {
   const W = 560, H = 215, MG = 96, MD = 100, MH = 24, MB = 42;
-  const beta = (Math.min(Math.max(num("pcBiais"), 35), 145) * Math.PI) / 180;
+  const beta = (Math.min(Math.max(e.biais, 35), 145) * Math.PI) / 180;
   const sin = Math.sin(beta);
   const L = e.pre.Lentre;                         // de tête à tête
   // Le long de l'axe de l'ouvrage, tout s'allonge de 1/sin(biais) : c'est la
@@ -249,7 +315,7 @@ function profilEnLong(e) {
       font-weight="800" fill="${T.eau}" text-anchor="middle" paint-order="stroke" stroke="#fff"
       stroke-width="3">J = ${fr(e.pre.J * 100, 3)} %</text>
     <text x="6" y="${H - 12}" font-size="9" fill="#64748b">profil suivant l'axe de l'ouvrage —
-      tout s'y allonge de 1/sin(biais) = ${fr(1 / sin, 3)}</text>
+      rehausser d'un mètre allonge de 2m/sin(biais) = ${fr(e.dLdH, 2)} m</text>
     <text x="${W - 6}" y="${H - 12}" font-size="9" fill="#94a3b8" text-anchor="end">
       exagération verticale ×${fr(ky / kx, 1)}</text>
   </svg>`;
@@ -280,7 +346,27 @@ function panneau(e) {
       K = 50 multiplie I<sub>c</sub> par trois. Annoncer « torrentiel » ou « fluvial » ici,
       c'est annoncer une hypothèse, pas un résultat.</div>` : ""}`;
 
-  el("pcOut").innerHTML =
+  const aligne = e.desalignement < 0.5;
+  const surcout = e.Laligne - e.Ldroit;
+  const alignement = etape(0, "Aligner l'ouvrage sur l'écoulement", `
+    <p class="explanation">talweg à ${fr(e.talweg, 0)}° · ouvrage à ${fr(e.biais, 0)}° —
+      ${aligne ? "<strong>alignés</strong> : l'eau entre et sort sans tourner"
+        : `<strong>désalignés de ${fr(e.desalignement, 0)}°</strong> : l'eau tourne
+           de ${fr(e.desalignement, 0)}° pour entrer et d'autant pour ressortir`}</p>
+    ${aligne ? "" : `<div class="hint">Un coude à l'entrée décolle le filet d'eau de la
+      paroi intérieure : la section utile diminue et la charge amont monte. À la sortie,
+      le jet frappe la berge extérieure — c'est là que l'affouillement commence, et il
+      n'est pas où la protection est posée si on l'a dimensionnée dans l'axe. Entre les
+      deux, le dépôt s'installe du côté intérieur et réduit la section chaque saison.</div>`}
+    <p class="explanation">Suivre le talweg coûte de la longueur :
+      <strong>${fr(e.Laligne, 2)} m</strong> aligné contre <strong>${fr(e.Ldroit, 2)} m</strong>
+      pour un ouvrage droit, soit ${fr(surcout, 2)} m — ${surcout < 0.05
+        ? "ici rien, le talweg est perpendiculaire à la route"
+        : `${fr((surcout / e.Ldroit) * 100, 0)} % de béton en plus pour éviter deux coudes de
+           ${fr(Math.abs(90 - e.talweg), 0)}°`}. <strong>C'est l'arbitrage réel</strong>, et il
+      se tranche en le chiffrant, pas par principe.</p>`);
+
+  el("pcOut").innerHTML = alignement +
     etape(1, "La voie donne l'emprise", `
       <p class="explanation">plate-forme = ${fr(num("pcChaussee"), 2)} + 2 × ${fr(num("pcAccotement"), 2)}
         = <strong>${fr(pre.plateforme, 2)} m</strong><br>
@@ -313,6 +399,9 @@ function panneau(e) {
 
 function maj() {
   const e = etat();
+  el("pcRemblaiVal").textContent = `${fr(num("pcRemblai"), 2)} m`;
+  el("pcBiaisVal").textContent = `${fr(e.biais, 0)}°`;
+  el("pcTalwegVal").textContent = `${fr(e.talweg, 0)}°`;
   el("pcB").closest(".field").style.opacity = e.forme === "buse" ? 0.45 : 1;
   el("pcB").disabled = e.forme === "buse";
   el("pcPlan").innerHTML = vueEnPlan(e);
@@ -320,8 +409,13 @@ function maj() {
   panneau(e);
 }
 
-for (const id of ["pcChaussee", "pcAccotement", "pcRemblai", "pcBiais", "pcZam", "pcZav",
-                  "pcDecaissement", "pcB", "pcD", "pcN", "pcQ"])
+for (const id of ["pcChaussee", "pcAccotement", "pcRemblai", "pcBiais", "pcTalweg",
+                  "pcZam", "pcZav", "pcDecaissement", "pcB", "pcD", "pcN", "pcQ"])
   el(id).addEventListener("input", maj);
 for (const id of ["pcFruit", "pcForme", "pcK"]) el(id).addEventListener("change", maj);
+el("pcAligner").addEventListener("click", () => {
+  el("pcBiais").value = el("pcTalweg").value;
+  maj();
+});
+el("pcDroit").addEventListener("click", () => { el("pcBiais").value = "90"; maj(); });
 maj();

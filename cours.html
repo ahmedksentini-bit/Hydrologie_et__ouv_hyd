@@ -1493,6 +1493,51 @@
      pied de talus, ou à mi-hauteur. Elles donnent un ouvrage plus long ; celle retenue ici
      est la plus courte qui couvre encore l'intrados sur toute sa longueur. Ce qui n'est pas
      acceptable, c'est de ne pas dire laquelle on a prise.</div>
+  <h4>Aligner l'ouvrage sur l'écoulement</h4>
+  <p>Le biais n'est pas un paramètre de dessin : c'est le premier choix du projet.
+     <strong>Un ouvrage se met dans l'axe de l'écoulement</strong>, pas dans celui qui arrange
+     le plan de coffrage. Quand les deux directions diffèrent de Δ, l'eau tourne de Δ pour
+     entrer et d'autant pour ressortir, et les trois conséquences arrivent ensemble :</p>
+  <ul class="notions">
+    <li><strong>À l'entrée</strong>, le coude décolle le filet d'eau de la paroi intérieure :
+      la section utile diminue et la charge amont monte, sans qu'aucune formule de contrôle à
+      l'entrée ne le voie — elles supposent toutes un écoulement dans l'axe.</li>
+    <li><strong>À la sortie</strong>, le jet frappe la berge extérieure. L'affouillement
+      commence là, et non dans l'axe : une protection dimensionnée dans l'axe est posée au
+      mauvais endroit.</li>
+    <li><strong>Entre les deux</strong>, le dépôt s'installe du côté intérieur du coude et
+      réduit la section un peu plus chaque saison.</li>
+  </ul>
+  <p>Mais suivre le talweg <strong>coûte de la longueur</strong>, puisque l'ouvrage s'allonge
+     en 1/sin(biais). C'est un arbitrage, et il se tranche en le chiffrant :</p>
+  <table class="resultats"><thead><tr><th>Talweg</th><th>Ouvrage aligné</th>
+    <th>Ouvrage droit</th><th>Surcoût</th><th>Coudes évités</th></tr></thead>
+    <tbody>
+      <tr><td>80°</td><td class="q">14,41 m</td><td class="q">14,20 m</td>
+        <td class="q">+0,21 m</td><td class="motif">2 × 10°</td></tr>
+      <tr><td>70°</td><td class="q">15,07 m</td><td class="q">14,20 m</td>
+        <td class="q">+0,87 m</td><td class="motif">2 × 20°</td></tr>
+      <tr><td>60°</td><td class="q">16,30 m</td><td class="q">14,20 m</td>
+        <td class="q">+2,10 m</td><td class="motif">2 × 30°</td></tr>
+      <tr><td>50°</td><td class="q">18,35 m</td><td class="q">14,20 m</td>
+        <td class="q">+4,15 m</td><td class="motif">2 × 40°</td></tr>
+      <tr><td>40°</td><td class="q">21,76 m</td><td class="q">14,20 m</td>
+        <td class="q">+7,56 m</td><td class="motif">2 × 50°</td></tr>
+    </tbody></table>
+  <p class="method-note">Jusqu'à une dizaine de degrés, l'écart se rattrape par un simple
+     recalibrage du lit à l'amont et à l'aval, et l'ouvrage droit se défend. Au-delà d'une
+     vingtaine, le coude ne se rattrape plus : on aligne, ou bien on déplace l'ouvrage pour
+     trouver un point où le talweg croise la route plus franchement. Ces deux seuils sont des
+     usages, pas des résultats de calcul — ce qui se calcule, c'est le surcoût, et la
+     dernière colonne dit ce qu'on achète avec.</p>
+  <div class="hint"><strong>Rehausser la chaussée allonge l'ouvrage.</strong> Le fruit des
+     talus ne change pas : un mètre de remblai en plus, c'est un mètre de couverture en plus
+     à chaque extrémité, donc m mètres de talus de chaque côté, le tout allongé par le biais.
+     <br>dL/dH = 2·m / sin(biais) — soit <strong>3,19 m d'ouvrage par mètre de
+     rehaussement</strong> avec des talus 3/2 et un biais de 70°. Le curseur de la figure le
+     montre : rehausser pour gagner de la revanche se paie deux fois, en remblai et en
+     ouvrage, et adoucit la pente par-dessus le marché.</div>
+
   <p>Le second maillon est le levé. Le topographe donne les cotes du terrain naturel le long
      du talweg ; on lit celles des deux points où l'ouvrage débouche — distants de L, donc du
      premier maillon — et la pente suit :</p>
@@ -1580,14 +1625,16 @@
         <div class="input-wrap"><input id="pcChaussee" type="text" inputmode="decimal" value="7,00"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcAccotement">Accotement (chacun)</label>
         <div class="input-wrap"><input id="pcAccotement" type="text" inputmode="decimal" value="1,50"><span class="unit">m</span></div></div>
-      <div class="field"><label for="pcRemblai">Hauteur de remblai H</label>
-        <div class="input-wrap"><input id="pcRemblai" type="text" inputmode="decimal" value="2,50"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcRemblai">Hauteur de remblai H — rehausser allonge</label>
+        <div class="input-wrap"><input id="pcRemblai" type="range" min="1" max="6" step="0.05" value="2.5"><span class="unit" id="pcRemblaiVal">2,50 m</span></div></div>
       <div class="field"><label for="pcFruit">Fruit des talus</label>
         <div class="input-wrap"><select id="pcFruit">
           <option value="1">1/1</option><option value="1.5" selected>3/2</option>
           <option value="2">2/1</option><option value="2.5">5/2</option></select></div></div>
-      <div class="field"><label for="pcBiais">Biais avec l'axe</label>
-        <div class="input-wrap"><input id="pcBiais" type="text" inputmode="decimal" value="75"><span class="unit">°</span></div></div>
+      <div class="field"><label for="pcTalweg">Direction du talweg — donnée par le terrain</label>
+        <div class="input-wrap"><input id="pcTalweg" type="range" min="40" max="140" step="1" value="70"><span class="unit" id="pcTalwegVal">70°</span></div></div>
+      <div class="field"><label for="pcBiais">Biais de l'ouvrage — ce qu'on choisit</label>
+        <div class="input-wrap"><input id="pcBiais" type="range" min="40" max="140" step="1" value="90"><span class="unit" id="pcBiaisVal">90°</span></div></div>
       <div class="field"><label for="pcDecaissement">Décaissement du radier</label>
         <div class="input-wrap"><input id="pcDecaissement" type="text" inputmode="decimal" value="0,20"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcZam">Cote TN levée à l'entrée</label>
@@ -1611,6 +1658,10 @@
           <option value="70" selected>70 — béton courant</option>
           <option value="60">60 — maçonnerie</option>
           <option value="50">50 — béton dégradé, dépôts</option></select></div></div>
+    </div>
+    <div class="actions" style="margin:10px 0 2px">
+      <button type="button" class="secondary" id="pcAligner">Aligner l'ouvrage sur le talweg</button>
+      <button type="button" class="ghost" id="pcDroit">Le remettre droit (90°)</button>
     </div>
     <div id="pcPlan"></div>
     <div id="pcProfil"></div>

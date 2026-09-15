@@ -346,3 +346,18 @@ test("déplacement de la carte — le clic reste possible", () => {
   assert.match(src, /function bornerCentre/, "le centre est borné");
   assert.match(src, /bornerCentre\(\{[\s\S]{0,200}?\}\);/, "le glissement passe par bornerCentre");
 });
+
+test("la vue en plan du précalage est pilotable", () => {
+  const html = lire("cours.html"), src = lire("src/cours-ch7-precalage.js");
+  // Trois curseurs : le terrain impose le talweg, le projet choisit le biais
+  // et la hauteur de remblai.
+  for (const id of ["pcTalweg", "pcBiais", "pcRemblai"])
+    assert.match(html, new RegExp(`id="${id}"[^>]*type="range"`), `${id} doit être un curseur`);
+  for (const id of ["pcTalwegVal", "pcBiaisVal", "pcRemblaiVal", "pcAligner", "pcDroit"])
+    assert.ok(html.includes(`id="${id}"`), `${id} manque dans cours.html`);
+  // La trace de l'écoulement se plie aux deux têtes : c'est ce qui rend le
+  // désalignement visible. Sans la polyligne, la figure ne montre plus rien.
+  assert.match(src, /polyline points="\$\{\[A, Pam, Pav, Bp\]/,
+    "la trace passe par le talweg, l'entrée, la sortie, puis le talweg");
+  assert.match(src, /desalignement/, "le désalignement est calculé et affiché");
+});
