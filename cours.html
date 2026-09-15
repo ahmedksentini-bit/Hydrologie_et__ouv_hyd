@@ -192,6 +192,46 @@
      valeur par an, autant de valeurs que d'années d'observation. Cette construction
      garantit l'indépendance des valeurs — deux maxima d'années différentes ne
      proviennent pas de la même averse.</p>
+  <div class="calc" id="calcChronique">
+    <h3>Ce qu'on jette pour obtenir vingt valeurs</h3>
+    <p class="method-note" style="margin:0 0 10px">La chronique journalière du poste, sur les
+       vingt ans de la série ajustée plus bas — ce sont les <strong>mêmes maxima</strong> :
+       changer la série du calculateur change cette chronique. On y voit le régime
+       méditerranéen tel qu'il est : des grappes de jours pluvieux d'octobre à mars, des étés
+       plats, et une pointe par an.</p>
+    <div id="chVingt"></div>
+    <p class="method-note" style="margin:6px 0 0">Vingt points orange, et tout le reste
+       écarté. C'est le prix de l'indépendance : deux maxima d'années différentes ne peuvent
+       pas venir de la même averse, tandis que deux fortes pluies du même hiver le peuvent.</p>
+
+    <div class="curseurs">
+      <div class="field"><label for="chAns">Regarder une année <small>— <span id="chAnsVal">an 1</span></small></label>
+        <div class="input-wrap"><input id="chAns" type="range" min="1" max="20" step="1" value="6"></div></div>
+    </div>
+    <div id="chAnnee"></div>
+
+    <h4>Et les jours où il ne pleut jamais</h4>
+    <p class="method-note" style="margin:0 0 8px">Le même jeu, replié sur l'année civile :
+       pour chaque jour du calendrier, en combien d'années sur vingt a-t-il plu ? Le creux de
+       l'été n'est pas une faiblesse d'échantillon, c'est le climat.</p>
+    <div id="chProfil"></div>
+
+    <table class="resultats"><thead><tr><th>Ce que contient la chronique</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Jours observés</td><td class="q" id="chJours">—</td></tr>
+        <tr><td>Jours de pluie</td><td class="q" id="chPluvieux">—</td></tr>
+        <tr><td>Jours secs</td><td class="q" id="chSecs">—</td></tr>
+        <tr><td>Pluie annuelle moyenne</td><td class="q" id="chTotal">—</td></tr>
+        <tr><td>Jours du calendrier jamais pluvieux en vingt ans</td><td class="q" id="chJamais">—</td></tr>
+        <tr class="alerte"><td>Valeurs retenues pour l'ajustement</td><td class="q" id="chRetenus">—</td></tr>
+      </tbody></table>
+    <p class="final-result"><strong>Un quantile centennal se calcule sur moins de trois
+      millièmes des jours observés.</strong>
+      <small><br>Ce n'est pas un gaspillage : c'est la condition pour que les valeurs soient
+      indépendantes et comparables. Mais cela dit aussi pourquoi une série de vingt ans est
+      courte — et pourquoi l'intervalle de confiance, plus bas, est large.</small></p>
+  </div>
+
   <div class="hint">Une série de maxima annuels ne se complète pas avec les « secondes
      plus fortes valeurs » d'années pluvieuses : on mélangerait alors des événements
      dépendants, et l'ajustement en serait faussé. Une année manquante reste manquante,
@@ -2250,6 +2290,7 @@ marquerSectionLue();
 </script>
 <script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch2.js"></script>
+<script type="module" src="src/cours-ch2-chronique.js"></script>
 <script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch3-pluvio.js"></script>
 <script type="module" src="src/cours-ch3-montana.js"></script>
