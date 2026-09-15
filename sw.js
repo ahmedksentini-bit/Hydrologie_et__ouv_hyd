@@ -13,7 +13,7 @@ const COQUILLE = [
   "./src/solvers-hydro.js", "./src/solvers-ouvrages.js", "./src/solvers-dimensionnement.js",
   "./src/carte-fond.js", "./src/echelle.js", "./src/solvers-abaques.js", "./src/solvers-annexes.js", "./src/solvers-stats.js", "./src/stats-numerique.js", "./src/tableaux.js",
   "./src/cours-ch1.js", "./src/cours-ch2.js", "./src/cours-ch3.js", "./src/cours-ch3-montana.js",
-  "./src/cours-ch4.js", "./src/cours-ch4-stations.js", "./src/cours-ch5.js", "./src/cours-ch6.js", "./src/cours-ch6-abaques.js", "./src/cours-ch7.js", "./src/cours-ch8.js",
+  "./src/cours-ch4.js", "./src/cours-ch4-stations.js", "./src/cours-ch5.js", "./src/cours-ch6.js", "./src/cours-ch6-abaques.js", "./src/cours-ch7.js", "./src/cours-ch7-precalage.js", "./src/cours-ch8.js",
   "./assets/icon.svg", "./manifest.webmanifest",
 ];
 

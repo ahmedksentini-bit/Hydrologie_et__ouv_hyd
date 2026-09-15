@@ -1469,11 +1469,160 @@
      classement comme « la » solution : présenter la liste des acceptables, et dire pourquoi
      on retient celui-là.</p>
 
+  <h3>D'où vient la pente : le précalage</h3>
+  <p>On parle de « choisir » une pente. Dans la plupart des projets, on ne la choisit pas :
+     on la <strong>constate</strong>. Elle tombe d'une chaîne de maillons, et le calcul
+     hydraulique ne commence qu'au bout de cette chaîne.</p>
+  <p class="formula">largeur des éléments de la voie&nbsp;→&nbsp;longueur de l'ouvrage&nbsp;→
+     &nbsp;cotes d'entrée et de sortie&nbsp;→&nbsp;pente</p>
+  <p>Le premier maillon surprend toujours. La longueur d'un ouvrage ne se décide pas : elle
+     est imposée par le <strong>profil en travers de la route</strong>, parce que les têtes se
+     posent sur les faces de talus et non sous la chaussée. Deux longueurs se distinguent,
+     et les confondre allonge l'ouvrage d'un tiers.</p>
+  <p class="formula">emprise de la route (de pied à pied) = l<sub>chaussée</sub> +
+     2·l<sub>accotement</sub> + 2·m·H<br>
+     longueur de l'ouvrage&nbsp;: L = [ l<sub>plateforme</sub> + m·(c<sub>amont</sub> +
+     c<sub>aval</sub>) ] / sin(biais) + 2·e<sub>tête</sub></p>
+  <p>m est le fruit des talus — 1,5 pour un 3/2 —, H la hauteur de remblai, e l'épaisseur
+     d'un mur de tête, et le biais l'angle entre l'axe de l'ouvrage et celui de la route.
+     <strong>c est la couverture</strong> : la hauteur de remblai au-dessus de
+     l'<em>intrados</em>, et non au-dessus du terrain. C'est elle qui commande, parce que la
+     tête se pose là où l'intrados perce le talus — un point qui est d'autant plus proche de
+     la chaussée que l'ouvrage est haut.</p>
+  <div class="hint"><strong>La convention se déclare.</strong> D'autres placent la tête au
+     pied de talus, ou à mi-hauteur. Elles donnent un ouvrage plus long ; celle retenue ici
+     est la plus courte qui couvre encore l'intrados sur toute sa longueur. Ce qui n'est pas
+     acceptable, c'est de ne pas dire laquelle on a prise.</div>
+  <p>Le second maillon est le levé. Le topographe donne les cotes du terrain naturel le long
+     du talweg ; on lit celles des deux points où l'ouvrage débouche — distants de L, donc du
+     premier maillon — et la pente suit :</p>
+  <p class="formula">J = ( Z<sub>TN entrée</sub> − Z<sub>TN sortie</sub> ) / L</p>
+  <p class="method-note">Le système <strong>boucle sur lui-même</strong> : la cote de sortie
+     vaut Z<sub>entrée</sub> − J·L, la couverture aval en dépend, et la couverture commande
+     L, qui commande J. On l'itère ; il converge en deux passes, parce que la couverture aval
+     ne change que de quelques centimètres.</p>
+
+  <div class="sanity-check"><h3>Trois effets à contre-sens de l'intuition</h3>
+    <p>La boucle ci-dessus n'est pas un raffinement d'école : elle renverse trois raisonnements
+       qu'on tient spontanément. Sur l'ouvrage du calculateur — plate-forme 10 m, remblai
+       2,50 m, talus 3/2, biais 75°, chute levée de 14 cm :</p>
+    <table class="resultats"><thead><tr><th>Ce qu'on change</th><th>L</th><th>J</th>
+      <th>Le raisonnement spontané</th></tr></thead>
+      <tbody>
+        <tr><td>décaissement 0 → 0,80 m</td><td class="q">14,06 → 16,54 m</td>
+          <td class="q">0,996 → 0,846 %</td>
+          <td class="motif">« les deux bouts descendent d'autant, la pente ne bouge pas » —
+            faux : la chute ne bouge pas, mais L s'allonge</td></tr>
+        <tr><td>ouvrage 1,00 → 2,00 m de haut</td><td class="q">16,23 → 13,13 m</td>
+          <td class="q">0,862 → 1,067 %</td>
+          <td class="motif">« un plus gros ouvrage, c'est plus de béton » — il est aussi plus
+            court, et plus raide</td></tr>
+        <tr><td>accotement 1,50 → 2,00 m</td><td class="q">14,68 → 15,72 m</td>
+          <td class="q">0,954 → 0,891 %</td>
+          <td class="motif">un demi-mètre de chaque côté ôte six centièmes de pour cent à la
+            pente — et peut faire changer le régime</td></tr>
+      </tbody></table>
+    <p>Le décaissement est le plus trompeur des trois, parce que le raisonnement est à moitié
+       juste : enfoncer le radier également aux deux bouts ne change effectivement pas la
+       <em>chute</em>. Mais la couverture augmente, la tête recule vers le pied de talus,
+       l'ouvrage s'allonge — et la pente, qui est un rapport, diminue.</p>
+  </div>
+
+  <h3>Fluvial ou torrentiel : la pente critique décide</h3>
+  <p>La pente critique I<sub>c</sub> est celle pour laquelle le tirant normal vaut le tirant
+     critique. On écrit Manning-Strickler <em>au tirant critique</em> et on en tire la pente :</p>
+  <p class="formula">dalot : y<sub>c</sub> = ∛( q² / (g·b²) )&nbsp;&nbsp;·&nbsp;&nbsp;
+     buse : q²·T(y<sub>c</sub>) / ( g·A(y<sub>c</sub>)³ ) = 1<br>
+     puis&nbsp;&nbsp; I<sub>c</sub> = [ q / ( K · A<sub>c</sub> · R<sub>c</sub><sup>2/3</sup> ) ]²</p>
+  <p>La règle de lecture tient en une ligne : <strong>sous la pente critique l'écoulement est
+     fluvial, au-dessus il est torrentiel</strong>. Trois critères disent ce même fait, et ils
+     basculent ensemble — la pente devant I<sub>c</sub>, le tirant normal devant le tirant
+     critique, le nombre de Froude devant 1 :</p>
+  <table class="resultats"><thead><tr><th>Régime</th><th>Pente</th><th>Tirant</th>
+    <th>Froude</th><th>Ce qu'on observe</th></tr></thead>
+    <tbody>
+      <tr><td>Fluvial</td><td class="motif">J &lt; I<sub>c</sub></td>
+        <td class="motif">y<sub>n</sub> &gt; y<sub>c</sub></td><td class="motif">Fr &lt; 1</td>
+        <td class="motif">l'aval se fait sentir, l'ouvrage se remplit davantage</td></tr>
+      <tr><td>Torrentiel</td><td class="motif">J &gt; I<sub>c</sub></td>
+        <td class="motif">y<sub>n</sub> &lt; y<sub>c</sub></td><td class="motif">Fr &gt; 1</td>
+        <td class="motif">écoulement mince et rapide, ressaut possible à la sortie</td></tr>
+    </tbody></table>
+  <div class="sanity-check"><h3>La pente précalée n'a aucune raison d'être au-dessus de I<sub>c</sub></h3>
+    <p>C'est le point que la chaîne ci-dessus rend évident, et qu'on oublie dès qu'on écrit
+       « on cale juste au-dessus de la pente critique » : cette règle ne vaut que si la pente
+       est <em>libre</em>. Précalée sur le terrain, elle tombe où elle tombe.</p>
+    <p>Et elle tombe souvent tout près. Pour des dalots en béton (K = 70), I<sub>c</sub> vaut
+       <strong>0,34 à 0,67 %</strong> dans les cas courants — précisément la plage des pentes
+       de talweg, et précisément celle du minimum de projet de 0,5 % qu'on applique par
+       habitude. Un ouvrage calé à 0,5 % de pente est donc à quelques centièmes de la
+       bascule.</p>
+    <p>Pire : I<sub>c</sub> dépend de la rugosité, qui est une hypothèse. Sur le même dalot
+       2,00 × 1,50 à 6 m³/s, I<sub>c</sub> passe de <strong>0,302 %</strong> à K = 90 à
+       <strong>0,979 %</strong> à K = 50. Le régime annoncé peut donc changer sans que rien
+       ne bouge sur le terrain — seulement le coefficient qu'on a retenu. Quand J et
+       I<sub>c</sub> sont voisins, le régime est une hypothèse, pas un résultat, et la note
+       de calcul doit le dire.</p>
+    <p>À l'inverse, une buse trop petite pour son débit est presque toujours
+       <strong>fluviale</strong> : le tirant critique s'approche du diamètre, et il faudrait
+       une pente déraisonnable pour l'atteindre. Ø 0,80 m à 2 m³/s demanderait
+       <strong>2,4 %</strong>, à 3 m³/s <strong>5,8 %</strong>.</p>
+  </div>
+
+  <div class="calc" id="calcPrecalage">
+    <h3>Le précalage, en plan</h3>
+    <p class="method-note" style="margin:0 0 12px">La route et ses talus, l'ouvrage en biais,
+       et les cotes de terrain naturel levées le long du talweg. Les deux cotes en gras sont
+       celles qui donnent la pente — les autres sont interpolées à pente de talweg constante
+       entre elles, ce qu'un vrai levé ne garantit pas.</p>
+    <div class="data-grid">
+      <div class="field"><label for="pcChaussee">Largeur de chaussée</label>
+        <div class="input-wrap"><input id="pcChaussee" type="text" inputmode="decimal" value="7,00"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcAccotement">Accotement (chacun)</label>
+        <div class="input-wrap"><input id="pcAccotement" type="text" inputmode="decimal" value="1,50"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcRemblai">Hauteur de remblai H</label>
+        <div class="input-wrap"><input id="pcRemblai" type="text" inputmode="decimal" value="2,50"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcFruit">Fruit des talus</label>
+        <div class="input-wrap"><select id="pcFruit">
+          <option value="1">1/1</option><option value="1.5" selected>3/2</option>
+          <option value="2">2/1</option><option value="2.5">5/2</option></select></div></div>
+      <div class="field"><label for="pcBiais">Biais avec l'axe</label>
+        <div class="input-wrap"><input id="pcBiais" type="text" inputmode="decimal" value="75"><span class="unit">°</span></div></div>
+      <div class="field"><label for="pcDecaissement">Décaissement du radier</label>
+        <div class="input-wrap"><input id="pcDecaissement" type="text" inputmode="decimal" value="0,20"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcZam">Cote TN levée à l'entrée</label>
+        <div class="input-wrap"><input id="pcZam" type="text" inputmode="decimal" value="124,850"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcZav">Cote TN levée à la sortie</label>
+        <div class="input-wrap"><input id="pcZav" type="text" inputmode="decimal" value="124,710"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcForme">Forme</label>
+        <div class="input-wrap"><select id="pcForme">
+          <option value="dalot" selected>Dalot</option><option value="buse">Buse</option></select></div></div>
+      <div class="field"><label for="pcB">Largeur B d'une cellule</label>
+        <div class="input-wrap"><input id="pcB" type="text" inputmode="decimal" value="2,00"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcD">Hauteur D (ou Ø)</label>
+        <div class="input-wrap"><input id="pcD" type="text" inputmode="decimal" value="1,50"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pcN">Cellules</label>
+        <div class="input-wrap"><input id="pcN" type="text" inputmode="numeric" value="1"></div></div>
+      <div class="field"><label for="pcQ">Débit de projet Q</label>
+        <div class="input-wrap"><input id="pcQ" type="text" inputmode="decimal" value="6,0"><span class="unit">m³/s</span></div></div>
+      <div class="field"><label for="pcK">Rugosité K</label>
+        <div class="input-wrap"><select id="pcK">
+          <option value="90">90 — béton très lisse</option>
+          <option value="70" selected>70 — béton courant</option>
+          <option value="60">60 — maçonnerie</option>
+          <option value="50">50 — béton dégradé, dépôts</option></select></div></div>
+    </div>
+    <div id="pcPlan"></div>
+    <div id="pcProfil"></div>
+    <div id="pcOut"></div>
+  </div>
+
   <h3>La pente de calage : plafond, pas arrondi</h3>
-  <p>Quand la pente n'est pas imposée par le terrain, on la cale juste au-dessus de la pente
-     critique I<sub>c</sub>, pour rester du côté torrentiel, et on l'arrondit au pas de
-     projet de 0,1 % — un ouvrage ne se cale pas au millième. Mais il faut arrondir
-     <strong>par excès</strong> :</p>
+  <p>Il arrive que la pente soit libre — terrain plat, ouvrage court, ou décaissement qu'on
+     s'autorise à régler inégalement. <strong>Alors seulement</strong> la règle qui suit
+     s'applique : on cale juste au-dessus de la pente critique I<sub>c</sub>, pour rester du
+     côté torrentiel, et on arrondit au pas de projet de 0,1 % — un ouvrage ne se cale pas au
+     millième. Mais il faut arrondir <strong>par excès</strong> :</p>
   <div class="hint"><strong>I<sub>c</sub> = 0,519 %.</strong> Arrondi au plus proche : 0,5 % —
      soit <em>en dessous</em> de la pente critique, donc de l'autre côté du régime, ce qu'on
      cherchait précisément à éviter. Par excès : <strong>0,6 %</strong>. L'écart est d'un
@@ -1937,6 +2086,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>
+<script type="module" src="src/cours-ch7-precalage.js"></script>
 <script type="module" src="src/cours-ch6-abaques.js"></script>
 <script type="module" src="src/cours-ch8.js"></script>
 <script type="module" src="src/tableaux.js"></script>

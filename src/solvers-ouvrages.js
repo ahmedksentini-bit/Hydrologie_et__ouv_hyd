@@ -90,6 +90,29 @@ export function profondeurNormale(sec, q, K, J) {
 export const penteFrottementPleine = (sec, q, K) =>
   Math.pow(q / (K * sec.airePleine * Math.pow(sec.rayonPlein, 2 / 3)), 2);
 
+/**
+ * Pente critique : celle pour laquelle le tirant NORMAL vaut le tirant
+ * CRITIQUE. On écrit Manning-Strickler au tirant critique et on en tire J :
+ *
+ *     I_c = [ q / (K · A_c · R_c^(2/3)) ]²
+ *
+ * Elle ne dépend pas de la longueur de l'ouvrage, mais elle dépend du
+ * coefficient de rugosité — sur un même dalot 2,00 × 1,50 à 6 m³/s, I_c passe
+ * de 0,30 % à K = 90 à 0,98 % à K = 50. Le régime d'écoulement se joue donc en
+ * partie sur un coefficient qu'on a choisi.
+ */
+export function penteCritique(sec, q, K) {
+  const yc = Math.min(sec.profondeurCritique(q), sec.hauteur);
+  const A = sec.aire(yc), P = sec.perimetre(yc);
+  return A > 0 && P > 0 && K > 0 ? Math.pow(q / (K * A * Math.pow(A / P, 2 / 3)), 2) : 0;
+}
+
+/** Nombre de Froude à un tirant donné : Fr = V / √(g·A/T). */
+export function froude(sec, y, q) {
+  const A = sec.aire(y), T = sec.largeurAuMiroir(y);
+  return A > 0 && T > 0 ? (q / A) / Math.sqrt((G * A) / T) : 0;
+}
+
 // ── Catalogue d'entrées (HDS-5, annexe A) ──────────────────────────────────
 // Piège de nomenclature : l'ABAQUE distingue le matériau, l'ÉCHELLE distingue
 // l'entrée. Les trois entrées béton ne sont donc pas les abaques 1, 2 et 3.
@@ -218,9 +241,7 @@ export function calculerOuvrage({
   const ycEff = Math.min(yc, sec.hauteur);
   const Vc = q / sec.aire(ycEff);
   const energieCritique = ycEff + (Vc * Vc) / (2 * G);
-  const penteCritique = debitance(sec, ycEff, K, 1) > 0
-    ? Math.pow(q / (K * sec.aire(ycEff) * Math.pow(sec.aire(ycEff) / sec.perimetre(ycEff), 2 / 3)), 2)
-    : 0;
+  const Ic = penteCritique(sec, q, K);
 
   const Ke = KeForce ?? ent.Ke;
   const entreeC = controleEntree(sec, ent, q, J, energieCritique);
@@ -233,8 +254,10 @@ export function calculerOuvrage({
     section: sec, entree: ent, q, cellules: n,
     capaciteParCellule: capacite, capaciteDepassee,
     profondeurNormale: yn, profondeurCritique: yc, energieCritique,
-    vitesse: V, vitesseOk: V <= vitesseMax, penteCritique,
-    penteSuperieureACritique: J > penteCritique,
+    vitesse: V, vitesseOk: V <= vitesseMax, penteCritique: Ic,
+    penteSuperieureACritique: J > Ic,
+    froude: froude(sec, Math.min(yn, sec.hauteur), q),
+    regime: J > Ic ? "torrentiel" : "fluvial",
     remplissage: Math.min(yn, sec.hauteur) / sec.hauteur,
     etatSortie: etatSortie(tw, sec.hauteur),
     avalInfluence: tw > ycEff + TOLERANCE,

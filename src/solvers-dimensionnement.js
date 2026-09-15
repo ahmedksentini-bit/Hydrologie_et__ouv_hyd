@@ -239,3 +239,109 @@ export function reglesDgpcSix(D, remplissagePct) {
       texte: `hauteur morte de ${(0.10 * D * 100).toFixed(0)} cm (10 % × H) pour les dépôts solides` });
   return regles;
 }
+
+// ── Précalage : d'où vient la pente ────────────────────────────────────────
+// La pente d'un ouvrage n'est presque jamais une variable libre. Elle tombe
+// d'une chaîne de trois maillons, et le calcul hydraulique ne commence qu'au
+// bout de cette chaîne :
+//
+//   largeur des éléments de la voie → longueur de l'ouvrage → cotes d'entrée
+//   et de sortie levées sur le terrain → pente.
+//
+// D'où ce point, que la pratique dément souvent : rien ne garantit que cette
+// pente soit supérieure à la pente critique.
+
+/** Épaisseur usuelle d'un mur de tête, de part et d'autre (m). */
+export const EPAISSEUR_TETE = 0.30;
+
+/**
+ * Emprise de la route : ce que le remblai occupe au sol, de pied à pied,
+ * mesuré PERPENDICULAIREMENT à l'axe.
+ */
+export function empriseRoute({ chaussee, accotement = 0, hauteurRemblai, fruitTalus = 1.5 }) {
+  const plateforme = chaussee + 2 * accotement;
+  return { plateforme, emprise: plateforme + 2 * fruitTalus * hauteurRemblai };
+}
+
+const sinBiais = (deg) => Math.sin((Math.min(Math.max(deg, 20), 160) * Math.PI) / 180);
+
+/**
+ * Précalage complet.
+ *
+ * La longueur ne se mesure PAS de pied de talus à pied de talus : les têtes se
+ * posent là où l'intrados perce la face de talus, et au droit de l'ouvrage
+ * cette face est plus haute que le pied. On compte donc, de chaque côté, la
+ * largeur de talus au-dessus de l'ouvrage seulement — soit m fois la
+ * COUVERTURE, la hauteur de remblai au-dessus de l'intrados :
+ *
+ *   L = [ l_plateforme + m·(c_amont + c_aval) ] / sin(biais) + 2·e_tête
+ *
+ * (D'autres conventions existent — tête au pied de talus, tête à mi-hauteur.
+ * Elles allongent l'ouvrage ; celle-ci est la plus courte qui couvre encore
+ * l'intrados partout. Ce qui compte est de la déclarer.)
+ *
+ * La longueur dépend donc de la HAUTEUR de l'ouvrage : un ouvrage plus haut
+ * laisse moins de couverture, perce le talus plus près de la chaussée, et se
+ * raccourcit. Et comme la cote de sortie vaut Z_entrée − J·L, tandis que
+ * J = chute / L, le système boucle sur lui-même. On l'itère ; il converge en
+ * deux passes, la couverture aval ne changeant que de quelques centimètres.
+ */
+export function precaler({
+  chaussee, accotement = 0, hauteurRemblai, fruitTalus = 1.5, biaisDeg = 90,
+  epaisseurTete = EPAISSEUR_TETE, zTnEntree, zTnSortie, decaissement = 0,
+  hauteurOuvrage,
+}) {
+  const { plateforme, emprise } = empriseRoute({ chaussee, accotement, hauteurRemblai, fruitTalus });
+  const sin = sinBiais(biaisDeg);
+  const zTnAxe = (zTnEntree + zTnSortie) / 2;
+  const zPlateforme = zTnAxe + hauteurRemblai;
+  const zRadierAmont = zTnEntree - decaissement;
+  const chute = zTnEntree - zTnSortie;
+
+  let L = (emprise / sin) + 2 * epaisseurTete, J = 0, zRadierAval = zRadierAmont;
+  let cAmont = 0, cAval = 0, passes = 0;
+  for (; passes < 8; passes++) {
+    J = chute / L;
+    zRadierAval = zRadierAmont - J * L;
+    cAmont = zPlateforme - (zRadierAmont + hauteurOuvrage);
+    cAval = zPlateforme - (zRadierAval + hauteurOuvrage);
+    const Lsuivant = (plateforme + fruitTalus * (Math.max(cAmont, 0) + Math.max(cAval, 0))) / sin
+      + 2 * epaisseurTete;
+    if (Math.abs(Lsuivant - L) < 1e-6) { L = Lsuivant; break; }
+    L = Lsuivant;
+  }
+  J = chute / L;
+  zRadierAval = zRadierAmont - J * L;
+
+  const couvertureMin = Math.min(cAmont, cAval);
+  return {
+    plateforme, emprise, zPlateforme, zTnAxe,
+    couvertureAmont: cAmont, couvertureAval: cAval, couvertureMin,
+    L, Lentre: L - 2 * epaisseurTete, allongement: 1 / sin, chute, J,
+    zRadierAmont, zRadierAval, passes,
+    valide: J > 0 && couvertureMin > 0,
+    motif: couvertureMin <= 0
+      ? "l'ouvrage ne passe pas sous ce remblai : il manque "
+        + `${(-couvertureMin).toFixed(2).replace(".", ",")} m `
+        + "de couverture au-dessus de l'intrados"
+      : J > 0 ? null
+      : J === 0 ? "terrain plat entre les deux extrémités : aucune pente ne se déduit du levé"
+      : "la cote de sortie est au-dessus de la cote d'entrée : le sens d'écoulement est inversé",
+  };
+}
+
+/**
+ * Régime dans l'ouvrage, par comparaison à la pente critique.
+ * Sous la pente critique l'écoulement est FLUVIAL (y_n > y_c, Fr < 1), au-dessus
+ * TORRENTIEL. Les trois critères — pente, tirant, Froude — basculent ensemble ;
+ * c'est le même fait dit trois fois.
+ */
+export function regimeDePente(J, Ic) {
+  if (!(Ic > 0)) return { regime: "indéterminé", ecart: NaN, limite: false };
+  const ecart = J / Ic;
+  return {
+    regime: J > Ic ? "torrentiel" : "fluvial",
+    ecart,
+    limite: Math.abs(ecart - 1) < 0.05,     // à 5 % près de la bascule
+  };
+}
