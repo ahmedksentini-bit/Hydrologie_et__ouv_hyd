@@ -69,7 +69,8 @@
         "choix du tc retenu",
         "contrôle de la lame d'eau"
       ],
-      "cours": true
+      "cours": true,
+      "exercices": 5
     },
     {
       "id": "ch4",

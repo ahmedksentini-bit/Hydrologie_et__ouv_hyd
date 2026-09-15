@@ -11,7 +11,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch4", "ch5"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -94,6 +94,40 @@ test("ch2 — positions de tracage et abattement recalculés", () => {
   vaut(q(b, "ch2-e3", 1), 1 / (1 - h.positionTracage(1, 20, "hazen")), "Hazen");
   vaut(q(b, "ch2-e5", 0), h.coefficientAbattement(320, 42), "abattement 42 km²");
   vaut(q(b, "ch2-e5", 1), h.coefficientAbattement(300, 2.35), "abattement 2,35 km²");
+});
+
+const IDF = { a: 211, b: 0.633, c: 0.178 };
+const iKas = (t, T) => h.montana(IDF.a, IDF.b, IDF.c, t, T);
+
+test("ch3 — lecture de la courbe IDF recalculée", () => {
+  const b = banque("ch3");
+  vaut(q(b, "ch3-e1", 0), iKas(30, 10), "i à 30 min, T = 10");
+  vaut(q(b, "ch3-e1", 1), iKas(30, 100), "i à 30 min, T = 100");
+  vaut(q(b, "ch3-e1", 2), iKas(30, 100) / iKas(30, 10), "rapport des périodes");
+  vaut(q(b, "ch3-e1", 3), iKas(30, 10) / iKas(60, 10), "rapport des durées");
+});
+
+test("ch3 — choix du temps de concentration recalculé", () => {
+  const b = banque("ch3");
+  vaut(q(b, "ch3-e2", 0), h.rationnelle(0.5, iKas(32.9, 30), 2.35), "débit avec Kirpich");
+  vaut(q(b, "ch3-e2", 1), h.rationnelle(0.5, iKas(106.21, 30), 2.35), "débit avec Giandotti");
+  vaut(q(b, "ch3-e2", 3), iKas(1.104, 30) / iKas(66.24, 30), "facteur d'unité");
+});
+
+test("ch3 — lames d'eau et borne de durée recalculées", () => {
+  const b = banque("ch3");
+  vaut(q(b, "ch3-e3", 0), (iKas(30, 10) * 30) / 60, "lame à 30 min");
+  vaut(q(b, "ch3-e3", 1), (iKas(120, 10) * 120) / 60, "lame à 2 h");
+  vaut(q(b, "ch3-e4", 0), iKas(3, 10), "intensité à 3 min");
+  vaut(q(b, "ch3-e4", 1), iKas(h.dureeEffective(3, 5), 10), "intensité à la borne");
+  vaut(q(b, "ch3-e4", 2), h.rationnelle(0.6, iKas(h.dureeEffective(3, 5), 10), 0.85), "débit borné");
+});
+
+test("ch3 — les deux formes de Montana", () => {
+  const b = banque("ch3");
+  vaut(q(b, "ch3-e5", 0), iKas(30, 10), "forme en puissance");
+  // variante de Talbot : le même triplet, c pris pour un décalage de durée
+  vaut(q(b, "ch3-e5", 1), 211 / Math.pow(30 + 0.178, 0.633), "variante de Talbot");
 });
 
 test("ch4 — morphométrie de BV1 recalculée", () => {

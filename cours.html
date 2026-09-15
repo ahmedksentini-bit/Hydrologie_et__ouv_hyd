@@ -262,6 +262,28 @@
        de 30 à 60 min. Plusieurs centaines de mm/h sur une durée horaire signalent une
        erreur de forme ou d'unité, pas un orage exceptionnel.</p></div>
 
+  <div class="calc" id="calcIdf">
+    <h3>Tracer la courbe</h3>
+    <div class="data-grid">
+      <div class="field"><label for="iA">Coefficient a</label>
+        <div class="input-wrap"><input id="iA" type="text" inputmode="decimal" value="211"></div></div>
+      <div class="field"><label for="iB">Exposant b</label>
+        <div class="input-wrap"><input id="iB" type="text" inputmode="decimal" value="0,633"></div></div>
+      <div class="field"><label for="iC">Exposant c (sur T)</label>
+        <div class="input-wrap"><input id="iC" type="text" inputmode="decimal" value="0,178"></div></div>
+      <div class="field"><label for="iTc">Temps de concentration</label>
+        <div class="input-wrap"><input id="iTc" type="text" inputmode="decimal" value="32,9"><span class="unit">min</span></div></div>
+      <div class="field"><label for="iT">Période de retour</label>
+        <div class="input-wrap"><input id="iT" type="text" inputmode="numeric" value="30"><span class="unit">ans</span></div></div>
+      <div class="field"><label for="iP10">P10 journalière du site</label>
+        <div class="input-wrap"><input id="iP10" type="text" inputmode="decimal" value="75"><span class="unit">mm</span></div></div>
+      <div class="field"><label for="iTmin">Plus petite durée calée</label>
+        <div class="input-wrap"><input id="iTmin" type="text" inputmode="decimal" value="5"><span class="unit">min</span></div></div>
+    </div>
+    <div id="iFig"></div>
+    <p class="final-result" id="iOut"></p>
+  </div>
+
   <h3>Les quatre temps de concentration</h3>
   <table class="resultats"><thead><tr><th>Formule</th><th>Expression</th><th>Unité du résultat</th></tr></thead>
     <tbody>
@@ -475,6 +497,7 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
 </script>
 <script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch2.js"></script>
+<script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 </body></html>
