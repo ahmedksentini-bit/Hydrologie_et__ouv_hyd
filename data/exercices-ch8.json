@@ -1,0 +1,368 @@
+{
+  "chapitre": "ch8",
+  "exercices": [
+    {
+      "id": "ch8-e1",
+      "titre": "Une tête, deux descriptions",
+      "difficulte": 1,
+      "enonce": "Un dalot reçoit une tête à ailes évasées. L'étude hydraulique a retenu cette configuration avec ses coefficients HDS-5 ; le projeteur veut maintenant fixer l'angle des murs.",
+      "questions": [
+        {
+          "texte": "Le projeteur passe l'angle de 45° à 60°. Que deviennent les coefficients K, M, C, Y, Kpente et Ke ?",
+          "type": "choix",
+          "options": [
+            "Ils s'interpolent entre les valeurs à 45° et à 75°",
+            "Ils ne changent pas : 60° est dans la plage 30°–75°, donc dans la même configuration",
+            "Ils deviennent ceux de la configuration voisine"
+          ],
+          "reponse": 1,
+          "explication": "Une famille d'angles est un domaine à l'intérieur duquel l'abaque donne UN jeu de coefficients. Se déplacer dedans ne change rien — il n'y a pas de table à interpoler, parce qu'il n'y a qu'une valeur par coefficient pour toute la plage. C'est la géométrie qui change, pas l'hydraulique."
+        },
+        {
+          "texte": "Il passe ensuite à 20°. Que faut-il faire ?",
+          "type": "choix",
+          "options": [
+            "Extrapoler les coefficients sous 30°",
+            "Changer de configuration : hors de sa plage, celle-ci n'a plus de coefficients",
+            "Garder les coefficients : 20° est proche de 30°"
+          ],
+          "reponse": 1,
+          "explication": "Hors famille, il n'y a pas de coefficients dégradés ou approchés : il n'y en a plus du tout. L'abaque n'a rien mesuré à 20° pour cette disposition. Sortir un nombre quand même donnerait un calcul sans source — et rien, dans le résultat, ne le signalerait."
+        },
+        {
+          "texte": "Quelle source fixe la longueur des murs en aile ?",
+          "type": "choix",
+          "options": [
+            "HDS-5, comme les coefficients",
+            "Le guide de conception des ponts-cadres, et elle dépend du talus et du terrain naturel"
+          ],
+          "reponse": 1,
+          "explication": "Les deux descriptions sont étanches. HDS-5 ne dit rien des longueurs, des épaisseurs ni des semelles ; le guide de conception ne dit rien de K, M, C ou Y. Les confondre revient à chercher une réponse là où la question n'est pas posée."
+        },
+        {
+          "texte": "Sur une buse, comment se décrit la tête ?",
+          "type": "choix",
+          "options": [
+            "Par les mêmes murs en aile qu'un dalot",
+            "Par le seul traitement hydraulique : une buse n'a ni piédroit ni mur en aile"
+          ],
+          "reponse": 1,
+          "explication": "Bout droit avec mur de tête, emboîtement femelle, coupe suivant le talus, extrémité en saillie : ce sont les configurations du chapitre 6, et il n'y a rien d'autre à décrire. Tout le vocabulaire des ailes, des fruits et des semelles ne concerne que les ouvrages à piédroits."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e2",
+      "titre": "La famille « 15° ou 90° »",
+      "difficulte": 2,
+      "enonce": "Le catalogue HDS-5 comporte une configuration intitulée « ailes à 15° ou mur frontal à 90° ».",
+      "questions": [
+        {
+          "texte": "Un projet prévoit des ailes à 45°. Cette configuration convient-elle ?",
+          "type": "choix",
+          "options": [
+            "Oui : 45° est entre 15° et 90°",
+            "Non : ce sont deux configurations expérimentales distinctes, et l'abaque ne couvre pas l'intervalle"
+          ],
+          "reponse": 1,
+          "explication": "L'intitulé énumère, il ne borne pas. L'abaque a mesuré deux dispositions — des ailes très peu évasées et un mur frontal — sans rien entre les deux. Un projet à 45° relève de la configuration des ailes évasées (plage 30°–75°), avec ses propres coefficients."
+        },
+        {
+          "texte": "Quelle est la différence de nature entre cette ligne et celle des ailes évasées ?",
+          "type": "choix",
+          "options": [
+            "Aucune : ce sont deux plages d'angles",
+            "L'une est une liste finie de valeurs mesurées, l'autre un domaine continu"
+          ],
+          "reponse": 1,
+          "explication": "C'est la distinction à retenir de tout le tableau : certaines configurations imposent une valeur unique (ailes parallèles à 0°, ailes biseautées à 45°), d'autres énumèrent des valeurs discrètes, une seule offre une plage continue. Lire le tableau comme s'il ne contenait que des plages fait apparaître des configurations qui n'existent pas."
+        },
+        {
+          "texte": "Un logiciel accepterait 45° sur cette ligne et sortirait un débit. Qu'en penser ?",
+          "type": "choix",
+          "options": [
+            "Le résultat est approché mais utilisable",
+            "Le résultat n'a pas de source : il faut refuser le calcul, pas l'arrondir"
+          ],
+          "reponse": 1,
+          "explication": "Un nombre produit hors du domaine d'une abaque n'est pas une approximation : c'est une valeur sans référence. La bonne réponse d'un outil est de refuser en disant pourquoi — exactement comme les régionalisations du chapitre 4 qui se taisent hors de leur période de retour calée."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e3",
+      "titre": "La proposition esthétique, en grades",
+      "difficulte": 2,
+      "enonce": "Le guide de conception propose, pour l'harmonie de l'ouvrage, α_g = 15 + 0,03·L² et β_g = 0,008·(φ_g + 25)·α_g, en GRADES, avec φ_g = φ_deg/0,9 et la conversion finale α_deg = 0,9·α_g. L est l'ouverture droite en mètres.",
+      "questions": [
+        {
+          "texte": "Ouvrage droit (φ = 90°), ouverture L = 3,00 m. Quel angle α, en degrés ?",
+          "type": "nombre",
+          "unite": "°",
+          "reponse": 13.743,
+          "tolerance": 0.05,
+          "explication": "α_g = 15 + 0,03 × 3,00² = 15 + 0,27 = 15,270 gr, puis α = 0,9 × 15,270 = 13,743°. Sur un ouvrage droit φ_g = 100 gr et β_g = 0,008 × 125 × 15,270 = 15,270 gr : β = α."
+        },
+        {
+          "texte": "Même ouvrage, ouverture portée à 5,00 m. Nouvel angle α ?",
+          "type": "nombre",
+          "unite": "°",
+          "reponse": 14.175,
+          "tolerance": 0.05,
+          "explication": "α_g = 15 + 0,03 × 25 = 15,750 gr → α = 14,175°. L'angle croît lentement avec l'ouverture : deux mètres de plus ne lui ajoutent qu'un demi-degré."
+        },
+        {
+          "texte": "Par habitude, on écrit l'angle « par rapport au mur frontal », soit 90° − α = 76,257°. Que se passe-t-il ?",
+          "type": "choix",
+          "options": [
+            "Rien : c'est la même information écrite autrement",
+            "Sur une ouverture de 3 m la valeur sort de la plage 30°–75° et la configuration refuse — mais au-delà de L = 7,45 m elle y retombe et passe en silence"
+          ],
+          "reponse": 1,
+          "explication": "La convention d'origine mesure l'angle depuis l'axe de l'ouvrage. Le complémentaire est un angle différent, pas une autre écriture du même. Pour L = 3 m, 76,257° dépasse la borne de 75° et l'erreur se voit. Mais α croît avec L : à L = 8 m, α = 15,228° et son complémentaire vaut 74,772°, parfaitement admissible. L'erreur devient alors muette, et c'est là qu'elle est dangereuse."
+        },
+        {
+          "texte": "Sur un ouvrage biais, que vaut β par rapport à α ?",
+          "type": "choix",
+          "options": [
+            "β = α, toujours",
+            "β ≠ α, et les quatre ailes diffèrent en angle comme en longueur"
+          ],
+          "reponse": 1,
+          "explication": "β_g = 0,008·(φ_g + 25)·α_g ne vaut α_g que si φ_g = 100 gr, c'est-à-dire pour un ouvrage droit. Sur un biais à 80°, φ_g = 88,889 gr et β tombe à 12,694° pour α = 13,932°. Les quatre ailes — amont-gauche, amont-droite, aval-gauche, aval-droite — se traitent alors séparément : aucune ne se déduit d'une autre."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e4",
+      "titre": "Biseaux et épaisseurs",
+      "difficulte": 1,
+      "enonce": "Dalot de hauteur intérieure D = 1,50 m, sous 5,00 m de remblai. Configuration à ailes évasées de 45° avec biseau supérieur, dont le biseau vaut 0,043 D. Les murs font 2,50 m de haut, l'épaisseur en tête est de 0,25 m, le fruit extérieur de 0,10.",
+      "questions": [
+        {
+          "texte": "Profondeur du biseau supérieur ?",
+          "type": "nombre",
+          "unite": "cm",
+          "reponse": 6.45,
+          "tolerance": 0.2,
+          "explication": "0,043 × 1,50 = 0,0645 m, soit 6,45 cm. La fraction porte sur D, la hauteur INTÉRIEURE de l'ouvrage — jamais sur la hauteur de remblai. La prendre sur les 5,00 m de remblai donnerait 21,5 cm : un coffrage entièrement différent, pour une lecture d'abaque identique."
+        },
+        {
+          "texte": "Épaisseur en pied, par prédimensionnement e_base = (e_tête + f·h)/(1 + f) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.4545,
+          "tolerance": 0.01,
+          "explication": "(0,25 + 0,10 × 2,50) / (1 + 0,10) = 0,50/1,10 = 0,4545 m. C'est un PRÉDIMENSIONNEMENT : l'épaisseur définitive sort du calcul de stabilité du mur, qui ne relève pas de l'hydraulique."
+        },
+        {
+          "texte": "On voudrait descendre l'épaisseur en tête à 0,20 m pour économiser. Est-ce possible ?",
+          "type": "choix",
+          "options": [
+            "Oui, si le calcul de stabilité le permet",
+            "Non : 0,25 m est un minimum de mise en œuvre, en deçà duquel le bétonnage n'est pas réalisable"
+          ],
+          "reponse": 1,
+          "explication": "Ce minimum n'est pas un critère de résistance mais de construction : il faut pouvoir couler et vibrer le béton autour des armatures. Un calcul de stabilité qui « passerait » à 0,20 m ne rendrait pas le mur constructible. La plage usuelle va de 0,25 à 0,30 m."
+        },
+        {
+          "texte": "Quelqu'un propose de retenir une longueur de mur de 1,4 × H, bornée entre 2,5 et 6 m. Que répondre ?",
+          "type": "choix",
+          "options": [
+            "C'est la règle usuelle des guides de conception",
+            "Cette règle ne figure dans aucun guide : la longueur est l'intersection du mur avec le talus et le terrain naturel"
+          ],
+          "reponse": 1,
+          "explication": "Elle circule pourtant largement, et son air de raisonnable — une formule, des bornes — la rend difficile à déloger. Sans profil de talus ni terrain naturel, aucune longueur ne se calcule : le dessin reste schématique plutôt que d'afficher une cote inventée."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e5",
+      "titre": "Isbash, et la loi en V⁶",
+      "difficulte": 2,
+      "enonce": "La sortie de l'ouvrage retenu au chapitre 7 — deux cellules de 3,00 × 1,50 m pour 12 m³/s — débite à 2,75 m/s sur un lit naturel. On protège par enrochement, roche de densité 2,65. La sortie d'un ouvrage est une zone de forte turbulence : C = 0,86.",
+      "questions": [
+        {
+          "texte": "Diamètre médian d50 des blocs ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.316,
+          "tolerance": 0.01,
+          "explication": "d50 = V²/(2g·C²·(Ss−1)) = 2,751²/(2 × 9,81 × 0,86² × 1,65) = 7,568/23,94 = 0,316 m. Un bloc de trente centimètres."
+        },
+        {
+          "texte": "Masse d'un bloc, assimilé à une sphère de masse volumique 2 650 kg/m³ ?",
+          "type": "nombre",
+          "unite": "kg",
+          "reponse": 43.8,
+          "tolerance": 2.0,
+          "explication": "V = (π/6)·d50³ = 0,5236 × 0,03158 = 0,01654 m³, puis m = 2 650 × 0,01654 = 43,8 kg. Deux hommes le portent, pas un."
+        },
+        {
+          "texte": "La vitesse de sortie monte de 2,00 à 3,00 m/s. Par combien la masse du bloc est-elle multipliée ?",
+          "type": "choix",
+          "options": [
+            "Par 1,5 — comme la vitesse",
+            "Par 2,25 — comme le carré",
+            "Par 11,4 — car d50 varie comme V² et la masse comme d50³, donc comme V⁶"
+          ],
+          "reponse": 2,
+          "explication": "(3/2)⁶ = 11,39. On passe de 6,5 kg à 73,7 kg : d'un bloc qu'un homme soulève à un bloc qu'il faut poser à l'engin. C'est la vraie raison économique du critère de vitesse du chapitre 7 — ce n'est pas l'ouvrage qui coûte cher au-delà de 3 m/s, c'est sa protection."
+        },
+        {
+          "texte": "Vitesse admissible d'un enrochement de d50 = 0,20 m, même roche et même turbulence ?",
+          "type": "nombre",
+          "unite": "m/s",
+          "reponse": 2.188,
+          "tolerance": 0.05,
+          "explication": "V = C·√(2g(Ss−1)d50) = 0,86 × √(19,62 × 1,65 × 0,20) = 0,86 × 2,545 = 2,188 m/s. C'est la même relation lue dans l'autre sens : elle donne la seule vitesse admissible du chapitre qui se calcule au lieu de se lire dans une table."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e6",
+      "titre": "Jusqu'où protéger",
+      "difficulte": 2,
+      "enonce": "Même sortie : W₀ = 6,00 m de largeur totale, V₀ = 2,75 m/s. En admettant que le jet s'élargit de 1 pour 3 de chaque côté à profondeur sensiblement constante, la vitesse décroît comme l'inverse de la largeur, d'où L = 1,5·W₀·(V₀/V_adm − 1).",
+      "questions": [
+        {
+          "texte": "Longueur de protection si le lit est en terre végétalisée (V_adm = 1,50 m/s) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 7.5,
+          "tolerance": 0.4,
+          "explication": "L = 1,5 × 6,00 × (2,751/1,50 − 1) = 9,00 × 0,834 = 7,50 m. L'ordre de grandeur : une dizaine de mètres."
+        },
+        {
+          "texte": "Et si le lit est en terre nue (V_adm = 0,80 m/s) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 21.9,
+          "tolerance": 1.2,
+          "explication": "L = 9,00 × (2,751/0,80 − 1) = 9,00 × 2,439 = 21,9 m. Près de trois fois plus long, pour 70 cm/s d'écart sur la vitesse admissible."
+        },
+        {
+          "texte": "Et avec un enrochement de d50 = 0,20 m (V_adm = 2,19 m/s) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.31,
+          "tolerance": 0.2,
+          "explication": "L = 9,00 × (2,751/2,188 − 1) = 9,00 × 0,257 = 2,31 m. Protéger avec le bon matériau divise la longueur par dix : c'est le même ouvrage, le même débit et la même vitesse — seule la surface qui reçoit le jet a changé."
+        },
+        {
+          "texte": "Ce calcul peut-il servir de longueur de projet ?",
+          "type": "choix",
+          "options": [
+            "Oui : il est fondé sur la conservation du débit",
+            "Non : il ignore le ressaut, la forme réelle du lit et la reprise par le courant récepteur — c'est un ordre de grandeur, et les longueurs tabulées des guides priment"
+          ],
+          "reponse": 1,
+          "explication": "Il sert à savoir si l'on parle de trois mètres ou de vingt, ce qui est déjà beaucoup. Mais l'hypothèse d'une profondeur constante est grossière là où justement un ressaut se forme. Un calcul d'ordre de grandeur qui s'annonce comme tel est utile ; le même présenté comme une longueur de projet ne l'est plus."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e7",
+      "titre": "Le temps de concentration d'une plateforme",
+      "difficulte": 2,
+      "enonce": "Assainissement d'une plateforme routière. Station de référence du chapitre 3 : i = 211·t^(−0,633)·T^0,178, avec t en minutes. On draine 7,00 m de largeur sur 200 m de longueur entre deux exutoires, avec C = 0,90. Période de retour 10 ans.",
+      "questions": [
+        {
+          "texte": "Intensité à retenir pour un temps de concentration de plateforme de 6 min ?",
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 102.3,
+          "tolerance": 2.0,
+          "explication": "i = 211 × 6^(−0,633) × 10^0,178 = 211 × 0,3217 × 1,5066 = 102,3 mm/h."
+        },
+        {
+          "texte": "Intensité que donnerait le temps de concentration du bassin versant, 32,9 min ?",
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 34.8,
+          "tolerance": 1.0,
+          "explication": "i = 211 × 32,9^(−0,633) × 1,5066 = 34,8 mm/h, soit 2,94 fois moins. La courbe IDF est très raide aux courtes durées — c'est exactement là que se place une plateforme."
+        },
+        {
+          "texte": "Quelle erreur commet-on en reprenant le tc du bassin pour le fossé de plateforme ?",
+          "type": "choix",
+          "options": [
+            "Aucune : c'est le même événement pluvieux",
+            "On divise le débit à évacuer par trois"
+          ],
+          "reponse": 1,
+          "explication": "L'eau d'une plateforme parcourt quelques mètres de chaussée puis quelques centaines de mètres de fossé : son temps de concentration est de 5 à 10 minutes, pas de trente. Le même orage donne des intensités trois fois plus fortes sur ces durées, et c'est bien le débit correspondant que le fossé doit passer."
+        },
+        {
+          "texte": "Débit collecté, en litres par seconde ?",
+          "type": "nombre",
+          "unite": "L/s",
+          "reponse": 35.8,
+          "tolerance": 1.5,
+          "explication": "S = 7,00 × 200 = 1 400 m² = 0,001400 km². Q = 0,278 × 0,90 × 102,3 × 0,001400 = 0,0358 m³/s = 35,8 L/s."
+        },
+        {
+          "texte": "Comment réduire ce débit sans toucher à la chaussée ?",
+          "type": "choix",
+          "options": [
+            "En augmentant la pente du fossé",
+            "En rapprochant les exutoires : la longueur de collecte est la vraie variable de projet"
+          ],
+          "reponse": 1,
+          "explication": "Le débit est proportionnel à la longueur drainée. Doubler l'espacement entre deux descentes d'eau double le débit à faire passer. La pente, elle, ne change pas le débit — elle change la vitesse et donc le revêtement."
+        }
+      ]
+    },
+    {
+      "id": "ch8-e8",
+      "titre": "Du fossé à la descente d'eau",
+      "difficulte": 3,
+      "enonce": "Les 35,8 L/s précédents transitent dans un fossé trapézoïdal de 0,40 m de plafond, talus de fruit 1,5, pente 1 %, Strickler 30 (terre végétalisée). Ils descendent ensuite le talus de remblai 3/2 par une cunette bétonnée de 0,40 m de large, Strickler 65.",
+      "questions": [
+        {
+          "texte": "Tirant normal dans le fossé ?",
+          "type": "nombre",
+          "unite": "cm",
+          "reponse": 11.3,
+          "tolerance": 0.6,
+          "explication": "Par dichotomie sur Q = K·A·Rh^(2/3)·√J avec A = (b + m·y)·y et P = b + 2y√(1+m²) : y = 0,1131 m. Soit A = 0,0644 m², P = 0,808 m, Rh = 0,0798 m."
+        },
+        {
+          "texte": "Vitesse correspondante ?",
+          "type": "nombre",
+          "unite": "m/s",
+          "reponse": 0.556,
+          "tolerance": 0.04,
+          "explication": "V = Q/A = 0,0358/0,0644 = 0,556 m/s, très en dessous des 1,5 m/s admissibles sur gazon établi. L'écoulement est fluvial."
+        },
+        {
+          "texte": "Ce fossé est-il dimensionné par l'hydraulique ?",
+          "type": "choix",
+          "options": [
+            "Oui : le tirant et la vitesse le déterminent",
+            "Non : à 11 cm de tirant et 0,56 m/s, c'est la section minimale d'entretien et l'emprise disponible qui commandent"
+          ],
+          "reponse": 1,
+          "explication": "Le calcul sert à VÉRIFIER, pas à choisir. Un fossé de plateforme est presque toujours surdimensionné hydrauliquement, parce qu'il faut pouvoir y passer un engin de curage. Le calcul ne redevient dimensionnant que sur les fortes pentes ou les très longues collectes."
+        },
+        {
+          "texte": "Dans la descente d'eau, sur une pente de 0,667, quelle vitesse ?",
+          "type": "nombre",
+          "unite": "m/s",
+          "reponse": 3.95,
+          "tolerance": 0.2,
+          "explication": "Manning sur la pente du talus : le tirant normal tombe à 2,26 cm et V = Q/A = 0,0358/(0,40 × 0,0226) = 3,95 m/s. Le nombre de Froude vaut 8,4 : franchement torrentiel. Aucun revêtement en terre ne tient ces valeurs."
+        },
+        {
+          "texte": "Profondeur conjuguée du ressaut en pied, par Bélanger y₂ = (y₁/2)·(√(1 + 8Fr²) − 1) ?",
+          "type": "nombre",
+          "unite": "cm",
+          "reponse": 25.8,
+          "tolerance": 1.5,
+          "explication": "y₂ = (0,0226/2) × (√(1 + 8 × 8,391²) − 1) = 0,0113 × (23,79 − 1) = 0,2576 m, soit 25,8 cm — onze fois le tirant amont. C'est cette dissipation qu'il faut loger : un ouvrage de pied, une cuvette enrochée, ou les deux. Une descente qui s'arrête au pied du talus sans rien pour recevoir le ressaut creuse son propre affouillement, et déchausse le remblai qu'elle protégeait."
+        }
+      ]
+    }
+  ]
+}

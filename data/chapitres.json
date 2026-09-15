@@ -161,7 +161,8 @@
         "descentes d'eau",
         "assainissement de la plateforme"
       ],
-      "cours": false
+      "cours": true,
+      "exercices": 8
     }
   ]
 }

@@ -5,15 +5,15 @@
 // page mise à jour n'atteignait jamais un visiteur déjà venu, qui gardait la
 // première version du cours indéfiniment. Sur un site en cours de rédaction,
 // c'est le pire des compromis — le cache ne doit servir que hors connexion.
-const VERSION = "hyd-v5";
+const VERSION = "hyd-v6";
 const COQUILLE = [
   "./", "./index.html", "./cours.html", "./exerciseur.html",
   "./styles.css", "./enhancements.css", "./site.css",
   "./src/app.js", "./src/exerciseur.js", "./src/exercices.js",
   "./src/solvers-hydro.js", "./src/solvers-ouvrages.js", "./src/solvers-dimensionnement.js",
-  "./src/solvers-abaques.js", "./src/solvers-stats.js", "./src/stats-numerique.js", "./src/tableaux.js",
+  "./src/solvers-abaques.js", "./src/solvers-annexes.js", "./src/solvers-stats.js", "./src/stats-numerique.js", "./src/tableaux.js",
   "./src/cours-ch1.js", "./src/cours-ch2.js", "./src/cours-ch3.js",
-  "./src/cours-ch4.js", "./src/cours-ch5.js", "./src/cours-ch6.js", "./src/cours-ch6-abaques.js", "./src/cours-ch7.js",
+  "./src/cours-ch4.js", "./src/cours-ch5.js", "./src/cours-ch6.js", "./src/cours-ch6-abaques.js", "./src/cours-ch7.js", "./src/cours-ch8.js",
   "./assets/icon.svg", "./manifest.webmanifest",
 ];
 

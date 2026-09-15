@@ -1378,10 +1378,284 @@
   <div class="actions"><a class="secondary" href="index.html#ch7">Exercices du chapitre</a></div>
 </section>
 
-<section class="card">
-  <h2>Chapitre en préparation</h2>
-  <p class="en-preparation">Le chapitre 8 — ouvrages annexes et protection — est en cours de
-     rédaction. Son plan est visible depuis l'accueil.</p>
+<section id="ch8" class="card">
+  <h2>8 · Ouvrages annexes et protection</h2>
+
+  <h3>Une tête d'ouvrage a deux descriptions, et elles ne se mélangent jamais</h3>
+  <p>C'est l'idée qui structure tout le chapitre. Le même mur de tête est décrit deux fois,
+     par deux sources qui ne parlent pas de la même chose :</p>
+  <table class="resultats"><thead><tr><th></th><th>Description hydraulique</th><th>Description géométrique</th></tr></thead>
+    <tbody>
+      <tr><td>Source</td><td class="motif">HDS-5 (FHWA)</td><td class="motif">guide de conception des ponts-cadres</td></tr>
+      <tr><td>Ce qu'elle fixe</td><td class="motif">K, M, C, Y, K<sub>pente</sub>, K<sub>e</sub> · traitement des arêtes · <strong>familles d'angles admissibles</strong></td><td class="motif">longueurs de mur · épaisseurs · fruits · semelle · joints</td></tr>
+      <tr><td>Ce qu'elle ignore</td><td class="motif">tout ce qui est constructif</td><td class="motif">tout ce qui est hydraulique</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>Déplacer un angle à l'intérieur de sa famille ne change aucun
+     coefficient. En sortir les invalide tous.</strong> Ce n'est pas une nuance : entre 30°
+     et 75°, la configuration reste la même et les six coefficients ne bougent pas. À 20°,
+     il n'y a plus de configuration — on ne lit plus rien sur l'abaque, et un calcul qui
+     sortirait quand même un nombre serait un calcul sans source.</div>
+
+  <h3>Les familles d'angles : ce que l'abaque a réellement testé</h3>
+  <p>L'angle se mesure <strong>depuis l'axe de l'ouvrage</strong> : 0° est le prolongement
+     des piédroits, 90° un mur frontal.</p>
+  <table class="resultats"><thead><tr><th>Configuration</th><th>Angles admissibles</th><th>Arêtes</th></tr></thead>
+    <tbody>
+      <tr><td>Ailes évasées</td><td class="q">plage 30° à 75°</td><td class="motif">arête vive</td></tr>
+      <tr><td>Ailes à 15° ou mur frontal</td><td class="q">15° ou 90°, rien entre les deux</td><td class="motif">arête vive</td></tr>
+      <tr><td>Ailes parallèles</td><td class="q">0° imposé</td><td class="motif">arête vive</td></tr>
+      <tr><td>Ailes à 45° avec biseau</td><td class="q">45° imposé</td><td class="motif">biseau supérieur 0,043 D</td></tr>
+      <tr><td>Mur frontal chanfreiné</td><td class="motif">pas de mur en aile</td><td class="motif">chanfreins 19 mm, trois arêtes</td></tr>
+      <tr><td>Mur frontal biseauté</td><td class="motif">pas de mur en aile</td><td class="motif">biseaux 45°, trois arêtes</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>La deuxième ligne est un piège, et le plus fréquent.</strong>
+     « 15° ou 90° » n'est pas une plage de 15 à 90° : ce sont <em>deux configurations
+     expérimentales distinctes</em>, et l'abaque ne couvre pas l'intervalle. Un projet à 45°
+     ne relève pas de cette ligne mais de la première — celle des ailes évasées, avec ses
+     propres coefficients. Lire 45° sur l'échelle de la deuxième donne un nombre qui ne
+     correspond à aucune expérience.</div>
+
+  <h3>Une règle très répandue qui n'est dans aucun guide</h3>
+  <div class="sanity-check"><h3>« Longueur de mur = 1,4 H, bornée entre 2,5 et 6 m »</h3>
+    <p>Cette règle circule largement. <strong>Elle ne figure dans aucun guide de conception.</strong>
+       Elle a l'apparence d'une règle de l'art — une formule, des bornes, un air de
+       raisonnable — et c'est exactement ce qui la rend difficile à déloger.</p>
+    <p>La longueur d'un mur en aile n'est pas une fonction de la hauteur de l'ouvrage : elle
+       est l'<strong>intersection du mur avec le talus et le terrain naturel</strong>. Sans
+       profil de talus et sans terrain, elle ne se calcule pas — et le dessin doit rester
+       schématique, en pointillé, plutôt que d'afficher une cote inventée.</p>
+  </div>
+
+  <h3>La proposition esthétique, et pourquoi elle est en grades</h3>
+  <p>Le guide propose, pour l'harmonie de l'ouvrage, des angles calculés en <strong>grades</strong>.
+     Il faut y rester jusqu'au bout et ne convertir qu'à la fin :</p>
+  <p class="formula">φ<sub>g</sub> = φ<sub>deg</sub> / 0,9&nbsp;&nbsp;·&nbsp;&nbsp;
+     α<sub>g</sub> = 15 + 0,03·L²&nbsp;&nbsp;·&nbsp;&nbsp;
+     β<sub>g</sub> = 0,008·(φ<sub>g</sub> + 25)·α<sub>g</sub><br>
+     puis α<sub>deg</sub> = 0,9·α<sub>g</sub></p>
+  <p>L est l'ouverture droite en mètres et φ le biais (90°, soit 100 grades, pour un ouvrage
+     droit). Pour L = 3,00 m sur un ouvrage droit : α = β = <strong>13,743°</strong>.</p>
+  <div class="hint"><strong>Ne jamais écrire 90° − α.</strong> La convention d'origine mesure
+     l'angle depuis l'axe de l'ouvrage. Passer au complémentaire — réflexe naturel quand on
+     pense « par rapport au mur frontal » — retourne toute la lecture, et la gravité de
+     l'erreur dépend de l'ouverture. Sur L = 3,00 m, α = 13,743° devient 76,257°, juste
+     au-dessus de la borne de 75° : la configuration refuse, et l'on s'en aperçoit. Mais
+     α croît avec L, et au-delà de <strong>L = 7,45 m</strong> le complémentaire retombe
+     <em>dans</em> la plage 30°–75°. Sur une ouverture de 8,00 m, 15,228° devient 74,772° :
+     admissible, donc silencieux. L'erreur ne produit alors aucun message — seulement un
+     ouvrage différent.</div>
+  <div class="hint"><strong>Sur un ouvrage biais, les quatre ailes diffèrent</strong> — en
+     angle comme en longueur. Elles ne se déduisent pas les unes des autres et se traitent
+     séparément, amont-gauche, amont-droite, aval-gauche, aval-droite. Le β de la formule
+     ci-dessus n'est égal à α que sur un ouvrage droit.</div>
+
+  <h3>Épaisseurs : un minimum de bétonnage, puis une justification</h3>
+  <p class="formula">e<sub>base</sub> = ( e<sub>tête</sub> + (f<sub>ext</sub> + f<sub>int</sub>)·h )
+     / ( 1 + f<sub>ext</sub> + f<sub>int</sub> )</p>
+  <p>L'épaisseur en tête ne descend pas sous <strong>0,25 m</strong> — en dessous, le
+     bétonnage n'est plus réalisable — et la plage usuelle va de 0,25 à 0,30 m. L'épaisseur
+     en pied qui en découle est un <strong>prédimensionnement</strong> : elle reste à
+     justifier par le calcul de stabilité du mur, qui ne relève pas de l'hydraulique.</p>
+  <div class="hint"><strong>Le biseau est une fraction de D, la hauteur intérieure de
+     l'ouvrage — jamais de la hauteur de remblai.</strong> Sur un dalot de D = 1,50 m sous
+     5 m de remblai, le biseau de la configuration à 45° vaut 0,043 × 1,50 =
+     <strong>6,5 cm</strong>. Le prendre sur le remblai donnerait 21,5 cm, soit un ouvrage
+     de coffrage entièrement différent pour une lecture d'abaque identique.</div>
+  <p class="method-note">Et une buse n'a <strong>ni piédroit ni mur en aile</strong> : tout
+     ce paragraphe ne la concerne pas. Sa tête se décrit par la seule colonne hydraulique du
+     chapitre 6 — bout droit, emboîtement, coupe suivant le talus, saillie.</p>
+
+  <div class="calc" id="calcTete">
+    <h3>Vérifier une tête</h3>
+    <div class="data-grid">
+      <div class="field"><label for="tEntree">Configuration d'entrée</label>
+        <div class="input-wrap"><select id="tEntree"></select></div></div>
+      <div class="field"><label for="tAngle">Angle depuis l'axe de l'ouvrage</label>
+        <div class="input-wrap"><input id="tAngle" type="text" inputmode="decimal" value="45"><span class="unit">°</span></div></div>
+      <div class="field"><label for="tL">Ouverture droite L</label>
+        <div class="input-wrap"><input id="tL" type="text" inputmode="decimal" value="3"><span class="unit">m</span></div></div>
+      <div class="field"><label for="tBiais">Biais φ de l'ouvrage</label>
+        <div class="input-wrap"><input id="tBiais" type="text" inputmode="decimal" value="90"><span class="unit">°</span></div></div>
+      <div class="field"><label for="tD">Hauteur intérieure D</label>
+        <div class="input-wrap"><input id="tD" type="text" inputmode="decimal" value="1,5"><span class="unit">m</span></div></div>
+      <div class="field"><label for="tEp">Épaisseur en tête</label>
+        <div class="input-wrap"><input id="tEp" type="text" inputmode="decimal" value="0,25"><span class="unit">m</span></div></div>
+      <div class="field"><label for="tH">Hauteur du mur h</label>
+        <div class="input-wrap"><input id="tH" type="text" inputmode="decimal" value="2,5"><span class="unit">m</span></div></div>
+      <div class="field"><label for="tFruit">Fruit extérieur + intérieur</label>
+        <div class="input-wrap"><input id="tFruit" type="text" inputmode="decimal" value="0,10"></div></div>
+    </div>
+    <div id="tFig"></div>
+    <div id="tTable"></div>
+    <p class="final-result" id="tOut"></p>
+  </div>
+
+  <h3>L'affouillement : la vitesse de sortie devient une taille de bloc</h3>
+  <p>Le chapitre 6 a calculé la vitesse en sortie d'ouvrage. Cette vitesse, appliquée au lit
+     récepteur, y creuse une fosse d'affouillement qui remonte vers l'ouvrage et finit par
+     déchausser la tête aval. La protection consiste à poser, sur une longueur suffisante,
+     des blocs qu'elle ne peut pas déplacer.</p>
+  <p>La taille du bloc se tire de la relation d'Isbash, qui exprime la vitesse à laquelle un
+     bloc de diamètre médian d<sub>50</sub> se met en mouvement :</p>
+  <p class="formula">V = C · √( 2g·(S<sub>s</sub> − 1)·d<sub>50</sub> )&nbsp;&nbsp;d'où&nbsp;&nbsp;
+     d<sub>50</sub> = V² / ( 2g·C²·(S<sub>s</sub> − 1) )</p>
+  <p>S<sub>s</sub> est la densité de la roche — 2,65 pour un calcaire ou un granite courant —
+     et C vaut <strong>0,86 en forte turbulence</strong>, <strong>1,20 en faible</strong>.
+     La sortie d'un ouvrage est une zone de forte turbulence : c'est 0,86 qui s'applique.</p>
+
+  <div class="sanity-check"><h3>Pourquoi 50 cm de vitesse en plus coûtent si cher</h3>
+    <p>d<sub>50</sub> varie comme V², et la masse d'un bloc comme d<sub>50</sub>³. La masse
+       varie donc comme <strong>V⁶</strong>.</p>
+    <table class="resultats"><thead><tr><th>Vitesse de sortie</th><th>d<sub>50</sub></th><th>Masse du bloc</th></tr></thead>
+      <tbody>
+        <tr><td>1,5 m/s</td><td class="q">0,094 m</td><td class="q">1,2 kg</td></tr>
+        <tr><td>2,0 m/s</td><td class="q">0,167 m</td><td class="q">6,5 kg</td></tr>
+        <tr><td>2,5 m/s</td><td class="q">0,261 m</td><td class="q">24,7 kg</td></tr>
+        <tr><td>3,0 m/s</td><td class="q">0,376 m</td><td class="q">73,7 kg</td></tr>
+        <tr><td>3,5 m/s</td><td class="q">0,512 m</td><td class="q">185,8 kg</td></tr>
+      </tbody></table>
+    <p>Entre 2 et 3 m/s, la masse est multipliée par <strong>(3/2)⁶ ≈ 11,4</strong> : on passe
+       d'un bloc qu'un homme soulève à un bloc qu'il faut poser à l'engin. C'est la vraie
+       raison économique du critère de vitesse du chapitre 7 — ce n'est pas l'ouvrage qui
+       coûte cher au-delà de 3 m/s, c'est sa protection.</p>
+  </div>
+
+  <h3>Jusqu'où protéger</h3>
+  <p>À la sortie, le jet s'élargit et ralentit. En admettant une expansion de 1 pour 3 de
+     chaque côté et une profondeur qui varie peu, la vitesse décroît comme l'inverse de la
+     largeur, et la longueur nécessaire pour la ramener à la vitesse admissible du lit
+     s'écrit</p>
+  <p class="formula">L = 1,5 · W<sub>0</sub> · ( V<sub>0</sub>/V<sub>adm</sub> − 1 )</p>
+  <div class="hint"><strong>Ce calcul est un ordre de grandeur, pas une longueur de projet.</strong>
+     Il ignore le ressaut, la forme réelle du lit et la reprise du jet par le courant
+     récepteur. Il sert à savoir si l'on parle de trois mètres ou de vingt — et les longueurs
+     tabulées des guides applicables priment sur lui.</div>
+  <p>Sur l'ouvrage retenu au chapitre 7 — deux cellules de 3,00 m, soit W₀ = 6,00 m, pour une
+     vitesse de sortie de 2,75 m/s — l'ordre de grandeur change du tout au tout selon ce
+     qu'on pose :</p>
+  <table class="resultats"><thead><tr><th>Lit récepteur</th><th>V admissible</th><th>Longueur de protection</th></tr></thead>
+    <tbody>
+      <tr><td>Terre nue</td><td class="motif">0,80 m/s</td><td class="q">21,9 m</td></tr>
+      <tr><td>Terre végétalisée</td><td class="motif">1,50 m/s</td><td class="q">7,5 m</td></tr>
+      <tr><td>Enrochement d<sub>50</sub> = 0,20 m</td><td class="motif">2,19 m/s</td><td class="q">2,3 m</td></tr>
+    </tbody></table>
+  <p class="method-note">Protéger avec le bon matériau divise la longueur par dix. Et la
+     dernière ligne du tableau n'est pas lue : elle est <em>calculée</em> par Isbash à partir
+     de d<sub>50</sub>. C'est la seule vitesse admissible du chapitre qui ne soit pas une
+     valeur de table mais un résultat — et c'est aussi la seule sur laquelle on ait prise.</p>
+
+  <div class="calc" id="calcProtection">
+    <h3>Dimensionner la protection de sortie</h3>
+    <div class="data-grid">
+      <div class="field"><label for="pV">Vitesse de sortie</label>
+        <div class="input-wrap"><input id="pV" type="text" inputmode="decimal" value="2,75"><span class="unit">m/s</span></div></div>
+      <div class="field"><label for="pW">Largeur totale de sortie W₀</label>
+        <div class="input-wrap"><input id="pW" type="text" inputmode="decimal" value="6"><span class="unit">m</span></div></div>
+      <div class="field"><label for="pSs">Densité de la roche S<sub>s</sub></label>
+        <div class="input-wrap"><input id="pSs" type="text" inputmode="decimal" value="2,65"></div></div>
+      <div class="field"><label for="pC">Coefficient d'Isbash C</label>
+        <div class="input-wrap"><select id="pC">
+          <option value="0.86">0,86 — forte turbulence (sortie d'ouvrage)</option>
+          <option value="1.20">1,20 — faible turbulence</option></select></div></div>
+    </div>
+    <div id="pFig"></div>
+    <div id="pTable"></div>
+    <p class="final-result" id="pOut"></p>
+  </div>
+
+  <h3>Assainissement de la plateforme : le temps de concentration change</h3>
+  <p>L'eau tombée sur la chaussée doit être évacuée avant de s'y accumuler. Le débit à
+     collecter se calcule par la méthode rationnelle du chapitre 4, avec un coefficient de
+     ruissellement proche de 1 — une chaussée revêtue ne retient rien — et une surface qui
+     est celle de la bande drainée :</p>
+  <p class="formula">S = largeur drainée × longueur de collecte&nbsp;&nbsp;·&nbsp;&nbsp;
+     Q = 0,278 · C · i · S&nbsp;&nbsp;(S en km², i en mm/h)</p>
+  <div class="hint"><strong>Le temps de concentration d'une plateforme n'est pas celui du
+     bassin.</strong> L'eau parcourt quelques mètres de chaussée puis quelques centaines de
+     mètres de fossé : le t<sub>c</sub> est de l'ordre de <strong>5 à 10 minutes</strong>, là
+     où celui du bassin versant se comptait en dizaines de minutes. Et la courbe IDF du
+     chapitre 3 est très raide à ces durées : sur la station de référence, à T = 10 ans,
+     l'intensité passe de 34,8 mm/h à 32,9 min à <strong>102,3 mm/h à 6 min</strong> — trois
+     fois plus. Reprendre le t<sub>c</sub> du bassin pour dimensionner un fossé de plateforme
+     divise le débit par trois.</div>
+  <p class="method-note">La longueur de collecte est la vraie variable de projet : elle se
+     choisit en plaçant les exutoires. Doubler l'espacement entre deux descentes d'eau double
+     le débit à faire passer dans le fossé.</p>
+
+  <h3>Le fossé : la vitesse commande le revêtement, qui commande la vitesse</h3>
+  <p>Un fossé se calcule par Manning-Strickler sur une section trapézoïdale :</p>
+  <p class="formula">A = (b + m·y)·y&nbsp;&nbsp;·&nbsp;&nbsp;P = b + 2y√(1+m²)&nbsp;&nbsp;·&nbsp;&nbsp;
+     Q = K·A·R<sub>h</sub><sup>2/3</sup>·√J</p>
+  <p>b est la largeur en plafond, m le fruit des talus (1,5 pour un talus 3/2), K le
+     coefficient de Strickler du revêtement. Le raisonnement tourne en rond en apparence :
+     la vitesse dépend du revêtement par K, et le revêtement se choisit d'après la vitesse.
+     On le résout en <strong>posant</strong> le revêtement, en calculant, puis en vérifiant —
+     et en changeant de revêtement si le contrôle échoue.</p>
+  <table class="resultats"><thead><tr><th>Revêtement</th><th>Vitesse admissible</th></tr></thead>
+    <tbody>
+      <tr><td>Terre nue, limons</td><td class="motif">0,6 à 0,8 m/s</td></tr>
+      <tr><td>Terre végétalisée, gazon établi</td><td class="motif">1,2 à 1,5 m/s</td></tr>
+      <tr><td>Enrochement</td><td class="motif"><strong>calculée</strong> par Isbash depuis d<sub>50</sub></td></tr>
+      <tr><td>Maçonnerie, perré</td><td class="motif">2,5 à 3,5 m/s</td></tr>
+      <tr><td>Béton</td><td class="motif">4 à 6 m/s</td></tr>
+    </tbody></table>
+  <p class="method-note">Ces valeurs sont des <strong>ordres de grandeur</strong>, pas des
+     constantes : elles dépendent du sol, de la qualité de l'engazonnement et des
+     prescriptions du maître d'ouvrage. Une seule ligne se calcule vraiment.</p>
+  <div class="sanity-check"><h3>Le fossé n'est presque jamais limité par sa vitesse</h3>
+    <p>Sur 7 m de plateforme drainée et 200 m de collecte, le débit vaut 36 L/s. Dans un
+       fossé trapézoïdal de 0,40 m de plafond, talus 3/2, à 1 % de pente : le tirant est de
+       <strong>11 cm</strong> et la vitesse de <strong>0,56 m/s</strong>. Même à 5 % de
+       pente, la vitesse reste à 0,98 m/s — sous la limite du gazon.</p>
+    <p>Ce qui dimensionne un fossé de plateforme, ce n'est donc presque jamais l'hydraulique :
+       c'est la <strong>section minimale d'entretien</strong> — pouvoir y passer un engin de
+       curage — et l'emprise disponible. Le calcul sert à vérifier, pas à choisir. Il ne
+       devient dimensionnant que sur les fortes pentes ou les longues collectes.</p>
+  </div>
+
+  <h3>Les descentes d'eau : deux centimètres d'eau à quatre mètres par seconde</h3>
+  <p>Quand le fossé doit rejoindre le terrain naturel en pied de remblai, l'eau descend le
+     talus par une descente d'eau. La pente y est celle du talus — 0,667 pour un 3/2 — et le
+     régime y est franchement torrentiel.</p>
+  <p>Sur les 36 L/s précédents, dans une cunette de 0,40 m de large : le tirant normal vaut
+     <strong>2,3 cm</strong>, la vitesse <strong>3,96 m/s</strong>, et le nombre de Froude
+     <strong>8,4</strong>. Aucun revêtement en terre ne tient ces valeurs : la descente est
+     bétonnée ou préfabriquée, ce n'est pas un choix.</p>
+  <p>En pied, l'écoulement torrentiel rencontre le terrain naturel et un <strong>ressaut</strong>
+     se forme. Sa profondeur conjuguée se calcule par la relation de Bélanger :</p>
+  <p class="formula">y₂ = (y₁/2)·( √(1 + 8·F<sub>r</sub>²) − 1 )</p>
+  <p>Soit ici y₂ = 25,8 cm, <strong>onze fois le tirant amont</strong>. C'est cette
+     dissipation qu'il faut loger : un ouvrage de pied, une cuvette enrochée, ou les deux.
+     Une descente d'eau qui s'arrête au pied du talus sans rien pour recevoir le ressaut
+     creuse son propre affouillement — et déchausse le remblai qu'elle protégeait.</p>
+
+  <div class="calc" id="calcFosse">
+    <h3>De l'averse au fossé, et du fossé à la descente</h3>
+    <div class="data-grid">
+      <div class="field"><label for="fTc">Temps de concentration de la plateforme</label>
+        <div class="input-wrap"><input id="fTc" type="text" inputmode="decimal" value="6"><span class="unit">min</span></div></div>
+      <div class="field"><label for="fT">Période de retour</label>
+        <div class="input-wrap"><select id="fT">
+          <option value="5">5 ans</option><option value="10" selected>10 ans</option>
+          <option value="20">20 ans</option></select></div></div>
+      <div class="field"><label for="fLarg">Largeur drainée</label>
+        <div class="input-wrap"><input id="fLarg" type="text" inputmode="decimal" value="7"><span class="unit">m</span></div></div>
+      <div class="field"><label for="fLong">Longueur de collecte</label>
+        <div class="input-wrap"><input id="fLong" type="text" inputmode="decimal" value="200"><span class="unit">m</span></div></div>
+      <div class="field"><label for="fB">Largeur en plafond b</label>
+        <div class="input-wrap"><input id="fB" type="text" inputmode="decimal" value="0,40"><span class="unit">m</span></div></div>
+      <div class="field"><label for="fM">Fruit des talus m</label>
+        <div class="input-wrap"><input id="fM" type="text" inputmode="decimal" value="1,5"></div></div>
+      <div class="field"><label for="fJ">Pente du fossé</label>
+        <div class="input-wrap"><input id="fJ" type="text" inputmode="decimal" value="1"><span class="unit">%</span></div></div>
+      <div class="field"><label for="fRev">Revêtement du fossé</label>
+        <div class="input-wrap"><select id="fRev"></select></div></div>
+    </div>
+    <div id="fTable"></div>
+    <p class="final-result" id="fOut"></p>
+  </div>
+
+  <div class="actions"><a class="secondary" href="index.html#ch8">Exercices du chapitre</a></div>
 </section>
 
 </div>
@@ -1440,5 +1714,6 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>
 <script type="module" src="src/cours-ch6-abaques.js"></script>
+<script type="module" src="src/cours-ch8.js"></script>
 <script type="module" src="src/tableaux.js"></script>
 </body></html>

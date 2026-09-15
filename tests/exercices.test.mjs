@@ -14,7 +14,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -481,4 +481,69 @@ test("ch6 — le sens de l'erreur de normalisation, tel que le cours l'affirme",
   // et les deux formules coïncident exactement quand B = D
   assert.ok(Math.abs(3 / (D * D * Math.sqrt(2 * abq.G * D))
     - 3 / Math.sqrt(2 * abq.G * Math.pow(D, 5))) < 1e-12, "B = D : mêmes formules");
+});
+
+// ── Chapitre 8 : têtes, protection, fossés ────────────────────────────────
+import * as an from "../src/solvers-annexes.js";
+const STATION8 = { a: 211, b: 0.633, c: 0.178 };
+const i8 = (t, T) => h.montana(STATION8.a, STATION8.b, STATION8.c, t, T);
+
+test("ch8 — proposition esthétique", () => {
+  const b = banque("ch8");
+  vaut(q(b, "ch8-e3", 0), an.anglesEsthetiques(3, 90).alpha, "α pour L = 3 m");
+  vaut(q(b, "ch8-e3", 1), an.anglesEsthetiques(5, 90).alpha, "α pour L = 5 m");
+  // l'énoncé cite 76,257° comme complémentaire, et le dit refusé
+  const comp = 90 - an.anglesEsthetiques(3, 90).alpha;
+  assert.ok(Math.abs(comp - 76.257) < 0.01, `complémentaire ${comp.toFixed(3)}°`);
+  assert.equal(an.angleAdmissible("box-ailes-evasees", comp).ok, false, "refusé à L = 3 m");
+  assert.equal(an.angleAdmissible("box-ailes-evasees",
+    90 - an.anglesEsthetiques(8, 90).alpha).ok, true, "admis à L = 8 m, donc muet");
+});
+
+test("ch8 — biseaux et épaisseurs", () => {
+  const b = banque("ch8");
+  vaut(q(b, "ch8-e4", 0), an.biseauSuperieur("box-ailes-45-biseau", 1.5) * 100, "biseau en cm");
+  vaut(q(b, "ch8-e4", 1), an.epaisseurBase(0.25, 2.5, 0.10, 0), "épaisseur en pied");
+  assert.equal(an.verifierEpaisseurTete(0.20).verdict, "refusée", "0,20 m refusé");
+});
+
+test("ch8 — Isbash sur la sortie de l'ouvrage du chapitre 7", () => {
+  const b = banque("ch8");
+  const V = o.calculerOuvrage({ forme: "dalot", B: 3, D: 1.5, cellules: 2, Q: 12,
+    L: 14, J: 0.004, K: 70, entree: "box-ailes-evasees", tw: 0 }).vitesse;
+  assert.ok(Math.abs(V - 2.75) < 0.01, `vitesse de sortie ${V.toFixed(3)} m/s`);
+  const d50 = an.isbash(V);
+  vaut(q(b, "ch8-e5", 0), d50, "d50");
+  vaut(q(b, "ch8-e5", 1), an.masseBloc(d50), "masse du bloc");
+  vaut(q(b, "ch8-e5", 3), an.vitesseIsbash(0.20), "vitesse admissible d'un d50 de 0,20 m");
+  // la loi en V⁶ que l'énoncé annonce
+  assert.ok(Math.abs(an.masseBloc(an.isbash(3)) / an.masseBloc(an.isbash(2)) - 11.39) < 0.01);
+});
+
+test("ch8 — longueurs de protection", () => {
+  const b = banque("ch8");
+  const V = 2.75061;
+  vaut(q(b, "ch8-e6", 0), an.longueurProtection(6, V, 1.5).L, "terre végétalisée");
+  vaut(q(b, "ch8-e6", 1), an.longueurProtection(6, V, 0.8).L, "terre nue");
+  vaut(q(b, "ch8-e6", 2), an.longueurProtection(6, V, an.vitesseIsbash(0.20)).L, "enrochement");
+  // le rapport de dix annoncé dans le cours
+  const rapport = an.longueurProtection(6, V, 0.8).L / an.longueurProtection(6, V, an.vitesseIsbash(0.20)).L;
+  assert.ok(rapport > 8 && rapport < 12, `facteur annoncé « par dix » : ${rapport.toFixed(1)}`);
+});
+
+test("ch8 — la chaîne averse → fossé → descente", () => {
+  const b = banque("ch8");
+  vaut(q(b, "ch8-e7", 0), i8(6, 10), "intensité à 6 min");
+  vaut(q(b, "ch8-e7", 1), i8(32.9, 10), "intensité au tc du bassin");
+  assert.ok(i8(6, 10) / i8(32.9, 10) > 2.9, "près de trois fois plus fort");
+  const plate = an.debitPlateforme({ i: i8(6, 10), largeur: 7, longueur: 200 });
+  vaut(q(b, "ch8-e7", 3), plate.Q * 1000, "débit en L/s");
+
+  const f = an.dimensionnerFosse({ Q: plate.Q, b: 0.4, m: 1.5, J: 0.01, K: 30 });
+  vaut(q(b, "ch8-e8", 0), f.yn * 100, "tirant du fossé en cm");
+  vaut(q(b, "ch8-e8", 1), f.vitesse, "vitesse dans le fossé");
+  const d = an.descenteEau({ Q: plate.Q, largeur: 0.4, penteTalus: 2 / 3, K: 65 });
+  vaut(q(b, "ch8-e8", 3), d.vitesse, "vitesse dans la descente");
+  vaut(q(b, "ch8-e8", 4), d.conjuguee * 100, "conjuguée en cm");
+  assert.ok(d.conjuguee / d.yn > 10, "onze fois le tirant amont");
 });
