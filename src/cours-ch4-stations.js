@@ -9,12 +9,14 @@
 // Jamais d'arc-en-ciel : la couleur doit se lire comme un ordre.
 import { sogreahPluie, sogreahDebit, sogreahRuisselle, gumbel } from "./solvers-hydro.js";
 import { RAMPE_SEQUENTIELLE, ABSENT, classer, couleurDe } from "./echelle.js";
+import { chargerFrontieres, projection, fondDeCarte, graticule, FOND } from "./carte-fond.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
 const JEU = await fetch("data/stations-sogreah.json").then((r) => r.json());
+const FRONTIERES = await chargerFrontieres();
 const RAMPE = RAMPE_SEQUENTIELLE;
 
 let choisie = JEU.stations.find((s) => s.nom === "Kasserine");
@@ -26,62 +28,39 @@ const classes = (grandeur) =>
 
 
 function carte(grandeur, cls) {
-  const W = 430, H = 380, MG = 40, MD = 14, MH = 14, MB = 30;
-  const lon0 = 7.8, lon1 = 11.6, lat0 = 32.6, lat1 = 36.0;
-  const px = (lon) => MG + ((lon - lon0) / (lon1 - lon0)) * (W - MG - MD);
-  // La latitude croît vers le haut : l'axe s'inverse.
-  const py = (lat) => H - MB - ((lat - lat0) / (lat1 - lat0)) * (H - MH - MB);
+  const FENETRE = { lon0: 7.7, lat0: 32.4, lon1: 11.7, lat1: 36.1 };
+  const proj = projection(FENETRE, { largeurMax: 420, hauteurMax: 340,
+                                     mg: 40, md: 12, mh: 12, mb: 28 });
+  const { px, py, zone } = proj;
+  const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
+  const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipSogreah");
 
-  const graticule = [];
-  for (let lon = 8; lon <= 11.5; lon += 1)
-    graticule.push(`<line x1="${px(lon).toFixed(1)}" y1="${MH}" x2="${px(lon).toFixed(1)}"
-        y2="${H - MB}" stroke="#eef2f7" stroke-width="1"/>
-      <text x="${px(lon).toFixed(1)}" y="${H - MB + 14}" font-size="10" fill="#64748b"
-        text-anchor="middle">${lon}° E</text>`);
-  for (let lat = 33; lat <= 36; lat += 1)
-    graticule.push(`<line x1="${MG}" y1="${py(lat).toFixed(1)}" x2="${W - MD}"
-        y2="${py(lat).toFixed(1)}" stroke="#eef2f7" stroke-width="1"/>
-      <text x="${MG - 6}" y="${(py(lat) + 3).toFixed(1)}" font-size="10" fill="#64748b"
-        text-anchor="end">${lat}° N</text>`);
-
-  // Désencombrement : dix-neuf localités sur trois degrés, certaines se touchent.
-  // On place les étiquettes du nord au sud et on décale celles qui se recouvrent.
-  const poses = [];
-  const dyDe = (x, y, aGauche) => {
-    for (const d of [0, -11, 11, -21, 21, -31, 31]) {
-      const chevauche = poses.some((q) => q.aGauche === aGauche
-        && Math.abs(q.x - x) < 62 && Math.abs(q.y - (y + d)) < 10);
-      if (!chevauche) { poses.push({ x, y: y + d, aGauche }); return d; }
-    }
-    poses.push({ x, y, aGauche });
-    return 0;
-  };
-
-  const ordre = JEU.stations.map((s, i) => ({ s, i })).sort((a, b) => a.s.lat - b.s.lat);
-  const points = ordre.map(({ s, i }) => {
+  // Seule la station retenue porte son nom : dix-neuf étiquettes sur une carte
+  // de cette taille ne se lisent pas. Les autres se survolent.
+  const points = [...JEU.stations].sort((a, b) => a.lat - b.lat).map((s) => {
+    const i = JEU.stations.indexOf(s);
     const x = px(s.lon), y = py(s.lat);
     const actif = s.nom === choisie.nom;
-    const aGauche = s.lon > 10.35;                   // sinon l'étiquette sort de la carte
-    const dy = dyDe(x, y, aGauche);
+    const aGauche = s.lon > 10.4;
     const v = s[grandeur];
     return `<g class="station${actif ? " actif" : ""}" data-i="${i}" tabindex="0"
         role="button" aria-label="${s.nom}, ${grandeur} ${v === null ? "non lu" : v + " mm"}">
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 9 : 6}"
-        fill="${couleurDe(v, cls)}" stroke="${actif ? "#0f172a" : "#f8fafc"}"
+      <title>${s.nom} — ${grandeur} ${v === null ? "non lu" : v + " mm"}</title>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 8 : 5.5}"
+        fill="${couleurDe(v, cls)}" stroke="${actif ? "#0f172a" : FOND.principal}"
         stroke-width="${actif ? 2.4 : 2}"/>
-      ${dy ? `<line x1="${(x + (aGauche ? -4 : 4)).toFixed(1)}" y1="${y.toFixed(1)}"
-        x2="${(x + (aGauche ? -9 : 9)).toFixed(1)}" y2="${(y + dy).toFixed(1)}"
-        stroke="#cbd5e1" stroke-width="1"/>` : ""}
-      <text x="${(x + (aGauche ? -11 : 11)).toFixed(1)}" y="${(y + dy + 3.5).toFixed(1)}"
-        font-size="10" fill="#334155" font-weight="${actif ? 800 : 600}"
-        text-anchor="${aGauche ? "end" : "start"}">${s.nom}</text>
+      ${actif ? `<text x="${(x + (aGauche ? -12 : 12)).toFixed(1)}" y="${(y + 3.5).toFixed(1)}"
+        font-size="11" fill="#0f172a" font-weight="800" paint-order="stroke"
+        stroke="${FOND.principal}" stroke-width="3"
+        text-anchor="${aGauche ? "end" : "start"}">${s.nom}</text>` : ""}
     </g>`;
   }).join("");
 
   return `<svg viewBox="0 0 ${W} ${H}" class="carte-bv" width="100%" role="img"
-      aria-label="Carte des lectures SOGREAH aux principales localités du Centre et du Sud">
-    ${graticule.join("")}${points}
-  </svg>`;
+      aria-label="Carte de la Tunisie et des localités où les cartes SOGREAH ont été lues">
+    <defs>${base.defs}</defs>${base.fond}
+    ${graticule(px, py, zone, [8, 9, 10, 11], [33, 34, 35, 36])}
+    ${base.reperes}<g clip-path="url(#clipSogreah)">${points}</g></svg>`;
 }
 
 function legende(grandeur, cls) {

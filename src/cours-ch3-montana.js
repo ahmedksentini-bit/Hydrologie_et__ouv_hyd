@@ -8,6 +8,7 @@
 // est une approximation, exacte à la seule période dont on a pris le a.
 import { montana } from "./solvers-hydro.js";
 import { RAMPE_SEQUENTIELLE, ABSENT, classerContinu, couleurDe } from "./echelle.js";
+import { chargerFrontieres, projection, fondDeCarte, graticule, FOND } from "./carte-fond.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
@@ -15,6 +16,7 @@ const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
 const JEU = await fetch("data/stations-montana.json").then((r) => r.json());
+const FRONTIERES = await chargerFrontieres();
 const PLACEES = JEU.stations.filter((s) => s.position === "wgs84");
 let choisie = JEU.stations.find((s) => s.nom === "Kasserine") || JEU.stations[0];
 
@@ -52,45 +54,36 @@ const valeurAffichee = (s) => {
 };
 
 function carte(classes) {
-  const W = 400, H = 420, MG = 42, MD = 14, MH = 14, MB = 30;
-  const lon0 = 7.8, lon1 = 11.6, lat0 = 30.2, lat1 = 37.6;
-  const px = (lon) => MG + ((lon - lon0) / (lon1 - lon0)) * (W - MG - MD);
-  const py = (lat) => H - MB - ((lat - lat0) / (lat1 - lat0)) * (H - MH - MB);
+  const FENETRE = { lon0: 7.6, lat0: 30.0, lon1: 11.8, lat1: 37.7 };
+  const proj = projection(FENETRE, { largeurMax: 250, hauteurMax: 420,
+                                     mg: 40, md: 12, mh: 12, mb: 28 });
+  const { px, py, zone } = proj;
+  const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
+  const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipMontana");
 
-  const grat = [];
-  for (let lon = 8; lon <= 11.5; lon += 1)
-    grat.push(`<line x1="${px(lon).toFixed(1)}" y1="${MH}" x2="${px(lon).toFixed(1)}" y2="${H - MB}"
-        stroke="#eef2f7" stroke-width="1"/>
-      <text x="${px(lon).toFixed(1)}" y="${H - MB + 14}" font-size="10" fill="#64748b"
-        text-anchor="middle">${lon}° E</text>`);
-  for (let lat = 31; lat <= 37; lat += 1)
-    grat.push(`<line x1="${MG}" y1="${py(lat).toFixed(1)}" x2="${W - MD}" y2="${py(lat).toFixed(1)}"
-        stroke="#eef2f7" stroke-width="1"/>
-      <text x="${MG - 6}" y="${(py(lat) + 3).toFixed(1)}" font-size="10" fill="#64748b"
-        text-anchor="end">${lat}° N</text>`);
-
-  // Trente noms sur un même écran sont illisibles : seule la station retenue
-  // porte son nom, les autres se survolent. La carte sert à situer, la fiche à lire.
   const pts = [...PLACEES].sort((a, b) => a.lat - b.lat).map((s) => {
     const x = px(s.lon), y = py(s.lat), actif = s.nom === choisie.nom;
     const aGauche = s.lon > 10.2;
     const v = valeurAffichee(s);
     return `<g class="station${actif ? " actif" : ""}" data-nom="${s.nom}" tabindex="0"
         role="button" aria-label="${s.nom}">
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 8 : 5.5}"
-        fill="${couleurDe(v, classes)}" stroke="${actif ? "#0f172a" : "#f8fafc"}"
-        stroke-width="${actif ? 2.2 : 1.8}"/>
       <title>${s.nom} — ${el("mGrandeur").value === "i" ? fr(v, 1) + " mm/h"
         : el("mGrandeur").selectedOptions[0].textContent + " " + fr(v, 3)}</title>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 7.5 : 5}"
+        fill="${couleurDe(v, classes)}" stroke="${actif ? "#0f172a" : FOND.principal}"
+        stroke-width="${actif ? 2.2 : 2}"/>
       ${actif ? `<text x="${(x + (aGauche ? -11 : 11)).toFixed(1)}" y="${(y + 3.2).toFixed(1)}"
-        font-size="10.5" fill="#0f172a" font-weight="800"
+        font-size="10.5" fill="#0f172a" font-weight="800" paint-order="stroke"
+        stroke="${FOND.principal}" stroke-width="3"
         text-anchor="${aGauche ? "end" : "start"}">${s.nom}</text>` : ""}
     </g>`;
   }).join("");
 
   return `<svg viewBox="0 0 ${W} ${H}" class="carte-bv" width="100%" role="img"
-      aria-label="Carte des stations de Montana dont la position est recoupée">
-    ${grat.join("")}${pts}</svg>`;
+      aria-label="Carte de la Tunisie et des stations de Montana dont la position est recoupée">
+    <defs>${base.defs}</defs>${base.fond}
+    ${graticule(px, py, zone, [8, 9, 10, 11], [31, 32, 33, 34, 35, 36, 37])}
+    ${base.reperes}<g clip-path="url(#clipMontana)">${pts}</g></svg>`;
 }
 
 function legende(classes) {

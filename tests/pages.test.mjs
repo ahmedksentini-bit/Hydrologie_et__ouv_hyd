@@ -180,3 +180,63 @@ test("le tableau de Kasserine affiché dans le cours est celui du fichier", () =
   const ecart = (k.aT["10"] - k.aT["100"]) / k.aT["100"] * 100;
   assert.ok(ecart > 5.5 && ecart < 6.5, `écart annoncé « 6 % » : ${ecart.toFixed(1)} %`);
 });
+
+test("frontières — géométrie découpée, fermée et correctement située", () => {
+  const f = JSON.parse(lire("data/frontieres.json"));
+  assert.deepEqual(f.pays.map((p) => p.nom), ["Tunisie", "Algérie", "Libye"]);
+  assert.equal(f.pays.filter((p) => p.principal).length, 1, "un seul pays principal");
+  const [lo, la, LO, LA] = f.boite;
+  for (const p of f.pays) {
+    assert.ok(p.anneaux.length >= 1, `${p.nom} : au moins un anneau`);
+    for (const a of p.anneaux) {
+      assert.ok(a.length >= 6, `${p.nom} : anneau trop court`);
+      for (const [lon, lat] of a)
+        assert.ok(lon >= lo - 1e-9 && lon <= LO + 1e-9 && lat >= la - 1e-9 && lat <= LA + 1e-9,
+          `${p.nom} : sommet ${lon},${lat} hors de la boîte de découpe`);
+    }
+  }
+  const tn = f.pays.find((p) => p.principal);
+  const xs = tn.anneaux.flat().map((c) => c[0]), ys = tn.anneaux.flat().map((c) => c[1]);
+  // la Tunisie continentale : du Cap Blanc au sud saharien, de Tabarka à Ben Gardane
+  const nord = Math.max(...ys), ouest = Math.min(...xs), est = Math.max(...xs);
+  assert.ok(nord > 37.2 && nord < 37.6, `extrême nord ${nord}`);
+  assert.ok(ouest > 7.4 && ouest < 8.6, `extrême ouest ${ouest}`);
+  assert.ok(est > 11.4 && est < 11.7, `extrême est ${est}`);
+  assert.ok(tn.anneaux.length >= 3, "le continent, Djerba et les Kerkennah au moins");
+});
+
+test("le test terre/mer place correctement quelques points connus", () => {
+  const f = JSON.parse(lire("data/frontieres.json"));
+  const dans = (lon, lat, a) => {
+    let d = false;
+    for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
+      const [xi, yi] = a[i], [xj, yj] = a[j];
+      if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) d = !d;
+    }
+    return d;
+  };
+  const terre = (lon, lat) => f.pays.some((p) => p.anneaux.some((a) => dans(lon, lat, a)));
+  for (const [nom, lon, lat] of [["Tunis", 10.18, 36.80], ["Kairouan", 10.10, 35.68],
+                                 ["Gafsa", 8.78, 34.42], ["Sfax", 10.76, 34.74]])
+    assert.equal(terre(lon, lat), true, `${nom} doit être à terre`);
+  for (const [nom, lon, lat] of [["golfe de Hammamet", 10.9, 36.2],
+                                 ["large de Kélibia", 11.4, 36.9], ["nord de Bizerte", 10.0, 37.5]])
+    assert.equal(terre(lon, lat), false, `${nom} doit être en mer`);
+});
+
+test("la projection des cartes respecte le vrai rapport des degrés", async () => {
+  const { projection } = await import("../src/carte-fond.js");
+  for (const fenetre of [{ lon0: 7.6, lat0: 30.0, lon1: 11.8, lat1: 37.7 },
+                         { lon0: 7.7, lat0: 32.4, lon1: 11.7, lat1: 36.1 }]) {
+    const p = projection(fenetre, { largeurMax: 400, hauteurMax: 400, mg: 40, md: 12, mh: 12, mb: 28 });
+    const latMid = (fenetre.lat0 + fenetre.lat1) / 2;
+    const dLat = Math.abs(p.py(latMid) - p.py(latMid + 1));
+    const dLon = Math.abs(p.px(9) - p.px(10));
+    const attendu = Math.cos((latMid * Math.PI) / 180);
+    assert.ok(Math.abs(dLon / dLat - attendu) < 0.01 * attendu,
+      `rapport ${(dLon / dLat).toFixed(4)} contre cos φ = ${attendu.toFixed(4)}`);
+    // la carte tient dans la boîte, et y est centrée
+    assert.ok(p.zone.x0 >= 40 - 1e-9 && p.zone.x1 <= 400 - 12 + 1e-9, "débordement horizontal");
+    assert.ok(p.zone.y0 >= 12 - 1e-9 && p.zone.y1 <= 400 - 28 + 1e-9, "débordement vertical");
+  }
+});
