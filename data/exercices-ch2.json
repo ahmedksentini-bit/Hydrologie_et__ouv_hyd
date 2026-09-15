@@ -9,22 +9,34 @@
       "questions": [
         {
           "texte": "Moyenne de la série ?",
-          "type": "nombre", "unite": "mm", "reponse": 46.3, "tolerance": 0.2,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 46.3,
+          "tolerance": 0.2,
           "explication": "Somme = 926 mm sur 20 années : μ = 46,30 mm."
         },
         {
           "texte": "Écart-type d'échantillon ?",
-          "type": "nombre", "unite": "mm", "reponse": 23.77, "tolerance": 0.3,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 23.77,
+          "tolerance": 0.3,
           "explication": "σ = 23,77 mm. Utiliser le dénominateur n au lieu de n − 1 donnerait 23,17 mm, soit un gradex sous-estimé de 2,5 % — et autant sur tous les quantiles."
         },
         {
           "texte": "Gradex a ?",
-          "type": "nombre", "unite": "mm", "reponse": 18.53, "tolerance": 0.2,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 18.53,
+          "tolerance": 0.2,
           "explication": "a = σ·√6/π = 0,7797 × 23,77 = 18,53 mm. Le gradex mesure l'étalement de la distribution : c'est lui, et non la moyenne, qui commande les quantiles rares."
         },
         {
           "texte": "Mode u ?",
-          "type": "nombre", "unite": "mm", "reponse": 35.6, "tolerance": 0.3,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 35.6,
+          "tolerance": 0.3,
           "explication": "u = μ − 0,5772·a = 46,30 − 0,5772 × 18,53 = 35,60 mm. La constante 0,5772 est celle d'Euler–Mascheroni : c'est l'écart entre la moyenne et le mode d'une loi de Gumbel réduite."
         }
       ]
@@ -37,17 +49,26 @@
       "questions": [
         {
           "texte": "Pluie journalière décennale P10 ?",
-          "type": "nombre", "unite": "mm", "reponse": 77.31, "tolerance": 0.6,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 77.31,
+          "tolerance": 0.6,
           "explication": "y10 = 2,2504 ; P10 = 35,60 + 18,53 × 2,2504 = 77,31 mm."
         },
         {
           "texte": "Pluie journalière centennale P100 ?",
-          "type": "nombre", "unite": "mm", "reponse": 120.85, "tolerance": 0.8,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 120.85,
+          "tolerance": 0.8,
           "explication": "y100 = 4,6001 ; P100 = 35,60 + 18,53 × 4,6001 = 120,85 mm. Noter que P100/P10 = 1,56 : c'est le gradex qui fixe ce rapport, pas la moyenne."
         },
         {
           "texte": "Quelle période de retour l'ajustement attribue-t-il au maximum observé de 110 mm ?",
-          "type": "nombre", "unite": "ans", "reponse": 55.9, "tolerance": 3,
+          "type": "nombre",
+          "unite": "ans",
+          "reponse": 55.9,
+          "tolerance": 3,
           "explication": "y = (110 − 35,60)/18,53 = 4,0147 ; F = exp(−exp(−4,0147)) = 0,98212 ; T = 1/(1 − F) = 55,9 ans. Un événement rare, observé en 20 ans : c'est possible, et c'est même ce qui rend la série intéressante."
         },
         {
@@ -71,12 +92,18 @@
       "questions": [
         {
           "texte": "Période de retour empirique du maximum, selon Weibull ?",
-          "type": "nombre", "unite": "ans", "reponse": 21, "tolerance": 0.2,
+          "type": "nombre",
+          "unite": "ans",
+          "reponse": 21,
+          "tolerance": 0.2,
           "explication": "F = 1 − 1/21 = 0,9524 ; T = 1/(1 − F) = 21 ans. La formule de Weibull place la plus forte valeur à n + 1, jamais à n."
         },
         {
           "texte": "Et selon Hazen ?",
-          "type": "nombre", "unite": "ans", "reponse": 40, "tolerance": 0.5,
+          "type": "nombre",
+          "unite": "ans",
+          "reponse": 40,
+          "tolerance": 0.5,
           "explication": "F = 1 − 0,5/20 = 0,975 ; T = 40 ans. Les deux conventions diffèrent d'un facteur 2 sur le point extrême : la position de tracage retenue doit donc être écrite, sans quoi le graphique n'est pas reproductible."
         },
         {
@@ -134,7 +161,11 @@
         {
           "texte": "Quel appareil fournit les données des courbes intensité–durée–fréquence du chapitre 3 ?",
           "type": "choix",
-          "options": ["Le pluviomètre", "Le pluviographe", "Les deux indifféremment"],
+          "options": [
+            "Le pluviomètre",
+            "Le pluviographe",
+            "Les deux indifféremment"
+          ],
           "reponse": 1,
           "explication": "Seul le pluviographe enregistre la hauteur en continu, donc les intensités sur des durées courtes. Le pluviomètre ne donne que des cumuls entre deux relevés, en général journaliers : il alimente la statistique des pluies journalières et les cartes, pas les courbes IDF."
         }
@@ -148,12 +179,18 @@
       "questions": [
         {
           "texte": "Coefficient d'abattement ?",
-          "type": "nombre", "unite": "", "reponse": 0.76, "tolerance": 0.02,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.76,
+          "tolerance": 0.02,
           "explication": "(161 − 0,042 × 320)/1000 = 0,14756 ; log₁₀(42) = 1,6232 ; A = 1 − 0,14756 × 1,6232 = 0,7605. La pluie moyenne sur le bassin vaut 76 % de la pluie ponctuelle."
         },
         {
           "texte": "Sur un bassin de 2,35 km² (pluie annuelle 300 mm), le coefficient vaudrait :",
-          "type": "nombre", "unite": "", "reponse": 0.945, "tolerance": 0.02,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.945,
+          "tolerance": 0.02,
           "explication": "log₁₀(2,35) = 0,3711 ; A = 1 − 0,14840 × 0,3711 = 0,9449. Sur quelques km², l'abattement est négligeable : une averse couvre facilement toute cette surface. C'est pour cela que la méthode rationnelle, réservée aux petits bassins, s'en passe."
         },
         {
@@ -166,6 +203,238 @@
           ],
           "reponse": 1,
           "explication": "Chaque référentiel traite l'effet de surface à sa manière et une seule fois. Le jeu tunisien le porte dans l'exposant S^0,75 de SOGREAH et dans le S de la rationnelle ; le bulletin FAO n° 54 le porte dans un coefficient explicite. Mélanger les deux revient à abattre deux fois — et la notion reste à connaître, car c'est elle qui explique pourquoi le débit spécifique décroît quand la surface augmente."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e6",
+      "titre": "Trois hypothèses avant tout calcul",
+      "difficulte": 2,
+      "enonce": "Avant d'ajuster une loi à une série de maxima annuels, trois hypothèses doivent être examinées. Quatre tests non paramétriques les interrogent.",
+      "questions": [
+        {
+          "texte": "Que teste exactement Mann-Kendall ?",
+          "type": "choix",
+          "options": [
+            "L'ajustement de la loi de Gumbel",
+            "La présence d'une tendance monotone — donc la stationnarité",
+            "L'indépendance des valeurs successives"
+          ],
+          "reponse": 1,
+          "explication": "S = ΣΣ signe(x_j − x_i) compte les couples croissants moins les couples décroissants. Le test est non paramétrique : il ne suppose aucune loi et travaille sur les signes, ce qui le rend insensible aux valeurs extrêmes — exactement ce qu'il faut sur une série de maxima."
+        },
+        {
+          "texte": "Sur une série présentant une tendance nette, Mann-Kendall donne p = 0,0016 et Wald-Wolfowitz p = 0,7394. Contradiction ?",
+          "type": "choix",
+          "options": [
+            "Oui : les deux tests devraient concorder",
+            "Non : ils examinent des choses différentes — une dérive lente du niveau, et une liaison d'une année sur la suivante"
+          ],
+          "reponse": 1,
+          "explication": "Une série peut dériver régulièrement sans qu'une année renseigne sur la suivante autrement que par cette dérive. Wald-Wolfowitz regarde le produit x_i·x_{i+1} ; sur une tendance faible et un bruit fort, il ne voit rien. Deux tests qui ne concordent pas ne se contredisent pas : ils répondent à deux questions."
+        },
+        {
+          "texte": "Un test conserve l'hypothèse de stationnarité sur 20 ans. Que peut-on en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que la série est stationnaire",
+            "Que rien n'a été détecté avec cette série-là, ce qui est très différent"
+          ],
+          "reponse": 1,
+          "explication": "Sur 20 ans, une tendance réelle d'un demi écart-type étalée sur toute la période n'est détectée que 8 fois sur 100. À 50 ans, 16 fois ; à 100 ans, 28 fois. Un test qui ne rejette rien sur une série courte n'apporte presque aucune information. C'est le rejet qui est informatif, pas la conservation."
+        },
+        {
+          "texte": "Ces tests peuvent-ils s'appliquer à la série triée par valeurs décroissantes, celle qui sert aux positions de tracage ?",
+          "type": "choix",
+          "options": [
+            "Oui : ce sont les mêmes valeurs",
+            "Non : Mann-Kendall, Wald-Wolfowitz et Pettitt lisent l'ordre chronologique — trier détruit l'information qu'ils examinent"
+          ],
+          "reponse": 1,
+          "explication": "Sur une série triée, Mann-Kendall verrait une tendance parfaite (S maximal) et Wald-Wolfowitz une autocorrélation massive, quelle que soit la série de départ. Ce sont deux usages distincts de la même série : l'ordre du temps pour les tests, l'ordre des valeurs pour l'ajustement."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e7",
+      "titre": "Wilcoxon contre Pettitt",
+      "difficulte": 3,
+      "enonce": "Une série de 30 ans porte une rupture de niveau à la neuvième année. Wilcoxon-Mann-Whitney donne p = 0,1775 ; Pettitt donne p = 0,0107 avec une rupture localisée au rang 9.",
+      "questions": [
+        {
+          "texte": "Pourquoi Wilcoxon ne détecte-t-il pas cette rupture ?",
+          "type": "choix",
+          "options": [
+            "Parce qu'il est moins puissant en général",
+            "Parce qu'il coupe la série en son milieu par convention : la rupture étant au neuvième rang, ses deux moitiés contiennent chacune un mélange des deux régimes"
+          ],
+          "reponse": 1,
+          "explication": "Wilcoxon compare la première moitié à la seconde. Avec une rupture au rang 9 sur 30, la première moitié (rangs 1 à 15) contient 8 valeurs du régime bas et 7 du régime haut : le décalage moyen entre moitiés est fortement dilué. Pettitt, lui, cherche la coupure qui sépare le mieux, et la trouve."
+        },
+        {
+          "texte": "Wilcoxon est-il donc toujours moins bon ?",
+          "type": "choix",
+          "options": [
+            "Oui, Pettitt le remplace",
+            "Non : si la rupture tombe au milieu, Wilcoxon la détecte 95 fois sur 100 contre 85 pour Pettitt"
+          ],
+          "reponse": 1,
+          "explication": "Chacun paie son choix. Wilcoxon sait où regarder et concentre toute sa puissance à cet endroit. Pettitt cherche partout et paie cette généralité d'environ dix points de puissance là où Wilcoxon vise juste. Sur une rupture déplacée au dixième rang, le rapport s'inverse : 36 % pour Wilcoxon, 53 % pour Pettitt."
+        },
+        {
+          "texte": "Sur cette même série, Pettitt localise la rupture à quel rang ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 9,
+          "tolerance": 0.5,
+          "explication": "τ = 9, c'est-à-dire l'année où U_t = 2·Σ(rangs jusqu'à t) − t(n+1) atteint son maximum en valeur absolue. Cette localisation est une indication à confronter à l'histoire du poste : un déplacement, un changement d'appareil ou d'observateur à cette date-là confirmerait la rupture ; son absence inviterait à la prudence."
+        },
+        {
+          "texte": "Sur une troisième série, Wald-Wolfowitz donne p = 0,0002 tandis que Mann-Kendall donne 0,4114 et Pettitt 0,6160. Quel est le diagnostic ?",
+          "type": "choix",
+          "options": [
+            "Une tendance",
+            "Une rupture de niveau",
+            "Une persistance : les valeurs se ressemblent d'une année sur l'autre, sans dérive ni saut"
+          ],
+          "reponse": 2,
+          "explication": "Ni tendance, ni rupture, mais une mémoire d'une année sur l'autre — cycles pluriannuels, influence d'un état de nappe ou d'un indice climatique. L'ajustement reste possible, mais la série contient moins d'information indépendante que ses 30 valeurs ne le laissent croire : les intervalles de confiance calculés en la supposant indépendante seront trop étroits."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e8",
+      "titre": "Pourquoi c'est une droite",
+      "difficulte": 1,
+      "enonce": "Sur le papier de Gumbel, la variable réduite y = −ln[−ln F] est portée en abscisse et la pluie en ordonnée.",
+      "questions": [
+        {
+          "texte": "Pourquoi la loi de Gumbel y apparaît-elle comme une droite ?",
+          "type": "choix",
+          "options": [
+            "Par convention de tracé",
+            "Parce que x = u + a·y est affine en y : la pente est le gradex a, l'ordonnée à l'origine le mode u",
+            "Parce que les maxima annuels sont toujours alignés"
+          ],
+          "reponse": 1,
+          "explication": "C'est toute la raison d'être de la variable réduite : linéariser la loi pour que l'œil puisse juger. Un alignement se voit, une courbure aussi. Le papier n'est pas neutre — il est construit pour Gumbel, et c'est pourquoi les autres lois s'y reconnaissent à leur courbure."
+        },
+        {
+          "texte": "Sur ce même papier, à quoi ressemble une loi log-normale ?",
+          "type": "choix",
+          "options": [
+            "À une droite également",
+            "À une courbe — elle n'est jamais droite sur papier de Gumbel"
+          ],
+          "reponse": 1,
+          "explication": "La log-normale est une droite sur papier GAUSSO-logarithmique, pas sur papier de Gumbel. Chaque loi a le papier qui la redresse ; utiliser le papier d'une loi pour en juger une autre revient à lire une courbure qui ne dit rien d'autre que « ce n'est pas cette loi-là »."
+        },
+        {
+          "texte": "Une GEV ajustée donne k = −0,181. Quelle est la forme de sa courbe ?",
+          "type": "choix",
+          "options": [
+            "Concave vers le haut : la queue s'alourdit au-delà de Gumbel",
+            "Convexe, tendant vers une borne supérieure finie",
+            "Droite, comme Gumbel"
+          ],
+          "reponse": 0,
+          "explication": "Dans la convention de Hosking retenue ici, k < 0 alourdit la queue (type II, Fréchet) et k > 0 la borne (type III). Attention : la convention inverse ξ = −k est tout aussi répandue. Une valeur de forme ne se recopie jamais d'une source à l'autre sans sa convention — le signe seul retourne la conclusion physique."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e9",
+      "titre": "Cinq lois, un seul jeu de données",
+      "difficulte": 2,
+      "enonce": "Série de 20 maxima journaliers annuels (mm), en ordre chronologique : 28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26. Les cinq lois donnent au décennal 77,3 / 76,9 / 76,3 / 77,9 / 77,3 mm (Gumbel, GEV, log-normale, Pearson III, exponentielle) et au centennal 120,8 / 144,9 / 125,6 / 122,4 / 132,0 mm.",
+      "questions": [
+        {
+          "texte": "Quel est l'écart maximal entre lois au décennal ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 1.6,
+          "tolerance": 0.3,
+          "explication": "77,9 − 76,3 = 1,6 mm, soit 2 % : dans le domaine couvert par les observations, les cinq lois sont indiscernables. C'est normal — elles sont toutes ajustées sur les mêmes points, et ces points sont là."
+        },
+        {
+          "texte": "Et au centennal ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 24.1,
+          "tolerance": 1.0,
+          "explication": "144,9 − 120,8 = 24,1 mm, soit 20 %. Toute la divergence est dans l'EXTRAPOLATION : là où il n'y a plus de données, chaque loi suit sa propre forme de queue. Le choix de la loi n'est donc pas un détail de calcul — c'est une hypothèse sur ce qu'on n'a pas observé."
+        },
+        {
+          "texte": "La GEV a l'écart de Kolmogorov-Smirnov le plus faible (0,061 contre 0,086 pour Gumbel). Est-ce la meilleure loi à retenir ?",
+          "type": "choix",
+          "options": [
+            "Oui : elle colle le mieux aux observations",
+            "Pas nécessairement : elle a un paramètre de plus pour y parvenir, et son intervalle de confiance au centennal est bien plus large"
+          ],
+          "reponse": 1,
+          "explication": "Mieux ajuster n'est pas mieux prédire. Le troisième paramètre de la GEV s'estime sur les mêmes 20 ans : ce qu'il gagne en souplesse, il le paie en précision. Son intervalle de confiance au centennal fait 104 mm de largeur contre 68 mm pour Gumbel. Un critère d'ajustement mesure l'accord avec le passé, pas la fiabilité de l'extrapolation."
+        },
+        {
+          "texte": "La valeur critique de Kolmogorov-Smirnov à 5 % vaut ici 1,36/√20 = 0,304, que toutes les lois respectent. Peut-on conclure que les cinq sont acceptables ?",
+          "type": "choix",
+          "options": [
+            "Oui, aucune n'est rejetée",
+            "Non : les paramètres ayant été estimés sur la série elle-même, cette valeur critique est optimiste — elle vaut pour une loi spécifiée d'avance"
+          ],
+          "reponse": 1,
+          "explication": "Le test de Kolmogorov-Smirnov suppose la loi entièrement connue avant de voir les données. Ici on l'a ajustée sur ces données mêmes, ce qui la rapproche artificiellement de l'échantillon et rend le seuil trop indulgent. L'écart D reste utile pour CLASSER les lois entre elles ; il ne vaut pas verdict d'acceptation."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e10",
+      "titre": "L'incertitude est plus grande que le débat",
+      "difficulte": 3,
+      "enonce": "Série de 20 maxima journaliers annuels (mm), en ordre chronologique : 28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26. Moyenne 46,3 mm, écart-type 23,8 mm. On encadre le quantile centennal de Gumbel par la formule de Kite : S_e = (σ/√n)·√(1 + 1,1396·K + 1,1·K²), avec K = (y_T − 0,5772)·√6/π, puis x_T ± t_{n−1}·S_e.",
+      "questions": [
+        {
+          "texte": "Facteur de fréquence K au centennal ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 3.137,
+          "tolerance": 0.03,
+          "explication": "y₁₀₀ = −ln[−ln(0,99)] = 4,6001 ; K = (4,6001 − 0,5772) × √6/π = 4,0229 × 0,7797 = 3,137. C'est le nombre d'écarts-types au-dessus de la moyenne : x₁₀₀ = μ + K·σ = 46,3 + 3,137 × 23,8 = 120,9 mm."
+        },
+        {
+          "texte": "Écart-type de l'estimation S_e ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 20.85,
+          "tolerance": 0.4,
+          "explication": "δ = √(1 + 1,1396 × 3,137 + 1,1 × 3,137²) = √(1 + 3,575 + 10,824) = 3,924. S_e = (23,8/√20) × 3,924 = 5,314 × 3,924 = 20,85 mm."
+        },
+        {
+          "texte": "Largeur de l'intervalle de confiance à 95 % (t₁₉ = 2,093) ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 87.3,
+          "tolerance": 2.0,
+          "explication": "2 × 2,093 × 20,85 = 87,3 mm, soit l'intervalle [77,2 ; 164,5] mm autour de 120,8 mm. Sur 20 ans, le quantile centennal est connu à ± 43 mm près."
+        },
+        {
+          "texte": "L'écart entre les cinq lois au centennal vaut 24 mm. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que le choix de la loi est la principale source d'erreur",
+            "Que l'incertitude d'échantillonnage (87 mm) est près de quatre fois plus grande que l'écart entre lois : sur 20 ans, débattre de la loi revient à discuter d'un effet plus petit que le bruit"
+          ],
+          "reponse": 1,
+          "explication": "L'ordre de grandeur inverse la hiérarchie des préoccupations. Ce qui mérite l'attention, c'est la longueur de la série et la cohérence régionale des quantiles — allonger la série, ou régionaliser en mutualisant plusieurs postes. Raffiner l'ajustement sur vingt ans, non."
+        },
+        {
+          "texte": "Le rééchantillonnage (bootstrap) donne sur la même série [83,9 ; 151,7] mm, plus étroit que [77,2 ; 164,5]. Quelle est l'explication ?",
+          "type": "choix",
+          "options": [
+            "Le bootstrap est plus précis car il n'utilise aucune hypothèse de loi",
+            "Un échantillon rééchantillonné ne contient que des valeurs déjà observées : son maximum ne peut pas dépasser 110 mm, donc la queue haute est systématiquement sous-estimée"
+          ],
+          "reponse": 1,
+          "explication": "C'est la limite structurelle du procédé. Le bootstrap est universel et honnête sur le principe — il s'applique à n'importe quelle loi — mais dans l'extrapolation il est optimiste, parce qu'il ne peut pas inventer un événement plus fort que le plus fort observé. Sur la partie centrale, en revanche, il est parfaitement légitime."
         }
       ]
     }

@@ -163,6 +163,71 @@
      dépendants, et l'ajustement en serait faussé. Une année manquante reste manquante,
      et la longueur effective de la série se dit dans la note.</div>
 
+  <h3>Trois hypothèses à vérifier <em>avant</em> d'ajuster</h3>
+  <p>Ajuster une loi à une série suppose trois choses, et ces trois choses se testent :</p>
+  <table class="resultats"><thead><tr><th>Hypothèse</th><th>Ce qu'elle affirme</th><th>Ce qui la met en défaut</th></tr></thead>
+    <tbody>
+      <tr><td>Stationnarité</td><td class="motif">la loi ne change pas au cours du temps</td><td class="motif">tendance climatique, urbanisation du bassin, barrage</td></tr>
+      <tr><td>Indépendance</td><td class="motif">une année ne renseigne pas sur la suivante</td><td class="motif">persistance pluriannuelle, série non chronologique</td></tr>
+      <tr><td>Homogénéité</td><td class="motif">toutes les valeurs mesurent la même chose</td><td class="motif">déplacement du poste, changement d'appareil ou d'observateur</td></tr>
+    </tbody></table>
+  <p>Une série qui les met en défaut peut toujours s'ajuster techniquement : la formule
+     ne proteste pas. C'est le <em>sens</em> du résultat qui disparaît. Un quantile
+     centennal calculé sur une série non stationnaire ne décrit ni le passé ni l'avenir —
+     il décrit une moyenne entre deux régimes dont aucun n'a existé.</p>
+  <p>Quatre tests non paramétriques suffisent. Aucun ne suppose de loi : ils travaillent
+     sur les signes et les rangs, ce qui est exactement ce qu'il faut sur des maxima.</p>
+  <table class="resultats"><thead><tr><th>Test</th><th>Statistique</th><th>Ce qu'il cherche</th></tr></thead>
+    <tbody>
+      <tr><td>Mann-Kendall</td><td class="motif">S = ΣΣ signe(x<sub>j</sub> − x<sub>i</sub>)</td><td class="motif">une tendance monotone, dans un sens ou dans l'autre</td></tr>
+      <tr><td>Wald-Wolfowitz</td><td class="motif">R = Σ x<sub>i</sub>·x<sub>i+1</sub> + x<sub>1</sub>·x<sub>n</sub></td><td class="motif">une autocorrélation d'une année sur l'autre</td></tr>
+      <tr><td>Wilcoxon-Mann-Whitney</td><td class="motif">somme des rangs de la première moitié</td><td class="motif">un décalage de niveau entre début et fin de période</td></tr>
+      <tr><td>Pettitt</td><td class="motif">K = max<sub>t</sub> |U<sub>t</sub>|</td><td class="motif">une rupture, <em>sans en fixer la date à l'avance</em></td></tr>
+    </tbody></table>
+  <div class="hint"><strong>Wilcoxon et Pettitt ne font pas le même travail.</strong>
+     Wilcoxon coupe la série en son milieu par convention : si la rupture est là, il la
+     voit mieux que quiconque. Sur quarante ans avec un décalage à la vingtième année, il
+     la détecte 95 fois sur 100 contre 85 pour Pettitt. Mais déplacez la rupture à la
+     dixième année : Wilcoxon tombe à 36 %, Pettitt monte à 53 %. L'un sait où regarder,
+     l'autre cherche partout — et chacun paie son choix.</div>
+  <div class="hint"><strong>Ces trois tests exigent l'ordre chronologique.</strong> Trier la
+     série par valeurs décroissantes, comme on le fait pour la position de tracage, détruit
+     l'information même qu'ils examinent. Mann-Kendall verrait alors une tendance parfaite
+     dans n'importe quelle série.</div>
+
+  <div class="calc" id="calcTests">
+    <h3>Contrôler la série</h3>
+    <div class="field"><label for="gSerie">Maxima journaliers annuels, <strong>dans l'ordre chronologique</strong>, séparés par des espaces ou des virgules (mm)</label>
+      <div class="input-wrap"><input id="gSerie" type="text"
+        value="28 62 35 19 47 88 31 24 55 41 73 22 36 110 44 29 51 38 67 26"></div></div>
+    <div class="data-grid">
+      <div class="field"><label for="gSeuil">Seuil de signification</label>
+        <div class="input-wrap"><select id="gSeuil">
+          <option value="0.05">5 %</option><option value="0.01">1 %</option>
+          <option value="0.10">10 %</option></select></div></div>
+      <div class="field"><label for="gExemple">Charger un cas d'école</label>
+        <div class="input-wrap"><select id="gExemple">
+          <option value="">— série saisie —</option>
+          <option value="tendance">série avec tendance à la hausse</option>
+          <option value="rupture">série avec rupture de niveau</option>
+          <option value="persistante">série fortement autocorrélée</option></select></div></div>
+    </div>
+    <div id="gTests"></div>
+    <p class="final-result" id="gVerdict"></p>
+  </div>
+
+  <div class="sanity-check"><h3>Ce qu'un test ne dit pas</h3>
+    <p>« Hypothèse conservée » ne signifie pas « hypothèse vraie ». Cela signifie
+       <strong>« non détecté avec cette série-là »</strong>, et la nuance est énorme sur
+       les longueurs dont on dispose. Sur une série de 20 ans portant une tendance réelle
+       d'un demi écart-type sur toute la période, Mann-Kendall ne la détecte que
+       <strong>8 fois sur 100</strong>. À 50 ans, 16 fois. À 100 ans, 28 fois.</p>
+    <p>Autrement dit : sur vingt ans, un test qui ne rejette rien n'apporte presque aucune
+       information. Ce qui reste vrai, et utile, c'est l'inverse — un test qui
+       <em>rejette</em> sur une série courte signale quelque chose de franc, qu'il faut
+       aller comprendre dans l'histoire du poste avant de toucher au calcul.</p>
+  </div>
+
   <h3>Ajuster : la loi de Gumbel</h3>
   <p>Les maxima annuels suivent bien, en climat méditerranéen et semi-aride, la loi de
      Gumbel. Sa fonction de répartition s'écrit</p>
@@ -179,16 +244,6 @@
      F = 1 − 1/T, d'où la variable réduite déjà rencontrée :</p>
   <p class="formula">y<sub>T</sub> = −ln[ −ln(1 − 1/T) ]</p>
 
-  <div class="calc" id="calcGumbel">
-    <h3>Ajuster une série</h3>
-    <div class="field"><label for="gSerie">Maxima journaliers annuels, séparés par des espaces ou des virgules (mm)</label>
-      <div class="input-wrap"><input id="gSerie" type="text"
-        value="28 62 35 19 47 88 31 24 55 41 73 22 36 110 44 29 51 38 67 26"></div></div>
-    <div id="gFig"></div>
-    <div id="gTable"></div>
-    <p class="final-result" id="gOut"></p>
-  </div>
-
   <h3>Juger l'ajustement</h3>
   <p>On place les valeurs observées sur le papier de Gumbel pour voir si elles
      s'alignent. La valeur de rang <em>i</em> (1 pour la plus forte) parmi <em>n</em> se
@@ -202,6 +257,106 @@
      périodes de retour de l'ordre de n. Lire un quantile centennal sur vingt ans
      d'observation est une <strong>extrapolation</strong> : elle se fait, mais elle
      s'écrit — et c'est le gradex, pas la moyenne, qui en commande le résultat.</div>
+
+  <h3>Pourquoi c'est une droite — et ce qui ne l'est pas</h3>
+  <p>La relation x = u + a·y est <strong>affine en y</strong>. En portant la variable
+     réduite y en abscisse et la pluie en ordonnée, la loi de Gumbel devient donc
+     exactement une droite, de pente le gradex a et d'ordonnée à l'origine le mode u.
+     C'est toute la raison d'être de la variable réduite, et du papier qui porte son nom :
+     <strong>linéariser la loi pour que l'œil puisse juger</strong>. Un alignement se voit ;
+     une courbure aussi.</p>
+  <p>Ce papier n'est pas neutre pour autant : il est construit <em>pour</em> Gumbel. Les
+     autres lois y apparaissent courbes, et c'est précisément ce qui permet de les
+     distinguer :</p>
+  <table class="resultats"><thead><tr><th>Loi</th><th>Sur papier de Gumbel</th></tr></thead>
+    <tbody>
+      <tr><td>Gumbel</td><td class="motif">droite, par construction</td></tr>
+      <tr><td>GEV avec k &lt; 0</td><td class="motif">concave vers le haut — la queue s'alourdit</td></tr>
+      <tr><td>GEV avec k &gt; 0</td><td class="motif">convexe, tendant vers une borne supérieure finie</td></tr>
+      <tr><td>Log-normale</td><td class="motif">courbe, jamais droite</td></tr>
+      <tr><td>Exponentielle</td><td class="motif">droite en ln T, donc courbe en y</td></tr>
+    </tbody></table>
+
+  <h3>Cinq lois, et où elles se séparent</h3>
+  <table class="resultats"><thead><tr><th>Loi</th><th>Paramètres</th><th>Estimation</th><th>Remarque</th></tr></thead>
+    <tbody>
+      <tr><td>Gumbel</td><td class="motif">u, a</td><td class="motif">moments</td><td class="motif">la référence en climat méditerranéen et semi-aride</td></tr>
+      <tr><td>GEV</td><td class="motif">ξ, α, k</td><td class="motif">L-moments</td><td class="motif">généralise Gumbel ; k = 0 la redonne exactement</td></tr>
+      <tr><td>Log-normale (Galton)</td><td class="motif">μ<sub>ln</sub>, σ<sub>ln</sub></td><td class="motif">moments sur ln x</td><td class="motif">loi normale sur les logarithmes</td></tr>
+      <tr><td>Pearson III</td><td class="motif">μ, σ, C<sub>s</sub></td><td class="motif">moments + Wilson-Hilferty</td><td class="motif">l'approximation perd sa validité au-delà de |C<sub>s</sub>| = 2</td></tr>
+      <tr><td>Exponentielle</td><td class="motif">x₀, b</td><td class="motif">moments</td><td class="motif">un seul paramètre de forme ; borne de comparaison</td></tr>
+    </tbody></table>
+  <p>Les <strong>L-moments</strong> qui servent à ajuster la GEV se construisent sur des
+     combinaisons de statistiques d'ordre plutôt que sur des puissances des écarts. Un
+     moment d'ordre 3 élève au cube : une seule valeur extrême y pèse démesurément. Un
+     L-moment, non. Sur des séries de vingt à trente ans où l'extrême est justement ce
+     qu'on cherche à décrire, la différence n'est pas académique.</p>
+  <div class="hint"><strong>Le signe de k n'a pas de convention universelle.</strong> Ici
+     k &gt; 0 borne la queue supérieure et k &lt; 0 l'alourdit — c'est la convention de
+     Hosking, celle des L-moments. La convention inverse (ξ = −k) est tout aussi
+     répandue dans la littérature. Une valeur de forme ne se recopie jamais d'une source à
+     l'autre sans sa convention : le signe seul retourne la conclusion physique.</div>
+
+  <h3>L'incertitude, et où elle est vraiment</h3>
+  <p>Un quantile est une estimation, pas une mesure. Deux façons d'en chiffrer
+     l'incertitude :</p>
+  <p class="formula">Kite (Gumbel seul) : S<sub>e</sub> = (σ/√n)·√(1 + 1,1396·K + 1,1·K²)
+     &nbsp;·&nbsp; K = (y<sub>T</sub> − 0,5772)·√6/π &nbsp;·&nbsp;
+     x<sub>T</sub> ± t<sub>n−1</sub>·S<sub>e</sub></p>
+  <p>et le <strong>rééchantillonnage</strong> (bootstrap), applicable à n'importe quelle
+     loi : on retire des échantillons de même taille avec remise, on réajuste à chaque
+     fois, et on lit les percentiles des quantiles obtenus.</p>
+  <div class="sanity-check"><h3>L'ordre de grandeur qui change tout</h3>
+    <p>Sur la série de 20 ans du calculateur, les cinq lois donnent au centennal des
+       valeurs allant de <strong>121 à 145 mm</strong> — un écart de 20 %, qui semble
+       considérable. Mais l'intervalle de confiance à 95 % de la seule loi de Gumbel va de
+       <strong>77 à 164 mm</strong>. L'incertitude d'échantillonnage est donc
+       <em>plus large que l'écart entre les lois</em>.</p>
+    <p>Conséquence pratique : sur vingt ans de données, débattre du choix de la loi revient
+       à discuter d'un effet plus petit que le bruit. Ce qui mérite l'attention, c'est la
+       longueur de la série et la cohérence régionale — pas le raffinement de
+       l'ajustement.</p>
+  </div>
+  <div class="hint"><strong>Le bootstrap ne peut pas inventer une valeur plus forte que la
+     plus forte observée.</strong> Chaque échantillon rééchantillonné est fait de valeurs
+     déjà présentes : le maximum possible est le maximum observé. L'intervalle qu'il donne
+     dans la queue haute est donc <em>systématiquement trop étroit</em> — sur cette série,
+     [84 ; 152] contre [77 ; 164] par la formule analytique. Le bootstrap est universel et
+     honnête sur le principe ; dans l'extrapolation, il est optimiste.</div>
+  <div class="hint"><strong>Mieux ajuster n'est pas mieux prédire.</strong> La GEV colle
+     mieux aux points que Gumbel (écart de Kolmogorov-Smirnov 0,061 contre 0,086) — elle a
+     un paramètre de plus pour cela. Mais son intervalle de confiance au centennal,
+     [84 ; 188], est bien plus large que celui de Gumbel. Le troisième paramètre s'estime
+     sur les mêmes vingt ans : ce qu'il gagne en souplesse, il le paie en précision.</div>
+
+  <div class="calc" id="calcGumbel">
+    <h3>Ajuster, comparer, encadrer</h3>
+    <p class="method-note" style="margin:0 0 12px">Sur la série saisie plus haut. En
+       abscisse la variable réduite de Gumbel : c'est le papier sur lequel Gumbel est une
+       droite, et sur lequel les autres lois se reconnaissent à leur courbure.</p>
+    <div class="data-grid">
+      <div class="field"><label for="gLoi">Loi encadrée</label>
+        <div class="input-wrap"><select id="gLoi"></select></div></div>
+      <div class="field"><label for="gBande">Intervalle de confiance</label>
+        <div class="input-wrap"><select id="gBande">
+          <option value="auto">Kite si Gumbel, sinon bootstrap</option>
+          <option value="bootstrap">Bootstrap (toutes lois)</option>
+          <option value="aucune">Aucun</option></select></div></div>
+      <div class="field"><label for="gNiveau">Niveau de confiance</label>
+        <div class="input-wrap"><select id="gNiveau">
+          <option value="0.95">95 %</option><option value="0.90">90 %</option>
+          <option value="0.80">80 %</option></select></div></div>
+      <div class="field"><label for="gPosition">Position de tracage</label>
+        <div class="input-wrap"><select id="gPosition">
+          <option value="weibull">Weibull — i/(n+1)</option>
+          <option value="hazen">Hazen — (i−0,5)/n</option>
+          <option value="cunnane">Cunnane — (i−0,4)/(n+0,2)</option></select></div></div>
+    </div>
+    <div id="gFig"></div>
+    <div id="gLegende"></div>
+    <div id="gTable"></div>
+    <p class="final-result" id="gOut"></p>
+  </div>
 
   <h3>Des points aux cartes</h3>
   <p>Chaque poste ajusté fournit ses quantiles ; l'interpolation entre postes donne les
@@ -840,4 +995,5 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>
+<script type="module" src="src/tableaux.js"></script>
 </body></html>

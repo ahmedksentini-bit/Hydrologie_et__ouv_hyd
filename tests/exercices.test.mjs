@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import * as h from "../src/solvers-hydro.js";
 import * as o from "../src/solvers-ouvrages.js";
 import * as dim from "../src/solvers-dimensionnement.js";
+import * as st from "../src/solvers-stats.js";
 
 const banque = (ch) => JSON.parse(readFileSync(new URL(`../data/exercices-${ch}.json`, import.meta.url)));
 const q = (b, exoId, i) => b.exercices.find((e) => e.id === exoId).questions[i];
@@ -336,4 +337,44 @@ test("ch7 — §6 DGPC et comparaison dalot / buse", () => {
   const dalot = dim.proposer({ ...SITE7, J: 0, zRadierAmont: 100, zRoute: 102 });
   assert.equal(buse.retenue.libelle, "4 × Ø 1,50 m", "solution buse retenue");
   vaut(q(b, "ch7-e9", 1), buse.retenue.r.HW - dalot.retenue.r.HW, "écart de charge amont");
+});
+
+// ── Chapitre 2 : statistiques — les réponses sortent des solveurs ──────────
+const SERIE2 = [28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26];
+
+test("ch2 — écarts entre lois au décennal et au centennal", () => {
+  const b = banque("ch2");
+  const q10 = st.LOIS.map((l) => st.ajuster(l.id, SERIE2).quantile(10));
+  const q100 = st.LOIS.map((l) => st.ajuster(l.id, SERIE2).quantile(100));
+  vaut(q(b, "ch2-e9", 0), Math.max(...q10) - Math.min(...q10), "écart au décennal");
+  vaut(q(b, "ch2-e9", 1), Math.max(...q100) - Math.min(...q100), "écart au centennal");
+  // l'énoncé cite les cinq quantiles : ils doivent correspondre aux solveurs
+  const cites = [120.8, 144.9, 125.6, 122.4, 132.0];
+  st.LOIS.forEach((l, i) => assert.ok(Math.abs(q100[i] - cites[i]) < 0.1,
+    `${l.nom} : énoncé ${cites[i]}, solveur ${q100[i].toFixed(1)}`));
+});
+
+test("ch2 — intervalle de Kite au centennal", () => {
+  const b = banque("ch2");
+  const ic = st.intervalleGumbel(SERIE2, 100);
+  vaut(q(b, "ch2-e10", 0), ic.K, "facteur de fréquence");
+  vaut(q(b, "ch2-e10", 1), ic.se, "écart-type de l'estimation");
+  vaut(q(b, "ch2-e10", 2), ic.haut - ic.bas, "largeur de l'intervalle");
+  // le rapport annoncé entre incertitude et écart entre lois
+  const q100 = st.LOIS.map((l) => st.ajuster(l.id, SERIE2).quantile(100));
+  const rapport = (ic.haut - ic.bas) / (Math.max(...q100) - Math.min(...q100));
+  assert.ok(rapport > 3 && rapport < 4.5, `rapport annoncé « près de quatre fois » : ${rapport.toFixed(2)}`);
+  // et le bootstrap plus étroit, comme l'affirme la dernière question
+  assert.ok(st.intervalleBootstrap(SERIE2, "gumbel", 100).haut < ic.haut,
+    "bootstrap plus étroit dans la queue haute");
+});
+
+test("ch2 — la rupture de l'exercice est bien au rang annoncé", () => {
+  const b = banque("ch2");
+  const rupture = "71 31 19 33 30 45 22 15 37 80 75 74 51 59 85 47 70 70 66 42 76 61 40 74 54 45 77 55 41 78"
+    .split(" ").map(Number);
+  const pt = st.pettitt(rupture);
+  vaut(q(b, "ch2-e7", 2), pt.tau, "rang de la rupture");
+  assert.ok(pt.p < 0.05 && st.wilcoxon(rupture).p > 0.05,
+    "Pettitt rejette là où Wilcoxon conserve");
 });

@@ -81,3 +81,15 @@ table.abaque td.retenue{background:#cffafe;border-radius:6px;box-shadow:inset 0 
   .cours-aside .chapitre-sommaire{grid-template-columns:repeat(2,minmax(0,1fr));display:grid}
 }
 @media(max-width:560px){.cours-aside .chapitre-sommaire{grid-template-columns:1fr}}
+
+/* Un tableau trop large défile dans sa boîte au lieu de pousser la page. */
+.table-large{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.table-large>table{margin:0}
+.table-large+.table-large{margin-top:12px}
+@media(max-width:560px){.table-large table.resultats{font-size:13px}}
+
+/* Une hypothèse rejetée est le résultat INTÉRESSANT : on la signale, on ne
+   l'estompe pas comme un candidat écarté. */
+table.resultats tr.alerte{background:#fffbeb}
+table.resultats tr.alerte td.q{color:#b45309}
+table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
