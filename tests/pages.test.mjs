@@ -371,13 +371,32 @@ test("la planche respecte les échelles qu'elle annonce", () => {
     "profil en long : 1 mm par mètre en abscisses (1/1000)");
   assert.match(src, /const Yp = \(z\) => y0P \+ hP - \(z - zBas\) \* 10;/,
     "profil en long : 10 mm par mètre en altitudes (1/100)");
-  assert.match(src, /const Xc = \(u\) => MG \+ utile \/ 2 \+ u \* 10;/,
-    "coupe : 10 mm par mètre en abscisses (1/100)");
-  assert.match(src, /const Yc = \(z\) => y0C \+ hCoupe - \(z \+ Hr\) \* 10;/,
-    "coupe : 10 mm par mètre en altitudes (1/100), donc forme vraie");
   // L'exagération annoncée doit être celle qui est dessinée.
   assert.match(src, /S 1\/1000 · Z 1\/100 — exagération ×10/);
-  assert.match(src, /S 1\/100 · Z 1\/100 — forme vraie/);
+  // Au droit de l'ouvrage, une coupe en travers de la ROUTE est parallèle à
+  // l'axe du dalot : elle le couperait en long. Une telle figure a été
+  // dessinée puis retirée ; elle ne doit pas revenir.
+  assert.ok(!/Coupe transversale au droit de l'ouvrage/.test(src),
+    "pas de coupe en travers au droit de l'ouvrage : elle serait parallèle à l'axe du dalot");
   assert.match(src, /viewBox="0 0 \$\{W\}/, "la largeur du viewBox est celle de la planche");
   assert.match(src, /const W = 210,/, "planche de 210 mm de large");
 });
+
+test("pluviomètre et pluviographe — même averse, deux lectures", () => {
+  const html = lire("cours.html"), src = lire("src/cours-ch3-pluvio.js");
+  for (const id of ["pvTemps", "pvPlay", "pvHeure", "pvMetre", "pvGraphe", "pvMm", "pvMoy"])
+    assert.ok(html.includes(`id="${id}"`), `${id} manque dans cours.html`);
+  // Les deux instruments doivent être alimentés par la MÊME averse, sinon la
+  // comparaison ne prouve rien.
+  assert.equal((src.match(/function panneauPluvio/g) || []).length, 2, "deux panneaux");
+  const noyau = lire("src/solvers-averse.js");
+  assert.equal((noyau.match(/export const AVERSE/g) || []).length, 1, "une seule averse");
+  assert.match(src, /import \{[^}]*AVERSE[^}]*\} from "\.\/solvers-averse\.js"/,
+    "la figure lit l'averse du solveur, elle ne la redéfinit pas");
+  assert.ok(!/document\./.test(noyau), "le module d'averse ne touche pas au DOM : il se teste");
+  // Le tableau du bilan est dans la page, pas réinjecté à chaque image : sinon
+  // l'observateur qui encapsule les tableaux tourne soixante fois par seconde.
+  assert.ok(!/pvBilan"\)\.innerHTML/.test(src), "le bilan ne se réécrit pas en boucle");
+  assert.match(src, /prefers-reduced-motion/, "l'animation respecte le réglage système");
+});
+

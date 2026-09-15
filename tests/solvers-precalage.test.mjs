@@ -198,3 +198,29 @@ test("le désalignement ne change ni la pente critique ni le régime", () => {
   proche(raide.J * 100, 0.986, 2e-3, "J d'un ouvrage droit");
   proche(long.J * 100, 0.643, 2e-3, "J à 40° de biais");
 });
+
+test("couverture et hauteur de remblai : la relation exacte", () => {
+  // Les deux se confondent facilement, et l'écart vaut à peu près la hauteur
+  // de l'ouvrage. La relation est exacte, pas approchée :
+  //     c = H + décaissement − D − chute/2
+  // La demi-chute vient de ce que la plate-forme est cotée à l'AXE et le
+  // radier à l'ENTRÉE : entre les deux, le terrain a déjà baissé de moitié.
+  for (const [H, dec, D] of [[2.1, 0.2, 1.5], [3.0, 0.5, 1.0], [2.5, 0, 2.0], [4.2, 0.35, 1.2]]) {
+    const r = precaler({ ...BASE, hauteurRemblai: H, decaissement: dec, hauteurOuvrage: D });
+    proche(r.couvertureAmont, H + dec - D - r.chute / 2, 1e-12, `c à H=${H}, dec=${dec}, D=${D}`);
+    proche(r.couvertureAval, r.couvertureAmont + r.chute, 1e-12, "couverture aval");
+  }
+  // L'écart ne dépend pas de H : c'est bien l'ouvrage qui l'explique.
+  const a = precaler({ ...BASE, hauteurRemblai: 2.1 });
+  const b = precaler({ ...BASE, hauteurRemblai: 4.0 });
+  proche(2.1 - a.couvertureAmont, 4.0 - b.couvertureAmont, 1e-12, "écart constant");
+
+  // Le chiffre publié dans le cours.
+  const cité = precaler({
+    chaussee: 7, accotement: 1.5, fruitTalus: 1.5, biaisDeg: 70, zTnEntree: 124.85,
+    zTnSortie: 124.71, decaissement: 0.20, hauteurOuvrage: 1.5, hauteurRemblai: 2.10,
+  });
+  proche(cité.couvertureAmont, 0.73, 5e-4, "0,73 m de couverture sous 2,10 m de remblai");
+  proche((1.5 * 2 * (2.1 - cité.couvertureAmont)) / Math.sin((70 * Math.PI) / 180), 4.37, 0.01,
+    "confondre H et c allongerait de 4,37 m");
+});

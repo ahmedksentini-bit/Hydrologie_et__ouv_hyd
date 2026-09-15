@@ -485,6 +485,66 @@
 <section id="ch3" class="card">
   <h2>3 · Averse de projet et temps de concentration</h2>
 
+  <h3>Deux instruments, et un seul des deux permet ce chapitre</h3>
+  <p>Avant toute formule, une distinction d'instrument que personne n'énonce et qui commande
+     tout ce qui suit. <strong>Le pluviomètre additionne, le pluviographe horodate.</strong>
+     Le premier est un entonnoir au-dessus d'une éprouvette : un observateur la lit et la vide
+     une fois par jour, et le poste rapporte un nombre — la hauteur tombée en 24 heures. Le
+     second compte la pluie par petites doses datées — un auget qui bascule tous les
+     0,2 mm — et rapporte une <em>chronique</em>.</p>
+  <p>Or l'intensité est une hauteur <strong>divisée par une durée</strong>. Sans la durée,
+     pas d'intensité ; sans intensité, ni courbe IDF, ni Montana, ni méthode rationnelle.
+     Un siècle de relevés pluviométriques ne permet pas de tracer une seule courbe IDF.</p>
+
+  <div class="calc" id="calcPluvio">
+    <h3>La même averse, vue par les deux</h3>
+    <p class="method-note" style="margin:0 0 10px">Quarante-huit millimètres en vingt-quatre
+       heures, dont trente en une demi-heure. Les deux instruments reçoivent exactement cette
+       pluie-là.</p>
+    <div class="curseurs">
+      <div class="field"><label for="pvTemps">Heure de la journée <small>— <span id="pvHeure">00 h 00</span></small></label>
+        <div class="input-wrap"><input id="pvTemps" type="range" min="0" max="24" step="0.02" value="0"></div></div>
+      <div class="actions">
+        <button type="button" class="primary" id="pvPlay">Lecture</button>
+        <button type="button" class="ghost" id="pvAvant">Avant l'orage</button>
+        <button type="button" class="ghost" id="pvOrage">Pendant</button>
+        <button type="button" class="ghost" id="pvApres">Fin de journée</button>
+      </div>
+    </div>
+    <div class="duo">
+      <div id="pvMetre"></div>
+      <div id="pvGraphe"></div>
+    </div>
+    <table class="resultats"><thead><tr><th>Ce que l'instrument rapporte</th>
+      <th>Pluviomètre</th><th>Pluviographe</th></tr></thead>
+      <tbody>
+        <tr><td>Hauteur tombée</td><td class="q"><span id="pvMm">—</span></td>
+          <td class="q">48,0 mm à la fin</td></tr>
+        <tr><td>Quand elle est tombée</td><td class="motif">inconnu</td>
+          <td class="motif">à la minute</td></tr>
+        <tr><td>Intensité disponible</td>
+          <td class="q"><span id="pvMoy">—</span><small>moyenne sur 24 h</small></td>
+          <td class="q">60,0 mm/h<small>maximum sur 30 min</small></td></tr>
+      </tbody></table>
+    <p class="final-result"><strong>Un facteur 30 entre les deux intensités</strong>, pour la
+      même averse et le même jour.
+      <small><br>Le pluviomètre n'a pas tort : il mesure autre chose. Mais dimensionner un
+      ouvrage sur 2,0 mm/h quand la pointe est à 60,0 mm/h, c'est le dimensionner pour une
+      averse qui n'a jamais eu lieu.</small></p>
+    <p class="diagram-note">Les deux animations existent aussi en GIF, tirées de cette figure
+       même et donc identiques à elle, pour une présentation :
+       <a href="assets/pluviometre.gif" download>pluviomètre</a> ·
+       <a href="assets/pluviographe.gif" download>pluviographe</a>. Elles durent 6,3 s
+       chacune et se projettent côte à côte sans se décaler.</p>
+  </div>
+
+  <div class="hint"><strong>Ce que cela change dans un projet tunisien.</strong> Les postes
+     pluviométriques sont nombreux et anciens ; les postes pluviographiques sont rares et
+     récents. C'est la raison pour laquelle les paramètres de Montana n'existent que sur
+     quelques dizaines de stations — celles du tableau plus bas — et pourquoi un bassin sans
+     pluviographe proche emprunte les siens à une station voisine. Cet emprunt se déclare : il
+     est souvent la plus forte hypothèse de toute la note de calcul.</div>
+
   <h3>La courbe intensité–durée–fréquence</h3>
   <p>Ajustée sur les enregistrements d'une station, la courbe IDF se met sous la forme</p>
   <p class="formula">i = a · t<sup>−b</sup> · T<sup>c</sup>&nbsp;&nbsp;&nbsp;
@@ -1489,6 +1549,34 @@
      l'<em>intrados</em>, et non au-dessus du terrain. C'est elle qui commande, parce que la
      tête se pose là où l'intrados perce le talus — un point qui est d'autant plus proche de
      la chaussée que l'ouvrage est haut.</p>
+  <div class="sanity-check"><h3>Hauteur de remblai et couverture ne sont pas la même chose</h3>
+    <p>Les deux se mesurent verticalement, toutes deux en mètres, et l'écart entre elles est
+       gros — souvent plus de moitié. La confusion est la plus facile de tout le précalage.</p>
+    <ul class="notions">
+      <li><strong>H, la hauteur de remblai</strong>, se mesure du <em>terrain naturel</em> à la
+        plate-forme. C'est la hauteur de la route au-dessus du sol : ce qu'on lit sur le profil
+        en long, et ce que commande le tracé.</li>
+      <li><strong>c, la couverture</strong>, se mesure de l'<em>intrados de l'ouvrage</em> à la
+        plate-forme. C'est l'épaisseur de remblai qui reste AU-DESSUS du dalot.</li>
+    </ul>
+    <p>Entre les deux, il y a l'ouvrage lui-même, qui occupe sa hauteur D, et le décaissement
+       qui rend un peu de terrain :</p>
+    <p class="formula">c = H + décaissement − D − chute/2</p>
+    <p>Sur un remblai de 2,10 m, un dalot de 1,50 m décaissé de 0,20 m ne laisse que
+       <strong>0,73 m</strong> de couverture : l'ouvrage occupe les deux tiers du remblai. Il
+       n'y a là rien d'anormal — c'est la situation courante des petits franchissements, où
+       l'ouvrage est presque aussi haut que la route qu'il porte.</p>
+    <p class="method-note">La demi-chute vient de ce que la plate-forme est cotée à l'axe,
+       tandis que le radier est coté à l'entrée : entre les deux, le terrain a déjà baissé de
+       la moitié de la chute. Le terme est petit — sept centimètres ici — mais il explique
+       pourquoi la couverture n'est pas exactement la même aux deux extrémités.</p>
+    <p><strong>Ce qui se joue sur cette confusion :</strong> c'est la COUVERTURE qui commande
+       la longueur de l'ouvrage, pas H. Prendre H à sa place — soit 2,10 m au lieu de 0,73 —
+       allongerait l'ouvrage de 1,5 × 2 × 1,37 / sin(biais), soit plus de quatre mètres sur cet
+       exemple. Et c'est encore la couverture qui décide si la dalle est une dalle de
+       couverture ou une dalle de roulement.</p>
+  </div>
+
   <div class="hint"><strong>La convention se déclare.</strong> D'autres placent la tête au
      pied de talus, ou à mi-hauteur. Elles donnent un ouvrage plus long ; celle retenue ici
      est la plus courte qui couvre encore l'intrados sur toute sa longueur. Ce qui n'est pas
@@ -1685,14 +1773,16 @@
     </div>
     <div id="pcProfil"></div>
 
-    <h4>La même chose telle qu'on la dessine</h4>
-    <p class="method-note" style="margin:0 0 8px">Les deux dessins du projet, aux échelles de
-       la profession : le profil en long de la route au <strong>1/1000 en abscisses et 1/100
-       en altitudes</strong> — l'exagération ×10 y est la convention, pas un accident — et
-       sous lui la coupe transversale au <strong>1/100 dans les deux sens</strong>, donc à
-       forme vraie. C'est sur le profil en long qu'on lit H, et c'est H qui commande la
-       longueur de l'ouvrage. Les deux figures précédentes montrent le mécanisme ; celle-ci
-       montre la planche.</p>
+    <h4>D'où vient H : le profil en long de la route</h4>
+    <p class="method-note" style="margin:0 0 8px">Le dessin du projet, aux échelles de la
+       profession : <strong>1/1000 en abscisses, 1/100 en altitudes</strong> — l'exagération
+       ×10 y est la convention, pas un accident de mise en page. Le terrain descend, croise le
+       talweg, remonte ; la rasante passe au-dessus ; entre les deux se lit H. Et c'est H qui
+       commande la longueur de l'ouvrage, donc sa pente, donc son régime.</p>
+    <p class="method-note" style="margin:0 0 8px">Pas de coupe transversale sous ce profil :
+       au droit de l'ouvrage, une coupe en travers de la <em>route</em> est parallèle à l'axe
+       du dalot — elle le couperait en long, ce qui est déjà la figure précédente. Le profil
+       en travers de la voie se lit sur la vue en plan, où ses largeurs sont cotées.</p>
     <div id="pcPlanche" class="planche-cadre"></div>
 
     <div id="pcOut"></div>
@@ -2161,6 +2251,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch2.js"></script>
 <script type="module" src="src/cours-ch3.js"></script>
+<script type="module" src="src/cours-ch3-pluvio.js"></script>
 <script type="module" src="src/cours-ch3-montana.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch4-stations.js"></script>

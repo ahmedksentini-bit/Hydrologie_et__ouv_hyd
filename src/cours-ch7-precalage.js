@@ -257,7 +257,7 @@ function vueEnPlan(e) {
 // combien on a triché.
 
 function profilEnLong(e) {
-  const W = 560, H = 215, MG = 96, MD = 100, MH = 24, MB = 42;
+  const W = 560, H = 230, MG = 112, MD = 100, MH = 24, MB = 56;
   const beta = (Math.min(Math.max(e.biais, 35), 145) * Math.PI) / 180;
   const sin = Math.sin(beta);
   const L = e.pre.Lentre;                         // de tête à tête
@@ -307,6 +307,14 @@ function profilEnLong(e) {
       y2="${Y(rAm + e.D).toFixed(1)}" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="3 3"/>
     <text x="${(X(aAm) + 5).toFixed(1)}" y="${(Y((zP + rAm + e.D) / 2) + 3).toFixed(1)}"
       font-size="9" fill="#64748b">couverture ${fr(e.pre.couvertureAmont, 2)} m</text>
+    <line x1="${(X(0) - 13).toFixed(1)}" y1="${Y(zTn(0)).toFixed(1)}" x2="${(X(0) - 13).toFixed(1)}"
+      y2="${Y(zP).toFixed(1)}" stroke="#78716c" stroke-width="0.8"/>
+    <path d="M${(X(0) - 15).toFixed(1)},${(Y(zTn(0)) - 3).toFixed(1)} L${(X(0) - 13).toFixed(1)},${Y(zTn(0)).toFixed(1)}
+      L${(X(0) - 11).toFixed(1)},${(Y(zTn(0)) - 3).toFixed(1)}
+      M${(X(0) - 15).toFixed(1)},${(Y(zP) + 3).toFixed(1)} L${(X(0) - 13).toFixed(1)},${Y(zP).toFixed(1)}
+      L${(X(0) - 11).toFixed(1)},${(Y(zP) + 3).toFixed(1)}" fill="none" stroke="#78716c" stroke-width="0.8"/>
+    <text x="${(X(0) - 17).toFixed(1)}" y="${Y((zTn(0) + zP) / 2).toFixed(1)}" font-size="9"
+      font-weight="700" fill="#78716c" text-anchor="end">H = ${fr(num("pcRemblai"), 2)} m</text>
     ${repere(0, zTn(0), `TN ${fr(zAm, 3)}`, T.leve, "end", -6)}
     ${repere(L, zTn(L), `TN ${fr(zAv, 3)}`, T.leve, "start", -6)}
     ${repere(0, rAm, `radier ${fr(rAm, 3)}`, T.eau, "end", 13)}
@@ -314,9 +322,13 @@ function profilEnLong(e) {
     <text x="${X(L / 2).toFixed(1)}" y="${(Y((rAm + rAv) / 2) + 15).toFixed(1)}" font-size="10"
       font-weight="800" fill="${T.eau}" text-anchor="middle" paint-order="stroke" stroke="#fff"
       stroke-width="3">J = ${fr(e.pre.J * 100, 3)} %</text>
-    <text x="6" y="${H - 12}" font-size="9" fill="#64748b">profil suivant l'axe de l'ouvrage —
+    <text x="6" y="${H - 24}" font-size="9" fill="#64748b">profil suivant l'axe de l'ouvrage —
       rehausser d'un mètre allonge de 2m/sin(biais) = ${fr(e.dLdH, 2)} m</text>
-    <text x="${W - 6}" y="${H - 12}" font-size="9" fill="#94a3b8" text-anchor="end">
+    <text x="6" y="${H - 11}" font-size="9" fill="${T.leve}">couverture = H ${fr(num("pcRemblai"), 2)}
+      + décaissement ${fr(num("pcDecaissement") || 0, 2)} − ouvrage ${fr(e.D, 2)}
+      − demi-chute ${fr(e.pre.chute / 2, 2)} = <tspan font-weight="800">${fr(e.pre.couvertureAmont, 2)} m</tspan>
+      — l'ouvrage occupe l'essentiel du remblai</text>
+    <text x="${W - 6}" y="${H - 24}" font-size="9" fill="#94a3b8" text-anchor="end">
       exagération verticale ×${fr(ky / kx, 1)}</text>
   </svg>`;
 }
@@ -375,11 +387,20 @@ function panneau(e) {
     etape(3, "L'ouvrage s'arrête plus haut que le pied", `
       <p class="explanation">plate-forme à ${fr(pre.zPlateforme, 3)} · intrados à
         ${fr(pre.zRadierAmont + e.D, 3)} à l'entrée<br>
-        couverture : ${fr(pre.couvertureAmont, 2)} m à l'entrée · ${fr(pre.couvertureAval, 2)} m à la sortie<br>
+        couverture = H ${fr(num("pcRemblai"), 2)} + décaissement ${fr(num("pcDecaissement") || 0, 2)}
+        − ouvrage ${fr(e.D, 2)} − demi-chute ${fr(pre.chute / 2, 2)} =
+        <strong>${fr(pre.couvertureAmont, 2)} m</strong> à l'entrée ·
+        ${fr(pre.couvertureAval, 2)} m à la sortie<br>
         largeur de talus à franchir = ${fr(e.m, 1)} × (${fr(pre.couvertureAmont, 2)} +
         ${fr(pre.couvertureAval, 2)}) = ${fr(e.m * (pre.couvertureAmont + pre.couvertureAval), 2)} m
         — et non ${fr(2 * e.m * num("pcRemblai"), 2)} m</p>
-      ${bloque}`) +
+      ${bloque}
+      ${pre.valide && pre.couvertureMin < 0.60 ? `<div class="hint"><strong>Couverture mince :
+        ${fr(pre.couvertureMin, 2)} m.</strong> Sous une route, on exige couramment 0,50 à
+        1,00 m de remblai au-dessus de l'intrados — le seuil dépend du règlement retenu et du
+        type d'ouvrage. En dessous, la dalle n'est plus une dalle de couverture : elle reçoit
+        directement les charges roulantes et se calcule comme telle. Ce n'est pas un refus,
+        c'est un changement de problème.</div>` : ""}`) +
     etape(4, "Le biais donne la longueur", `
       <p class="explanation">L = (${fr(pre.plateforme, 2)} +
         ${fr(e.m * (pre.couvertureAmont + pre.couvertureAval), 2)}) / sin ${fr(beta, 0)}°
@@ -397,11 +418,16 @@ function panneau(e) {
     verdict;
 }
 
-// ── La planche du projeteur : profil en long, puis coupe en travers ────────
-// Deux dessins aux ÉCHELLES DE LA PROFESSION, l'un sous l'autre :
+// ── La planche du projeteur : le profil en long de la route ───────────────
+// Le profil en long de la route, aux ÉCHELLES DE LA PROFESSION : S 1/1000 en
+// abscisses et Z 1/100 en altitudes, soit l'exagération ×10 qui est la
+// convention du métier.
 //
-//   profil en long de la route  S 1/1000 · Z 1/100  (exagération ×10)
-//   coupe transversale          S 1/100  · Z 1/100  (forme vraie)
+// Il n'y a PAS de coupe transversale sous ce dessin, et c'est délibéré : au
+// droit de l'ouvrage, une coupe en travers de la ROUTE est parallèle à l'axe
+// du dalot. Elle le couperait en LONG — ce qui est déjà le dessin précédent.
+// Une coupe montrant la section du dalot au milieu du remblai serait une
+// figure impossible ; elle a été dessinée ici, puis retirée.
 //
 // Les unités du viewBox sont des MILLIMÈTRES DE PAPIER : imprimée sur 210 mm
 // de large, la planche est à l'échelle. C'est aussi ce qui rend les deux
@@ -484,80 +510,9 @@ function planche(e) {
       fill="#78716c" text-anchor="end">terrain naturel</text>
     ${graduation.join("")}`;
 
-  // ── Coupe transversale de la route ─────────────────────────────────────
-  // 1/100 dans les deux sens : forme VRAIE, aucune exagération. Une coupe
-  // étirée ferait croire à des talus raides et à un dévers de toit.
-  const y0C = y0P + hP + 26;
-  const hc = e.hc, ha = e.ha, hT = e.hTalus;
-  const DEVERS_CH = 0.025, DEVERS_ACC = 0.04;             // 2,5 % et 4 %
-  const Xc = (u) => MG + utile / 2 + u * 10;              // 1 m = 10 mm
-  // La plate-forme est cotée à l'AXE ; elle descend de part et d'autre.
-  const zBord = -hc * DEVERS_CH, zAcc = zBord - (ha - hc) * DEVERS_ACC;
-  const hCoupe = (Hr + 0.9) * 10;
-  const Yc = (z) => y0C + hCoupe - (z + Hr) * 10;         // z relatif à la plate-forme
-
-  const talusBas = zAcc - Hr;                             // pied de talus (TN)
-  const corps = `<polygon points="${Xc(-hT).toFixed(2)},${Yc(talusBas).toFixed(2)}
-      ${Xc(-ha).toFixed(2)},${Yc(zAcc).toFixed(2)} ${Xc(-hc).toFixed(2)},${Yc(zBord).toFixed(2)}
-      ${Xc(0).toFixed(2)},${Yc(0).toFixed(2)} ${Xc(hc).toFixed(2)},${Yc(zBord).toFixed(2)}
-      ${Xc(ha).toFixed(2)},${Yc(zAcc).toFixed(2)} ${Xc(hT).toFixed(2)},${Yc(talusBas).toFixed(2)}"
-      fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.4"/>`;
-  const revetement = `<polyline points="${Xc(-hc).toFixed(2)},${Yc(zBord).toFixed(2)}
-      ${Xc(0).toFixed(2)},${Yc(0).toFixed(2)} ${Xc(hc).toFixed(2)},${Yc(zBord).toFixed(2)}"
-      fill="none" stroke="#57534e" stroke-width="1.1"/>`;
-  const sol = `<line x1="${MG}" y1="${Yc(talusBas).toFixed(2)}" x2="${(W - MD).toFixed(2)}"
-      y2="${Yc(talusBas).toFixed(2)}" stroke="#a8a29e" stroke-width="0.45" stroke-dasharray="2 1.2"/>`;
-
-  // L'ouvrage, en section : c'est lui que la coupe traverse en travers.
-  const larg = e.largeurPlan, nb = e.n;
-  const ouvrage = `<rect x="${Xc(-larg / 2).toFixed(2)}" y="${Yc(talusBas + e.D).toFixed(2)}"
-      width="${(larg * 10).toFixed(2)}" height="${(e.D * 10).toFixed(2)}" fill="#fff"
-      stroke="${T.trait}" stroke-width="0.5"/>
-    ${Array.from({ length: nb - 1 }, (_, k) => {
-      const u = -larg / 2 + ((k + 1) * larg) / nb;
-      return `<line x1="${Xc(u).toFixed(2)}" y1="${Yc(talusBas + e.D).toFixed(2)}"
-        x2="${Xc(u).toFixed(2)}" y2="${Yc(talusBas).toFixed(2)}" stroke="${T.trait}" stroke-width="0.4"/>`;
-    }).join("")}`;
-
-  const coteH = (u0, u1, z, texte) => {
-    const y = Yc(z) + 6;
-    return `<line x1="${Xc(u0).toFixed(2)}" y1="${y.toFixed(2)}" x2="${Xc(u1).toFixed(2)}"
-        y2="${y.toFixed(2)}" stroke="${T.cote}" stroke-width="0.3"/>
-      <path d="M${(Xc(u0) + 1.4).toFixed(2)},${(y - 1).toFixed(2)} L${Xc(u0).toFixed(2)},${y.toFixed(2)}
-        L${(Xc(u0) + 1.4).toFixed(2)},${(y + 1).toFixed(2)}
-        M${(Xc(u1) - 1.4).toFixed(2)},${(y - 1).toFixed(2)} L${Xc(u1).toFixed(2)},${y.toFixed(2)}
-        L${(Xc(u1) - 1.4).toFixed(2)},${(y + 1).toFixed(2)}" fill="none" stroke="${T.cote}" stroke-width="0.3"/>
-      <text x="${Xc((u0 + u1) / 2).toFixed(2)}" y="${(y - 1.4).toFixed(2)}" font-size="3"
-        fill="${T.cote}" text-anchor="middle" paint-order="stroke" stroke="#f8fafc"
-        stroke-width="1.4">${texte}</text>`;
-  };
-
-  const coupe = `${sol}${corps}${revetement}${ouvrage}
-    ${coteH(-hc, hc, talusBas, `chaussée ${fr(2 * hc, 2)} m`)}
-    ${coteH(ha, hT, talusBas, `talus ${fr(m, 1)} H / 1 V`)}
-    ${coteH(-hT, -ha, talusBas, `${fr(m * Hr, 2)} m`)}
-    ${coteH(-hT, hT, talusBas - 1.1, `emprise ${fr(e.pre.emprise, 2)} m`)}
-    <text x="${Xc(hc + (ha - hc) / 2).toFixed(2)}" y="${(Yc(zAcc) - 2).toFixed(2)}" font-size="2.9"
-      fill="${T.cote}" text-anchor="middle">acc.</text>
-    <text x="${Xc(0).toFixed(2)}" y="${(Yc(0) - 2.6).toFixed(2)}" font-size="3"
-      fill="#57534e" text-anchor="middle">dévers 2,5 %</text>
-    <line x1="${Xc(-ha - 0.2).toFixed(2)}" y1="${Yc(zAcc).toFixed(2)}" x2="${Xc(-ha - 0.2).toFixed(2)}"
-      y2="${Yc(talusBas).toFixed(2)}" stroke="${T.leve}" stroke-width="0.4"/>
-    <path d="M${(Xc(-ha - 0.2) - 1).toFixed(2)},${(Yc(zAcc) + 1.6).toFixed(2)} L${Xc(-ha - 0.2).toFixed(2)},${Yc(zAcc).toFixed(2)}
-      L${(Xc(-ha - 0.2) + 1).toFixed(2)},${(Yc(zAcc) + 1.6).toFixed(2)}
-      M${(Xc(-ha - 0.2) - 1).toFixed(2)},${(Yc(talusBas) - 1.6).toFixed(2)} L${Xc(-ha - 0.2).toFixed(2)},${Yc(talusBas).toFixed(2)}
-      L${(Xc(-ha - 0.2) + 1).toFixed(2)},${(Yc(talusBas) - 1.6).toFixed(2)}" fill="none"
-      stroke="${T.leve}" stroke-width="0.35"/>
-    <text x="${Xc(-ha + 0.5).toFixed(2)}" y="${Yc(talusBas / 2).toFixed(2)}" font-size="3.2"
-      font-weight="700" fill="${T.leve}" paint-order="stroke" stroke="#f1f5f9"
-      stroke-width="1.6">H = ${fr(Hr, 2)} m</text>
-    <text x="${Xc(0).toFixed(2)}" y="${(Yc(talusBas + e.D) - 2).toFixed(2)}" font-size="2.9"
-      fill="${T.trait}" text-anchor="middle">ouvrage ${e.forme === "buse"
-        ? `Ø ${fr(e.D, 2)}` : `${fr(e.B, 2)} × ${fr(e.D, 2)}`} m${e.n > 1 ? ` × ${e.n}` : ""}</text>`;
-
-  const hTotal = y0C + hCoupe + 32;
+  const hTotal = y0P + hP + 22;
   return `<svg viewBox="0 0 ${W} ${hTotal.toFixed(1)}" width="100%" class="planche-projeteur"
-      role="img" aria-label="Planche : profil en long de la route au 1/1000 en abscisses et 1/100 en altitudes, et coupe transversale au 1/100">
+      role="img" aria-label="Profil en long de la route au 1/1000 en abscisses et 1/100 en altitudes">
     <rect x="0" y="0" width="${W}" height="${hTotal.toFixed(1)}" fill="#fff"/>
     <text x="${MG}" y="7" font-size="4" font-weight="800" fill="#075985">Profil en long de la route</text>
     <text x="${(W - MD).toFixed(2)}" y="7" font-size="3.2" fill="#64748b" text-anchor="end">
@@ -565,11 +520,6 @@ function planche(e) {
     <text x="${MG}" y="11.6" font-size="3" fill="#94a3b8">versants à ${fr(PENTE_VERSANT * 100, 0)} %,
       schématiques — la rasante est prise horizontale au point bas</text>
     ${profil}
-    <text x="${MG}" y="${(y0C - 9).toFixed(2)}" font-size="4" font-weight="800" fill="#075985">
-      Coupe transversale au droit de l'ouvrage</text>
-    <text x="${(W - MD).toFixed(2)}" y="${(y0C - 9).toFixed(2)}" font-size="3.2" fill="#64748b"
-      text-anchor="end">S 1/100 · Z 1/100 — forme vraie</text>
-    ${coupe}
     <text x="${MG}" y="${(hTotal - 4).toFixed(2)}" font-size="3" fill="#94a3b8">Unités du dessin :
       millimètres de papier. Imprimée sur 210 mm de large, la planche est à l'échelle.</text>
   </svg>`;
