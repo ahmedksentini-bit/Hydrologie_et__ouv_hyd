@@ -121,6 +121,11 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .donnees-repliees{margin-bottom:6px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .donnees-repliees>summary{padding:11px 14px;color:var(--blue);font-weight:800;cursor:pointer}
 .donnees-repliees .data-grid{margin:0;padding:0 14px 14px}
+/* Planche aux échelles de la profession : les unités du viewBox sont des
+   millimètres de papier, d'où l'impression à 210 mm qui la met à l'échelle. */
+.planche-cadre{margin:4px 0 2px}
+.planche-projeteur{display:block;border:1px solid var(--line);border-radius:12px;background:#fff}
+@media print{.planche-projeteur{width:210mm;max-width:none;border:0}}
 /* Zoomée, la carte se saisit. Le curseur des stations, plus spécifique, l'emporte. */
 .carte-zoomable.deplacable{cursor:grab}
 .carte-zoomable.deplacant{cursor:grabbing;user-select:none}

@@ -361,3 +361,23 @@ test("la vue en plan du précalage est pilotable", () => {
     "la trace passe par le talweg, l'entrée, la sortie, puis le talweg");
   assert.match(src, /desalignement/, "le désalignement est calculé et affiché");
 });
+
+test("la planche respecte les échelles qu'elle annonce", () => {
+  const src = lire("src/cours-ch7-precalage.js"), html = lire("cours.html");
+  assert.ok(html.includes('id="pcPlanche"'), "la planche a son conteneur");
+  // Les unités du viewBox sont des millimètres de papier. Au 1/1000, un mètre
+  // de terrain vaut UN millimètre ; au 1/100, il en vaut DIX.
+  assert.match(src, /const Xp = \(x\) => MG \+ demi \+ x;/,
+    "profil en long : 1 mm par mètre en abscisses (1/1000)");
+  assert.match(src, /const Yp = \(z\) => y0P \+ hP - \(z - zBas\) \* 10;/,
+    "profil en long : 10 mm par mètre en altitudes (1/100)");
+  assert.match(src, /const Xc = \(u\) => MG \+ utile \/ 2 \+ u \* 10;/,
+    "coupe : 10 mm par mètre en abscisses (1/100)");
+  assert.match(src, /const Yc = \(z\) => y0C \+ hCoupe - \(z \+ Hr\) \* 10;/,
+    "coupe : 10 mm par mètre en altitudes (1/100), donc forme vraie");
+  // L'exagération annoncée doit être celle qui est dessinée.
+  assert.match(src, /S 1\/1000 · Z 1\/100 — exagération ×10/);
+  assert.match(src, /S 1\/100 · Z 1\/100 — forme vraie/);
+  assert.match(src, /viewBox="0 0 \$\{W\}/, "la largeur du viewBox est celle de la planche");
+  assert.match(src, /const W = 210,/, "planche de 210 mm de large");
+});

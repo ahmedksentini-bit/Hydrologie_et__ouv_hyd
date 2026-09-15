@@ -397,6 +397,184 @@ function panneau(e) {
     verdict;
 }
 
+// ── La planche du projeteur : profil en long, puis coupe en travers ────────
+// Deux dessins aux ÉCHELLES DE LA PROFESSION, l'un sous l'autre :
+//
+//   profil en long de la route  S 1/1000 · Z 1/100  (exagération ×10)
+//   coupe transversale          S 1/100  · Z 1/100  (forme vraie)
+//
+// Les unités du viewBox sont des MILLIMÈTRES DE PAPIER : imprimée sur 210 mm
+// de large, la planche est à l'échelle. C'est aussi ce qui rend les deux
+// échelles vérifiables au lieu d'être une mention décorative.
+//
+// Ces échelles disent à quoi elles servent : au 1/1000, un ouvrage de 17 m
+// occuperait 17 mm. Le profil en long qu'elles cadrent est celui de la ROUTE,
+// sur deux cents mètres — c'est là qu'on lit la hauteur de remblai, et c'est
+// elle qui commande ensuite la longueur de l'ouvrage.
+
+const PENTE_VERSANT = 0.04;          // schématique, et dit comme tel
+
+function planche(e) {
+  const W = 210, MG = 26, MD = 6, utile = W - MG - MD;    // 180 mm utiles
+  const m = e.m, Hr = num("pcRemblai");
+  const zR = e.pre.zPlateforme, zTnAxe = e.pre.zTnAxe;
+
+  // ── Profil en long de la route ─────────────────────────────────────────
+  // 1/1000 : un mètre de terrain vaut un millimètre. 1/100 en Z : dix fois plus.
+  const demi = utile / 2;                                  // 90 m de part et d'autre
+  const tn = (x) => zTnAxe + Math.abs(x) * PENTE_VERSANT;
+  const zHaut = Math.max(zR, tn(demi)) + 0.45, zBas = zTnAxe - 0.55;
+  const hP = (zHaut - zBas) * 10;                          // mm
+  const y0P = 16;
+  const Xp = (x) => MG + demi + x;                         // 1 mm par mètre
+  const Yp = (z) => y0P + hP - (z - zBas) * 10;            // 10 mm par mètre
+  const xFin = Hr / PENTE_VERSANT;                         // là où le remblai meurt
+
+  const pas = 2;
+  const ligneTn = [];
+  for (let x = -demi; x <= demi + 1e-9; x += pas)
+    ligneTn.push(`${ligneTn.length ? "L" : "M"}${Xp(x).toFixed(2)},${Yp(tn(x)).toFixed(2)}`);
+
+  const remblai = `<path d="M${Xp(-Math.min(xFin, demi)).toFixed(2)},${Yp(tn(-Math.min(xFin, demi))).toFixed(2)}
+      L${Xp(0).toFixed(2)},${Yp(zTnAxe).toFixed(2)}
+      L${Xp(Math.min(xFin, demi)).toFixed(2)},${Yp(tn(Math.min(xFin, demi))).toFixed(2)}
+      L${Xp(Math.min(xFin, demi)).toFixed(2)},${Yp(zR).toFixed(2)}
+      L${Xp(-Math.min(xFin, demi)).toFixed(2)},${Yp(zR).toFixed(2)} Z"
+      fill="#f1f5f9" stroke="none"/>`;
+  const deblai = demi > xFin ? `<path d="M${Xp(xFin).toFixed(2)},${Yp(zR).toFixed(2)}
+      L${Xp(demi).toFixed(2)},${Yp(zR).toFixed(2)} L${Xp(demi).toFixed(2)},${Yp(tn(demi)).toFixed(2)} Z
+      M${Xp(-xFin).toFixed(2)},${Yp(zR).toFixed(2)} L${Xp(-demi).toFixed(2)},${Yp(zR).toFixed(2)}
+      L${Xp(-demi).toFixed(2)},${Yp(tn(demi)).toFixed(2)} Z"
+      fill="#fef3c7" stroke="none" opacity=".75"/>` : "";
+
+  const graduation = [];
+  for (let x = -80; x <= 80; x += 40)
+    graduation.push(`<line x1="${Xp(x).toFixed(2)}" y1="${(y0P + hP).toFixed(2)}"
+        x2="${Xp(x).toFixed(2)}" y2="${(y0P + hP + 1.6).toFixed(2)}" stroke="#94a3b8" stroke-width="0.25"/>
+      <text x="${Xp(x).toFixed(2)}" y="${(y0P + hP + 5.4).toFixed(2)}" font-size="3.1"
+        fill="#64748b" text-anchor="middle">${x === 0 ? "ouvrage" : `${x > 0 ? "+" : ""}${x} m`}</text>`);
+  const niveaux = [];
+  for (let k = 0; k <= Math.ceil(zHaut - zBas); k++) {
+    const z = Math.floor(zBas) + k;
+    if (z < zBas || z > zHaut) continue;
+    niveaux.push(`<line x1="${MG}" y1="${Yp(z).toFixed(2)}" x2="${(W - MD).toFixed(2)}"
+        y2="${Yp(z).toFixed(2)}" stroke="#e2e8f0" stroke-width="0.25"/>
+      <text x="${(MG - 1.6).toFixed(2)}" y="${(Yp(z) + 1.1).toFixed(2)}" font-size="3"
+        fill="#94a3b8" text-anchor="end">${z}</text>`);
+  }
+
+  const profil = `${niveaux.join("")}${remblai}${deblai}
+    <path d="${ligneTn.join("")}" fill="none" stroke="#a8a29e" stroke-width="0.45"
+      stroke-dasharray="2 1.2"/>
+    <line x1="${Xp(-demi).toFixed(2)}" y1="${Yp(zR).toFixed(2)}" x2="${Xp(demi).toFixed(2)}"
+      y2="${Yp(zR).toFixed(2)}" stroke="#334155" stroke-width="0.6"/>
+    <line x1="${Xp(0).toFixed(2)}" y1="${Yp(zTnAxe).toFixed(2)}" x2="${Xp(0).toFixed(2)}"
+      y2="${Yp(zR).toFixed(2)}" stroke="${T.leve}" stroke-width="0.45"/>
+    <path d="M${(Xp(0) - 1).toFixed(2)},${(Yp(zTnAxe) - 1.6).toFixed(2)} L${Xp(0).toFixed(2)},${Yp(zTnAxe).toFixed(2)}
+      L${(Xp(0) + 1).toFixed(2)},${(Yp(zTnAxe) - 1.6).toFixed(2)}
+      M${(Xp(0) - 1).toFixed(2)},${(Yp(zR) + 1.6).toFixed(2)} L${Xp(0).toFixed(2)},${Yp(zR).toFixed(2)}
+      L${(Xp(0) + 1).toFixed(2)},${(Yp(zR) + 1.6).toFixed(2)}" fill="none" stroke="${T.leve}" stroke-width="0.4"/>
+    <text x="${(Xp(0) + 2.4).toFixed(2)}" y="${Yp((zTnAxe + zR) / 2).toFixed(2)}" font-size="3.4"
+      font-weight="700" fill="${T.leve}">H = ${fr(Hr, 2)} m</text>
+    <rect x="${(Xp(0) - 0.9).toFixed(2)}" y="${(Yp(e.pre.zRadierAmont + e.D)).toFixed(2)}"
+      width="1.8" height="${(e.D * 10).toFixed(2)}" fill="#fff" stroke="${T.trait}" stroke-width="0.4"/>
+    <text x="${(Xp(-demi) + 1.5).toFixed(2)}" y="${(Yp(zR) - 1.8).toFixed(2)}" font-size="3.2"
+      fill="#334155">rasante</text>
+    <text x="${(Xp(demi) - 1.5).toFixed(2)}" y="${(Yp(tn(demi)) - 1.8).toFixed(2)}" font-size="3.2"
+      fill="#78716c" text-anchor="end">terrain naturel</text>
+    ${graduation.join("")}`;
+
+  // ── Coupe transversale de la route ─────────────────────────────────────
+  // 1/100 dans les deux sens : forme VRAIE, aucune exagération. Une coupe
+  // étirée ferait croire à des talus raides et à un dévers de toit.
+  const y0C = y0P + hP + 26;
+  const hc = e.hc, ha = e.ha, hT = e.hTalus;
+  const DEVERS_CH = 0.025, DEVERS_ACC = 0.04;             // 2,5 % et 4 %
+  const Xc = (u) => MG + utile / 2 + u * 10;              // 1 m = 10 mm
+  // La plate-forme est cotée à l'AXE ; elle descend de part et d'autre.
+  const zBord = -hc * DEVERS_CH, zAcc = zBord - (ha - hc) * DEVERS_ACC;
+  const hCoupe = (Hr + 0.9) * 10;
+  const Yc = (z) => y0C + hCoupe - (z + Hr) * 10;         // z relatif à la plate-forme
+
+  const talusBas = zAcc - Hr;                             // pied de talus (TN)
+  const corps = `<polygon points="${Xc(-hT).toFixed(2)},${Yc(talusBas).toFixed(2)}
+      ${Xc(-ha).toFixed(2)},${Yc(zAcc).toFixed(2)} ${Xc(-hc).toFixed(2)},${Yc(zBord).toFixed(2)}
+      ${Xc(0).toFixed(2)},${Yc(0).toFixed(2)} ${Xc(hc).toFixed(2)},${Yc(zBord).toFixed(2)}
+      ${Xc(ha).toFixed(2)},${Yc(zAcc).toFixed(2)} ${Xc(hT).toFixed(2)},${Yc(talusBas).toFixed(2)}"
+      fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.4"/>`;
+  const revetement = `<polyline points="${Xc(-hc).toFixed(2)},${Yc(zBord).toFixed(2)}
+      ${Xc(0).toFixed(2)},${Yc(0).toFixed(2)} ${Xc(hc).toFixed(2)},${Yc(zBord).toFixed(2)}"
+      fill="none" stroke="#57534e" stroke-width="1.1"/>`;
+  const sol = `<line x1="${MG}" y1="${Yc(talusBas).toFixed(2)}" x2="${(W - MD).toFixed(2)}"
+      y2="${Yc(talusBas).toFixed(2)}" stroke="#a8a29e" stroke-width="0.45" stroke-dasharray="2 1.2"/>`;
+
+  // L'ouvrage, en section : c'est lui que la coupe traverse en travers.
+  const larg = e.largeurPlan, nb = e.n;
+  const ouvrage = `<rect x="${Xc(-larg / 2).toFixed(2)}" y="${Yc(talusBas + e.D).toFixed(2)}"
+      width="${(larg * 10).toFixed(2)}" height="${(e.D * 10).toFixed(2)}" fill="#fff"
+      stroke="${T.trait}" stroke-width="0.5"/>
+    ${Array.from({ length: nb - 1 }, (_, k) => {
+      const u = -larg / 2 + ((k + 1) * larg) / nb;
+      return `<line x1="${Xc(u).toFixed(2)}" y1="${Yc(talusBas + e.D).toFixed(2)}"
+        x2="${Xc(u).toFixed(2)}" y2="${Yc(talusBas).toFixed(2)}" stroke="${T.trait}" stroke-width="0.4"/>`;
+    }).join("")}`;
+
+  const coteH = (u0, u1, z, texte) => {
+    const y = Yc(z) + 6;
+    return `<line x1="${Xc(u0).toFixed(2)}" y1="${y.toFixed(2)}" x2="${Xc(u1).toFixed(2)}"
+        y2="${y.toFixed(2)}" stroke="${T.cote}" stroke-width="0.3"/>
+      <path d="M${(Xc(u0) + 1.4).toFixed(2)},${(y - 1).toFixed(2)} L${Xc(u0).toFixed(2)},${y.toFixed(2)}
+        L${(Xc(u0) + 1.4).toFixed(2)},${(y + 1).toFixed(2)}
+        M${(Xc(u1) - 1.4).toFixed(2)},${(y - 1).toFixed(2)} L${Xc(u1).toFixed(2)},${y.toFixed(2)}
+        L${(Xc(u1) - 1.4).toFixed(2)},${(y + 1).toFixed(2)}" fill="none" stroke="${T.cote}" stroke-width="0.3"/>
+      <text x="${Xc((u0 + u1) / 2).toFixed(2)}" y="${(y - 1.4).toFixed(2)}" font-size="3"
+        fill="${T.cote}" text-anchor="middle" paint-order="stroke" stroke="#f8fafc"
+        stroke-width="1.4">${texte}</text>`;
+  };
+
+  const coupe = `${sol}${corps}${revetement}${ouvrage}
+    ${coteH(-hc, hc, talusBas, `chaussée ${fr(2 * hc, 2)} m`)}
+    ${coteH(ha, hT, talusBas, `talus ${fr(m, 1)} H / 1 V`)}
+    ${coteH(-hT, -ha, talusBas, `${fr(m * Hr, 2)} m`)}
+    ${coteH(-hT, hT, talusBas - 1.1, `emprise ${fr(e.pre.emprise, 2)} m`)}
+    <text x="${Xc(hc + (ha - hc) / 2).toFixed(2)}" y="${(Yc(zAcc) - 2).toFixed(2)}" font-size="2.9"
+      fill="${T.cote}" text-anchor="middle">acc.</text>
+    <text x="${Xc(0).toFixed(2)}" y="${(Yc(0) - 2.6).toFixed(2)}" font-size="3"
+      fill="#57534e" text-anchor="middle">dévers 2,5 %</text>
+    <line x1="${Xc(-ha - 0.2).toFixed(2)}" y1="${Yc(zAcc).toFixed(2)}" x2="${Xc(-ha - 0.2).toFixed(2)}"
+      y2="${Yc(talusBas).toFixed(2)}" stroke="${T.leve}" stroke-width="0.4"/>
+    <path d="M${(Xc(-ha - 0.2) - 1).toFixed(2)},${(Yc(zAcc) + 1.6).toFixed(2)} L${Xc(-ha - 0.2).toFixed(2)},${Yc(zAcc).toFixed(2)}
+      L${(Xc(-ha - 0.2) + 1).toFixed(2)},${(Yc(zAcc) + 1.6).toFixed(2)}
+      M${(Xc(-ha - 0.2) - 1).toFixed(2)},${(Yc(talusBas) - 1.6).toFixed(2)} L${Xc(-ha - 0.2).toFixed(2)},${Yc(talusBas).toFixed(2)}
+      L${(Xc(-ha - 0.2) + 1).toFixed(2)},${(Yc(talusBas) - 1.6).toFixed(2)}" fill="none"
+      stroke="${T.leve}" stroke-width="0.35"/>
+    <text x="${Xc(-ha + 0.5).toFixed(2)}" y="${Yc(talusBas / 2).toFixed(2)}" font-size="3.2"
+      font-weight="700" fill="${T.leve}" paint-order="stroke" stroke="#f1f5f9"
+      stroke-width="1.6">H = ${fr(Hr, 2)} m</text>
+    <text x="${Xc(0).toFixed(2)}" y="${(Yc(talusBas + e.D) - 2).toFixed(2)}" font-size="2.9"
+      fill="${T.trait}" text-anchor="middle">ouvrage ${e.forme === "buse"
+        ? `Ø ${fr(e.D, 2)}` : `${fr(e.B, 2)} × ${fr(e.D, 2)}`} m${e.n > 1 ? ` × ${e.n}` : ""}</text>`;
+
+  const hTotal = y0C + hCoupe + 32;
+  return `<svg viewBox="0 0 ${W} ${hTotal.toFixed(1)}" width="100%" class="planche-projeteur"
+      role="img" aria-label="Planche : profil en long de la route au 1/1000 en abscisses et 1/100 en altitudes, et coupe transversale au 1/100">
+    <rect x="0" y="0" width="${W}" height="${hTotal.toFixed(1)}" fill="#fff"/>
+    <text x="${MG}" y="7" font-size="4" font-weight="800" fill="#075985">Profil en long de la route</text>
+    <text x="${(W - MD).toFixed(2)}" y="7" font-size="3.2" fill="#64748b" text-anchor="end">
+      S 1/1000 · Z 1/100 — exagération ×10</text>
+    <text x="${MG}" y="11.6" font-size="3" fill="#94a3b8">versants à ${fr(PENTE_VERSANT * 100, 0)} %,
+      schématiques — la rasante est prise horizontale au point bas</text>
+    ${profil}
+    <text x="${MG}" y="${(y0C - 9).toFixed(2)}" font-size="4" font-weight="800" fill="#075985">
+      Coupe transversale au droit de l'ouvrage</text>
+    <text x="${(W - MD).toFixed(2)}" y="${(y0C - 9).toFixed(2)}" font-size="3.2" fill="#64748b"
+      text-anchor="end">S 1/100 · Z 1/100 — forme vraie</text>
+    ${coupe}
+    <text x="${MG}" y="${(hTotal - 4).toFixed(2)}" font-size="3" fill="#94a3b8">Unités du dessin :
+      millimètres de papier. Imprimée sur 210 mm de large, la planche est à l'échelle.</text>
+  </svg>`;
+}
+
 function maj() {
   const e = etat();
   el("pcRemblaiVal").textContent = `${fr(num("pcRemblai"), 2)} m`;
@@ -406,6 +584,7 @@ function maj() {
   el("pcB").disabled = e.forme === "buse";
   el("pcPlan").innerHTML = vueEnPlan(e);
   el("pcProfil").innerHTML = profilEnLong(e);
+  el("pcPlanche").innerHTML = planche(e);
   panneau(e);
 }
 
