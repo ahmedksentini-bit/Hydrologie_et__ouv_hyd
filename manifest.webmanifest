@@ -1,0 +1,14 @@
+{
+  "name": "Hydrologie et ouvrages hydrauliques",
+  "short_name": "Hydrologie & OH",
+  "description": "Cours, exercices et exerciseurs d'hydrologie et d'ouvrages hydrauliques pour le génie civil",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f8fb",
+  "theme_color": "#075985",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

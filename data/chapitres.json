@@ -1,0 +1,62 @@
+{
+  "cours": {
+    "titre": "Hydrologie et ouvrages hydrauliques",
+    "sous_titre": "Génie civil",
+    "etablissement": "École Nationale d'Ingénieurs de Sfax",
+    "enseignant": "Dr Ahmed Ksentini"
+  },
+  "parties": [
+    { "id": "A", "titre": "Hydrologie", "resume": "Du bassin versant au débit de projet." },
+    { "id": "B", "titre": "Ouvrages hydrauliques", "resume": "Du débit de projet à l'ouvrage dimensionné." }
+  ],
+  "chapitres": [
+    {
+      "id": "ch1", "number": 1, "partie": "A",
+      "title": "Le bassin versant",
+      "description": "Délimitation, surface et périmètre, indice de compacité, rectangle équivalent, courbe hypsométrique, indices de pente.",
+      "notions": ["délimitation topographique", "S, P", "Gravelius Ic", "rectangle équivalent", "hypsométrie H5 / H95 / Hméd / Hmoy", "indice global de pente Ig", "pente équivalente Ieq", "densité de drainage"]
+    },
+    {
+      "id": "ch2", "number": 2, "partie": "A",
+      "title": "Les pluies",
+      "description": "Postes et séries pluviométriques, pluie journalière, ajustement statistique de Gumbel, période de retour, cartes de pluie.",
+      "notions": ["pluviomètre et pluviographe", "série annuelle des maxima", "loi de Gumbel", "variable réduite", "période de retour", "cartes P0 / P10 / P100", "abattement spatial"]
+    },
+    {
+      "id": "ch3", "number": 3, "partie": "A",
+      "title": "Averse de projet et temps de concentration",
+      "description": "Courbes intensité–durée–fréquence, formule de Montana, temps de concentration : Kirpich, Ventura, Passini, Giandotti.",
+      "notions": ["courbe IDF", "i = a·t^(−b)·T^c", "unité de durée et plage de calage", "tc : quatre formules", "choix du tc retenu", "contrôle de la lame d'eau"]
+    },
+    {
+      "id": "ch4", "number": 4, "partie": "A",
+      "title": "Débits de projet",
+      "description": "Méthode rationnelle, SOGREAH, régionalisations tunisiennes (Ghorbel, Kallel, Fersi, Frigui), Francou–Rodier, synthèse et débit retenu.",
+      "notions": ["Q = 0,278·C·i·S", "coefficient de ruissellement", "SOGREAH et ses cartes", "Ghorbel par zone", "Kallel", "Fersi", "Frigui", "enveloppe de Francou–Rodier", "domaines de validité", "dispersion et débit retenu"]
+    },
+    {
+      "id": "ch5", "number": 5, "partie": "A",
+      "title": "Période de retour et choix de l'ouvrage",
+      "description": "Note circulaire DGPC N°1054/2019, catégories de route, types d'ouvrage, ouvrages submersibles, risque accepté.",
+      "notions": ["catégorie de route", "TJMA à l'horizon projet", "ouvrage d'art / dalot / buse", "ouvrage submersible", "T = 30 / 50 / 100 ans", "risque et durée de vie"]
+    },
+    {
+      "id": "ch6", "number": 6, "partie": "B",
+      "title": "Hydraulique des dalots et des buses",
+      "description": "Écoulement en charge et à surface libre, contrôle à l'entrée et contrôle à la sortie, charge amont, condition aval.",
+      "notions": ["section de contrôle", "contrôle à l'entrée", "contrôle à la sortie", "charge amont Hw", "niveau aval", "pertes d'entrée Ke", "ressaut en sortie"]
+    },
+    {
+      "id": "ch7", "number": 7, "partie": "B",
+      "title": "Dimensionnement des ouvrages",
+      "description": "Abaques de dimensionnement, choix de la section, vitesse admissible, tirant d'eau, revanche, calage de l'ouvrage.",
+      "notions": ["abaques", "section retenue", "vitesse admissible", "revanche", "calage altimétrique", "multi-cellules", "vérification au débit majorant"]
+    },
+    {
+      "id": "ch8", "number": 8, "partie": "B",
+      "title": "Ouvrages annexes et protection",
+      "description": "Têtes d'ouvrage et murs en aile, protection contre l'affouillement, fossés et descentes d'eau, assainissement de la plateforme.",
+      "notions": ["têtes d'ouvrage", "murs en aile", "affouillement", "enrochements", "fossés", "descentes d'eau", "assainissement de la plateforme"]
+    }
+  ]
+}

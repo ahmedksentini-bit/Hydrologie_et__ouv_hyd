@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075985">
+<meta name="description" content="Cours interactif d'hydrologie et d'ouvrages hydrauliques">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="enhancements.css">
+<link rel="stylesheet" href="site.css">
+<title>Cours interactif — Hydrologie et ouvrages hydrauliques</title>
+</head><body>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Retour à l'accueil">
+    <span class="brand-mark">HO</span>
+    <span><strong>Hydrologie &amp; OH</strong><small>Cours interactif</small></span>
+  </a>
+  <div class="header-actions"><a class="ghost course-link" href="exerciseur.html">Exerciseur</a></div>
+</header>
+
+<main id="app" tabindex="-1">
+<section class="chapter-banner"><span class="num">§</span>
+  <div><h1>Cours interactif</h1>
+  <p>Le cours au fil du texte, avec ses figures, ses cartes et ses calculateurs.</p></div>
+</section>
+
+<div class="workspace">
+<div>
+
+<section id="ch3" class="card">
+  <h2>3 · Averse de projet et temps de concentration</h2>
+
+  <h3>La courbe intensité–durée–fréquence</h3>
+  <p>Ajustée sur les enregistrements d'une station, la courbe IDF se met sous la forme</p>
+  <p class="formula">i = a · t<sup>−b</sup> · T<sup>c</sup>&nbsp;&nbsp;&nbsp;
+     i en mm/h · t = durée de la pluie, prise égale à t<sub>c</sub> · T en années</p>
+  <p><code>a</code>, <code>b</code> et <code>c</code> sont trois constantes de la station :
+     <code>a</code> fixe le niveau, <code>b</code> la décroissance avec la durée,
+     <code>c</code> la croissance avec la période de retour. La période de retour entre
+     <strong>analytiquement</strong> : toute valeur de T se calcule, y compris celles qui
+     ne figurent dans aucune table.</p>
+
+  <div class="hint"><strong>Ne pas confondre les deux « c ».</strong> Ici <code>c</code> est
+     l'exposant de la période de retour, sans dimension. Dans la variante de Talbot
+     <code>i = a / (t + c)<sup>b</sup></code>, <code>c</code> est un décalage de durée,
+     homogène à un temps. Un jeu de coefficients appliqué à la mauvaise forme donne un
+     résultat faux sans qu'aucun contrôle interne ne s'en aperçoive.</div>
+
+  <h3>Deux règles de manipulation</h3>
+  <p><strong>Unité de la durée.</strong> <code>a</code> et <code>b</code> ne valent que dans
+     l'unité de durée du calage. Les deux lectures se déduisent l'une de l'autre par un
+     facteur exact : <code>i(heures) / i(minutes) = 60<sup>b</sup></code>, soit environ 13
+     pour <code>b ≈ 0,63</code>.</p>
+  <p><strong>Plage de durées.</strong> <code>t</code> est borné par le bas par la plus petite
+     durée couverte par l'ajustement, souvent 5 min : une courbe IDF ne s'extrapole pas
+     sous sa durée de calage.</p>
+
+  <div class="sanity-check"><h3>Contrôle d'ordre de grandeur</h3>
+    <p>La lame d'eau <code>i × t<sub>c</sub></code> doit rester nettement inférieure à la
+       pluie journalière décennale du site, lue sur la carte P<sub>10</sub> — l'ordre du
+       tiers de P<sub>10</sub> est courant pour une averse de quelques dizaines de minutes.</p>
+    <p>Sous climat tunisien, i(T = 10 ans) vaut typiquement 20 à 60 mm/h pour t<sub>c</sub>
+       de 30 à 60 min. Plusieurs centaines de mm/h sur une durée horaire signalent une
+       erreur de forme ou d'unité, pas un orage exceptionnel.</p></div>
+
+  <h3>Les quatre temps de concentration</h3>
+  <table class="resultats"><thead><tr><th>Formule</th><th>Expression</th><th>Unité du résultat</th></tr></thead>
+    <tbody>
+      <tr><td>Kirpich</td><td class="motif">t<sub>c</sub> = 0,0195 · (L³/D)<sup>0,385</sup> — L et D en mètres</td><td class="motif">minutes</td></tr>
+      <tr><td>Ventura</td><td class="motif">t<sub>c</sub> = 76 · √(S/i)</td><td class="motif">minutes</td></tr>
+      <tr><td>Passini</td><td class="motif">t<sub>c</sub> = 0,108 · (S·L)<sup>⅓</sup> / √(i/100)</td><td class="motif">heures</td></tr>
+      <tr><td>Giandotti</td><td class="motif">t<sub>c</sub> = (4√S + 1,5 L) / (0,8 √H<sub>moy</sub>)</td><td class="motif">heures</td></tr>
+    </tbody></table>
+  <p class="method-note">Kirpich et Ventura rendent des minutes, Passini et Giandotti des
+     heures : deux colonnes voisines se comparent sinon à un facteur 60 près. Une seule
+     formule est retenue et injectée dans la courbe IDF — le choix doit être écrit.</p>
+</section>
+
+<section id="ch4" class="card">
+  <h2>4 · Débits de projet</h2>
+
+  <h3>Deux voies indépendantes</h3>
+  <p>La <strong>voie rationnelle</strong> passe par la pluie de projet :
+     morphométrie → temps de concentration → intensité → débit. Les
+     <strong>régionalisations</strong> court-circuitent la pluie et relient directement le
+     débit aux caractéristiques du bassin. C'est leur confrontation qui fait la qualité de
+     l'estimation, jamais une méthode seule.</p>
+  <p class="formula">Q = 0,278 · C · i · S&nbsp;&nbsp;&nbsp;Q en m³/s · i en mm/h · S en km²
+     &nbsp;&nbsp;(domaine : S &lt; 4 km²)</p>
+
+  <h3>Le coefficient de ruissellement</h3>
+  <table class="resultats"><thead><tr><th>Classe de pente</th><th>indice 1</th><th>indice 2</th><th>indice 3</th></tr></thead>
+    <tbody>
+      <tr><td>faible (0–2 %) ou moyenne (2–8 %)</td><td class="q">0,40</td><td class="q">0,50</td><td class="q">0,60</td></tr>
+      <tr><td>forte (&gt; 8 %)</td><td class="q">0,50</td><td class="q">0,60</td><td class="q">0,70</td></tr>
+    </tbody></table>
+  <p class="method-note">Indice de végétation selon la part du bassin couverte :
+     1 = plus de 50 % · 2 = 30 à 50 % · 3 = moins de 30 %. Le tableau a deux lignes, pas
+     trois : seule la frontière à 8 % change le résultat. Q étant linéaire en C, un
+     changement d'indice vaut 20 % de débit.</p>
+
+  <h3>SOGREAH et ses cartes</h3>
+  <p class="formula">P<sub>T</sub> = P<sub>10</sub> + (Y<sub>T</sub> − 2,25)/(4,60 − 2,25) · (P<sub>100</sub> − P<sub>10</sub>)
+     &nbsp;&nbsp;puis&nbsp;&nbsp; Q<sub>T</sub> = S<sup>0,75</sup> · (P<sub>T</sub> − P<sub>0</sub>) / 12</p>
+  <p>Trois lectures de cartes suffisent. On lit au <strong>centre de gravité du bassin</strong>,
+     jamais au franchissement ; les zones sont des plages, sans interpolation ; et la
+     lecture se reporte dans la note avec les <strong>coordonnées du point lu</strong>.
+     Contrôle obligatoire : P<sub>0</sub> &lt; P<sub>10</sub> &lt; P<sub>100</sub>.</p>
+
+  <figure class="planche"><img src="assets/carte_sogreah_p0.png" alt="Carte du seuil de ruissellement P0" loading="lazy">
+    <figcaption>Seuil de ruissellement P<sub>0</sub> — zones 10 à 50 mm. Planche redessinée,
+      couverture Centre et Sud.</figcaption></figure>
+  <figure class="planche"><img src="assets/carte_sogreah_p10.png" alt="Carte de la pluie journalière décennale P10" loading="lazy">
+    <figcaption>Pluie journalière décennale P<sub>10</sub> — zones 40 à 110 mm.</figcaption></figure>
+  <figure class="planche"><img src="assets/carte_sogreah_p100.png" alt="Carte de la pluie journalière centennale P100" loading="lazy">
+    <figcaption>Pluie journalière centennale P<sub>100</sub> — zones 70 à 250 mm.</figcaption></figure>
+
+  <p class="method-note">Deux traits à retenir : le seuil de ruissellement croît vers le Sud
+     — sols secs et perméables, il faut plus de pluie avant que le ruissellement démarre —
+     tandis que la pluie journalière rare croît vers la côte Est et le Sud-Est. Les deux
+     effets se combinent dans (P<sub>T</sub> − P<sub>0</sub>).</p>
+
+  <h3>Les régionalisations tunisiennes</h3>
+  <table class="resultats"><thead><tr><th>Méthode</th><th>Forme</th><th>Domaine</th></tr></thead>
+    <tbody>
+      <tr><td>Ghorbel I–III</td><td class="motif">Q<sub>max</sub> = S<sup>0,8</sup>[1,075·√(P·Δh/L)/I<sub>c</sub> − 0,232], puis Q<sub>T</sub> = R<sub>T</sub>·Q<sub>max</sub></td><td class="motif">T tabulés 2, 5, 10, 20, 50, 100</td></tr>
+      <tr><td>Ghorbel IV–V</td><td class="motif">Q<sub>max</sub> = 85 · log(S)</td><td class="motif">zone V peu testée</td></tr>
+      <tr><td>Kallel</td><td class="motif">Q = q<sub>0</sub> · S<sup>α</sup> · T<sup>0,41</sup></td><td class="motif">S ≥ 100 km², tout T</td></tr>
+      <tr><td>Fersi</td><td class="motif">H<sub>e</sub> → Q<sub>x moy</sub> → Q<sub>xT</sub> = y<sub>T</sub>·[S·I<sub>g</sub>/270]<sup>−0,423</sup>·Q<sub>x moy</sub></td><td class="motif">pluie ≤ 400 mm, secteurs Sud</td></tr>
+      <tr><td>Frigui</td><td class="motif">Q = λ<sub>p</sub> · A<sub>m</sub>/(S+1)<sup>n</sup> · S</td><td class="motif">λ calé 2, 5, 10, 50 ans</td></tr>
+      <tr><td>Francou–Rodier</td><td class="motif">Q = 10<sup>6</sup> · (S/10<sup>8</sup>)<sup>1−K/10</sup></td><td class="motif">enveloppe, S ≥ 100 km²</td></tr>
+    </tbody></table>
+
+  <div class="hint"><strong>Δh de Ghorbel ≠ H<sub>max</sub> − H<sub>min</sub>.</strong>
+     Δh est l'écart entre l'altitude médiane du bassin et l'altitude au franchissement.
+     Le dénivelé total vaut couramment le double, et comme Δh entre sous une racine puis
+     que le terme est amputé d'une constante, la confusion gonfle le débit de 30 à 70 % —
+     sans que rien, dans le résultat, ne le signale.</div>
+
+  <h3>Synthèse et débit retenu</h3>
+  <p>N'entrent dans la synthèse que les méthodes <strong>réellement applicables</strong> :
+     une valeur calculée hors domaine n'est pas une estimation. On calcule min, médiane et
+     max ; au-delà de CV = 50 %, la médiane seule ne suffit plus. Et même sous ce seuil, il
+     faut regarder la <strong>structure</strong> du faisceau : deux couples cohérents très
+     éloignés l'un de l'autre donnent une médiane qui ne correspond à aucune méthode.</p>
+  <div class="actions"><a class="primary" href="exerciseur.html">Ouvrir l'exerciseur</a></div>
+</section>
+
+<section class="card">
+  <h2>Chapitres en préparation</h2>
+  <p class="en-preparation">Les chapitres 1, 2, 5, 6, 7 et 8 sont en cours de rédaction.
+     Leur plan est visible depuis l'accueil.</p>
+</section>
+
+</div>
+
+<aside>
+  <div class="card"><h2>Sommaire</h2>
+    <ul class="chapitre-sommaire" id="sommaire"></ul></div>
+</aside>
+</div>
+</main>
+
+<script type="module">
+const r = await fetch("data/chapitres.json");
+const { chapitres } = await r.json();
+document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
+  const pret = document.getElementById(c.id);
+  return `<li><a href="${pret ? "#" + c.id : "index.html#" + c.id}">
+    ${c.number} · ${c.title}<small>${pret ? "disponible" : "en préparation"}</small></a></li>`;
+}).join("");
+</script>
+</body></html>

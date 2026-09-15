@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075985">
+<meta name="description" content="Hydrologie et ouvrages hydrauliques — cours, exercices et exerciseurs pour le génie civil">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon.svg">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="enhancements.css">
+<link rel="stylesheet" href="site.css">
+<title>Hydrologie et ouvrages hydrauliques</title>
+</head><body>
+<header class="topbar">
+  <button class="brand" id="homeButton" aria-label="Retour à l'accueil">
+    <span class="brand-mark">HO</span>
+    <span><strong>Hydrologie &amp; OH</strong><small>Génie civil</small></span>
+  </button>
+  <div class="header-actions">
+    <a class="ghost course-link" href="cours.html"><span class="course-link-verb">Ouvrir le </span>cours</a>
+    <a class="ghost course-link" href="exerciseur.html">Exerciseur</a>
+    <button class="ghost install" id="installButton" hidden>Installer l'app</button>
+  </div>
+</header>
+<main id="app" tabindex="-1"></main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<noscript>Activez JavaScript pour parcourir le cours et les exercices.</noscript>
+<script type="module" src="src/app.js"></script>
+</body></html>

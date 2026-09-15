@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075985">
+<meta name="description" content="Exerciseur — débit de projet d'un franchissement par les méthodes tunisiennes">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="enhancements.css">
+<link rel="stylesheet" href="site.css">
+<title>Exerciseur — débit de projet</title>
+</head><body>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Retour à l'accueil">
+    <span class="brand-mark">HO</span>
+    <span><strong>Hydrologie &amp; OH</strong><small>Exerciseur</small></span>
+  </a>
+  <div class="header-actions"><a class="ghost course-link" href="cours.html">Cours</a></div>
+</header>
+<main id="app" tabindex="-1">
+  <section class="chapter-banner"><span class="num">∑</span>
+    <div><h1>Débit de projet d'un franchissement</h1>
+    <p>Toutes les méthodes applicables, leurs domaines de validité et la synthèse.</p></div>
+  </section>
+  <div class="workspace">
+    <div>
+      <div class="card"><h2>Bassin versant</h2><div class="data-grid" id="fMorpho"></div></div>
+      <div class="card"><h2>Pluies</h2><div class="data-grid" id="fPluies"></div>
+        <p class="method-note">P0, P10 et P100 se lisent sur les cartes, au centre de
+           gravité du bassin. Contrôle : P0 &lt; P10 &lt; P100.</p></div>
+      <div class="card"><h2>Courbe intensité–durée–fréquence</h2><div class="data-grid" id="fIdf"></div>
+        <p class="method-note">i = a · t<sup>−b</sup> · T<sup>c</sup> — t en minutes, T en années.</p></div>
+      <div class="card"><h2>Régionalisations et période de retour</h2><div class="data-grid" id="fRegions"></div>
+        <div class="actions"><button class="primary" id="calculer">Calculer</button>
+          <button class="ghost" id="reinit">Valeurs de départ</button></div></div>
+    </div>
+    <div>
+      <div class="card"><h2>Résultats</h2><div id="resultats"></div></div>
+      <div class="card"><h2>Synthèse</h2><div id="synthese"></div></div>
+    </div>
+  </div>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="src/exerciseur.js"></script>
+</body></html>

@@ -1,0 +1,123 @@
+// Accueil et navigation par chapitre. Le contenu vient de data/chapitres.json :
+// ajouter un chapitre ou une notion ne demande aucune modification de ce fichier.
+
+const app = document.getElementById("app");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+let COURS = null;
+
+async function charger() {
+  const r = await fetch("data/chapitres.json");
+  if (!r.ok) throw new Error("données du cours indisponibles");
+  COURS = await r.json();
+}
+
+function exercicesDisponibles(ch) {
+  return Number(ch.exercices || 0);
+}
+
+function accueil() {
+  const { cours, parties, chapitres } = COURS;
+  const parPartie = parties.map((p) => {
+    const liste = chapitres.filter((c) => c.partie === p.id);
+    return `<div class="section-title"><div><h2>Partie ${esc(p.id)} — ${esc(p.titre)}</h2>
+      <p>${esc(p.resume)}</p></div></div>
+      <section class="chapter-grid">${liste.map(carteChapitre).join("")}</section>`;
+  }).join("");
+
+  app.innerHTML = `
+  <section class="hero">
+    <p class="eyebrow">${esc(cours.sous_titre)}</p>
+    <h1>${esc(cours.titre)}</h1>
+    <p>Du bassin versant au débit de projet, puis du débit de projet à l'ouvrage
+       dimensionné — avec les cartes, les abaques et les domaines de validité.</p>
+    <div class="signature">${esc(cours.etablissement)}<br><strong>${esc(cours.enseignant)}</strong></div>
+  </section>
+
+  <div class="section-title"><div><h2>Ressources du cours</h2>
+    <p>Le polycopié, le cours interactif, les exercices et les exerciseurs.</p></div></div>
+  <section class="resource-grid">
+    <a class="resource" href="docs/fascicule-debits-de-projet.pdf" rel="noopener"><span class="resource-mark">PDF</span>
+      <h3>Polycopié</h3><p>Premier fascicule : averse de projet et débits de projet
+      (chapitres 3 et 4). Les autres suivent.</p></a>
+    <a class="resource" href="cours.html"><span class="resource-mark">§</span>
+      <h3>Cours interactif</h3><p>Figures, cartes et calculateurs intégrés au fil du texte.</p></a>
+    <a class="resource" href="exerciseur.html"><span class="resource-mark">∑</span>
+      <h3>Exerciseur</h3><p>Le débit de projet calculé par toutes les méthodes, avec la synthèse.</p></a>
+  </section>
+
+  ${parPartie}`;
+
+  app.querySelectorAll("[data-chapitre]").forEach((b) =>
+    b.addEventListener("click", () => ouvrirChapitre(b.dataset.chapitre)));
+}
+
+function carteChapitre(ch) {
+  const n = exercicesDisponibles(ch);
+  const etat = n > 0 ? `${n} exercice${n > 1 ? "s" : ""} →` : "cours en préparation";
+  return `<button class="chapter" data-chapitre="${esc(ch.id)}">
+    <span class="num">${ch.number}</span>
+    <h3>${esc(ch.title)}</h3>
+    <p>${esc(ch.description)}</p>
+    <span class="count">${etat}</span>
+  </button>`;
+}
+
+function ouvrirChapitre(id) {
+  const ch = COURS.chapitres.find((c) => c.id === id);
+  if (!ch) return;
+  location.hash = `#${id}`;
+  app.innerHTML = `
+    <button class="back" id="retour">← Tous les chapitres</button>
+    <section class="chapter-banner"><span class="num">${ch.number}</span>
+      <div><h1>${esc(ch.title)}</h1><p>${esc(ch.description)}</p></div></section>
+    <div class="card">
+      <h2>Notions traitées</h2>
+      <ul class="notions">${ch.notions.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
+    </div>
+    <div class="card">
+      <h2>Travailler ce chapitre</h2>
+      <div class="actions">
+        <a class="primary" href="cours.html#${esc(ch.id)}">Cours interactif</a>
+        <a class="secondary" href="exerciseur.html#${esc(ch.id)}">Exerciseur</a>
+      </div>
+      <p class="method-note">Exercices, entraînements et sujets d'examen de ce chapitre :
+         en cours de rédaction.</p>
+    </div>`;
+  document.getElementById("retour").addEventListener("click", () => {
+    location.hash = "";
+    accueil();
+  });
+  app.focus();
+}
+
+function router() {
+  const id = location.hash.replace("#", "");
+  if (id && COURS.chapitres.some((c) => c.id === id)) ouvrirChapitre(id);
+  else accueil();
+}
+
+charger().then(() => {
+  router();
+  window.addEventListener("hashchange", router);
+  document.getElementById("homeButton").addEventListener("click", () => {
+    location.hash = "";
+    accueil();
+  });
+}).catch((e) => {
+  app.innerHTML = `<div class="card"><h2>Chargement impossible</h2><p>${esc(e.message)}</p></div>`;
+});
+
+// Installation PWA : le bouton n'apparaît que si le navigateur le propose.
+let invite = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  invite = e;
+  const b = document.getElementById("installButton");
+  b.hidden = false;
+  b.addEventListener("click", async () => { b.hidden = true; invite.prompt(); invite = null; });
+});
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
