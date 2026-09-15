@@ -146,9 +146,100 @@
   <div class="actions"><a class="primary" href="exerciseur.html">Ouvrir l'exerciseur</a></div>
 </section>
 
+<section id="ch5" class="card">
+  <h2>5 · Période de retour et choix de l'ouvrage</h2>
+
+  <h3>Ce qu'une période de retour dit — et ne dit pas</h3>
+  <p>Dimensionner pour T = 100 ans ne veut pas dire « une fois par siècle », et encore
+     moins « jamais pendant la vie de l'ouvrage ». La période de retour fixe une
+     <strong>probabilité annuelle</strong> de dépassement, égale à 1/T. Sur une durée de
+     vie de n années, le risque d'au moins un dépassement vaut</p>
+  <p class="formula">R = 1 − (1 − 1/T)<sup>n</sup></p>
+  <p>C'est ce chiffre, et non la période de retour, qui se discute avec le maître
+     d'ouvrage : à T = 50 ans sur 30 ans de service, la crue de projet est dépassée avec
+     une probabilité de <strong>45 %</strong>. Dimensionner n'est pas garantir ; c'est
+     choisir un risque et savoir lequel.</p>
+
+  <div class="calc" id="calcRisque">
+    <h3>Risque sur la durée de vie</h3>
+    <div class="data-grid">
+      <div class="field"><label for="rT">Période de retour T</label>
+        <div class="input-wrap"><input id="rT" type="text" inputmode="numeric" value="50"><span class="unit">ans</span></div></div>
+      <div class="field"><label for="rN">Durée de service n</label>
+        <div class="input-wrap"><input id="rN" type="text" inputmode="numeric" value="30"><span class="unit">ans</span></div></div>
+    </div>
+    <p class="final-result" id="rOut"></p>
+  </div>
+
+  <h3>La règle : note circulaire DGPC N°1054/2019, §4</h3>
+  <p>Le choix n'est pas laissé à l'appréciation : il est fixé par la catégorie de la
+     route, le type d'ouvrage, la surface du bassin et le trafic. Trois cas tranchent
+     avant tout examen du trafic.</p>
+  <table class="resultats"><thead><tr><th>Cas</th><th>T retenu</th></tr></thead>
+    <tbody>
+      <tr><td>Ouvrage <strong>submersible</strong> ou semi-submersible, quelle que soit la route</td><td class="q">100 ans</td></tr>
+      <tr><td><strong>Autoroute</strong>, route express, rocade</td><td class="q">100 ans</td></tr>
+      <tr><td><strong>Route classée</strong> (RN, RR, RL) + <strong>ouvrage d'art</strong> (pont, cadre)</td><td class="q">100 ans</td></tr>
+      <tr><td>Route classée + dalot / buse / autre forme</td><td class="motif">tableau ci-dessous</td></tr>
+      <tr><td><strong>Piste rurale</strong> — seule la surface compte, le trafic est ignoré</td><td class="motif">S &lt; 10 km² : 30 · 10 ≤ S &lt; 100 : 50 · S ≥ 100 : 100</td></tr>
+    </tbody></table>
+
+  <p>Route classée, dalot ou buse — croisement du TJMA à l'horizon du projet (deux sens)
+     et de la surface du bassin :</p>
+  <table class="resultats"><thead><tr><th>TJMA \ S</th><th>S &lt; 10 km²</th><th>10 ≤ S &lt; 100 km²</th><th>S ≥ 100 km²</th></tr></thead>
+    <tbody>
+      <tr><td>TJMA ≤ 650</td><td class="q">30</td><td class="q">50</td><td class="q">100</td></tr>
+      <tr><td>650 &lt; TJMA ≤ 3300</td><td class="q">50</td><td class="q">50</td><td class="q">100</td></tr>
+      <tr><td>TJMA &gt; 3300</td><td class="q">100</td><td class="q">100</td><td class="q">100</td></tr>
+    </tbody></table>
+  <p class="method-note">Deux lectures à retenir : la surface pèse autant que le trafic —
+     au-delà de 100 km² c'est 100 ans quel que soit le trafic — et le caractère
+     submersible l'emporte sur tout le reste, y compris sur une piste peu fréquentée.</p>
+
+  <div class="calc" id="calcDgpc">
+    <h3>Déterminer T</h3>
+    <div class="data-grid">
+      <div class="field"><label for="dCat">Catégorie de route</label>
+        <div class="input-wrap"><select id="dCat">
+          <option value="classee">Route classée (RN, RR, RL)</option>
+          <option value="autoroute">Autoroute, express, rocade</option>
+          <option value="piste">Piste rurale</option></select></div></div>
+      <div class="field"><label for="dOuv">Type d'ouvrage</label>
+        <div class="input-wrap"><select id="dOuv">
+          <option value="dalot">Dalot, buse, autre forme</option>
+          <option value="art">Ouvrage d'art (pont, cadre)</option>
+          <option value="submersible">Submersible ou semi-submersible</option></select></div></div>
+      <div class="field"><label for="dS">Surface du bassin S</label>
+        <div class="input-wrap"><input id="dS" type="text" inputmode="decimal" value="42"><span class="unit">km²</span></div></div>
+      <div class="field"><label for="dT">TJMA à l'horizon projet</label>
+        <div class="input-wrap"><input id="dT" type="text" inputmode="numeric" value="1800"><span class="unit">v/j</span></div></div>
+    </div>
+    <p class="final-result" id="dOut"></p>
+  </div>
+
+  <h3>La conséquence que l'on n'attend pas</h3>
+  <p>La note produit couramment <strong>T = 30 ans</strong> — petit dalot, faible trafic,
+     bassin de quelques km². Or aucune des régionalisations tunisiennes n'est calée à
+     30 ans : Ghorbel, Fersi et Frigui reposent sur des tables de quantiles qui ne
+     contiennent pas cette période. Il ne reste alors que Kallel (analytique), SOGREAH
+     (interpolation de Gumbel) et Francou–Rodier (la période est portée par K).</p>
+  <div class="hint">Ce n'est pas une anomalie à contourner : c'est le domaine des méthodes
+     qui s'arrête là. Interpoler entre deux périodes tabulées produirait un débit
+     invérifiable — les publications n'en donnent pas la règle. La bonne réponse est
+     d'écrire que la méthode ne s'applique pas à cette période de retour, et de
+     dimensionner avec celles qui restent.</div>
+
+  <h3>Ce qui doit figurer dans la note</h3>
+  <p>La catégorie de la route et le type d'ouvrage, le TJMA retenu <em>et son horizon</em>,
+     la surface du bassin, la période de retour qui en découle, et — si le maître
+     d'ouvrage demande autre chose que la note — le risque correspondant sur la durée de
+     service. Une période de retour sans ces quatre entrées n'est pas justifiable.</p>
+  <div class="actions"><a class="secondary" href="index.html#ch5">Exercices du chapitre</a></div>
+</section>
+
 <section class="card">
   <h2>Chapitres en préparation</h2>
-  <p class="en-preparation">Les chapitres 1, 2, 5, 6, 7 et 8 sont en cours de rédaction.
+  <p class="en-preparation">Les chapitres 1, 2, 6, 7 et 8 sont en cours de rédaction.
      Leur plan est visible depuis l'accueil.</p>
 </section>
 
@@ -170,4 +261,5 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
     ${c.number} · ${c.title}<small>${pret ? "disponible" : "en préparation"}</small></a></li>`;
 }).join("");
 </script>
+<script type="module" src="src/cours-ch5.js"></script>
 </body></html>

@@ -1,0 +1,150 @@
+{
+  "chapitre": "ch5",
+  "exercices": [
+    {
+      "id": "ch5-e1",
+      "titre": "Trois franchissements d'une route classée",
+      "difficulte": 1,
+      "enonce": "Un projet de route classée traverse trois oueds. Déterminer la période de retour de projet de chaque franchissement, d'après la note circulaire DGPC N°1054/2019, §4.",
+      "questions": [
+        {
+          "texte": "Franchissement 1 — dalot, bassin de 2,35 km², TJMA à l'horizon projet 520 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 0,
+          "explication": "Route classée avec dalot : on entre dans le tableau. TJMA = 520 ≤ 650 et S = 2,35 km² < 10 km² — première ligne, première colonne : T = 30 ans."
+        },
+        {
+          "texte": "Franchissement 2 — dalot, bassin de 42 km², TJMA 1 800 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 1,
+          "explication": "650 < 1 800 ≤ 3 300 et 10 ≤ 42 < 100 km² : T = 50 ans. Noter que les deux colonnes sous 100 km² donnent la même valeur sur cette ligne — le trafic a déjà fait basculer le résultat."
+        },
+        {
+          "texte": "Franchissement 3 — pont-cadre, bassin de 265 km², TJMA 4 200 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 2,
+          "explication": "Route classée avec ouvrage d'art : 100 ans systématiquement. Ni la surface ni le TJMA n'interviennent — le type d'ouvrage tranche avant le tableau."
+        }
+      ]
+    },
+    {
+      "id": "ch5-e2",
+      "titre": "Les cas qui tranchent avant le tableau",
+      "difficulte": 2,
+      "enonce": "Trois situations où le tableau TJMA × surface n'a pas à être consulté. Justifier mentalement avant de répondre.",
+      "questions": [
+        {
+          "texte": "Piste rurale, buse, bassin de 12 km², TJMA 40 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 1,
+          "explication": "Pour une piste rurale, seule la surface intervient : le trafic est ignoré, aussi faible soit-il. 10 ≤ 12 < 100 km² : T = 50 ans."
+        },
+        {
+          "texte": "Route express, dalot, bassin de 3 km², TJMA 9 000 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 2,
+          "explication": "Autoroute, route express ou rocade : 100 ans, quels que soient la surface et le trafic. Un tout petit bassin ne change rien — c'est l'enjeu de la voie qui commande."
+        },
+        {
+          "texte": "Route classée, dalot submersible, bassin de 150 km², TJMA 300 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 2,
+          "explication": "Le caractère submersible est examiné en premier et l'emporte sur tout le reste : 100 ans. Ici S ≥ 100 km² aurait de toute façon donné la même réponse — mais avec un bassin de 5 km² et le même ouvrage, la réponse resterait 100 ans."
+        }
+      ]
+    },
+    {
+      "id": "ch5-e3",
+      "titre": "Le risque derrière la période de retour",
+      "difficulte": 2,
+      "enonce": "La période de retour fixe une probabilité annuelle de dépassement égale à 1/T. Sur une durée de service de n années, le risque d'au moins un dépassement vaut R = 1 − (1 − 1/T)^n. Répondre en pour cent, à 0,5 point près.",
+      "questions": [
+        {
+          "texte": "Ouvrage dimensionné à T = 50 ans, durée de service 30 ans. Risque d'au moins un dépassement ?",
+          "type": "nombre", "unite": "%", "reponse": 45.45, "tolerance": 0.5,
+          "explication": "R = 1 − (1 − 1/50)^30 = 1 − 0,98^30 = 45,5 %. Près d'une chance sur deux : dimensionner n'est pas garantir."
+        },
+        {
+          "texte": "Même durée de service, mais T = 100 ans. Risque ?",
+          "type": "nombre", "unite": "%", "reponse": 26.03, "tolerance": 0.5,
+          "explication": "R = 1 − 0,99^30 = 26,0 %. Doubler la période de retour n'a pas divisé le risque par deux : il passe de 45 % à 26 %, et le coût de l'ouvrage, lui, ne suit pas cette proportion."
+        },
+        {
+          "texte": "Quelle période de retour faudrait-il pour ramener le risque à 10 % sur 30 ans ?",
+          "type": "nombre", "unite": "ans", "reponse": 285, "tolerance": 5,
+          "explication": "T = 1 / (1 − (1 − 0,10)^(1/30)) ≈ 285 ans. Autrement dit, un risque faible sur la durée de vie exige une période de retour bien supérieure à celle du règlement : le risque résiduel est assumé, pas supprimé."
+        }
+      ]
+    },
+    {
+      "id": "ch5-e4",
+      "titre": "« Homogénéiser tous les ouvrages à 30 ans »",
+      "difficulte": 3,
+      "enonce": "Le maître d'ouvrage demande de retenir T = 30 ans partout, pour simplifier. Examiner les conséquences sur le calcul des débits.",
+      "questions": [
+        {
+          "texte": "Parmi Ghorbel, Fersi, Frigui, Kallel et SOGREAH, combien restent applicables à T = 30 ans ?",
+          "type": "choix",
+          "options": ["Les cinq", "Quatre", "Deux", "Une seule"],
+          "reponse": 2,
+          "explication": "Seules Kallel (analytique, en T^0,41) et SOGREAH (interpolation en variable de Gumbel) s'appliquent. Ghorbel (2, 5, 10, 20, 50, 100), Fersi (5, 10, 20, 50, 100) et Frigui (2, 5, 10, 50) reposent sur des tables de quantiles qui ne contiennent pas 30 ans."
+        },
+        {
+          "texte": "Que faire des méthodes dont la période n'est pas tabulée ?",
+          "type": "choix",
+          "options": [
+            "Interpoler entre les deux périodes encadrantes",
+            "Prendre la période tabulée la plus proche",
+            "Écrire qu'elles ne s'appliquent pas à cette période de retour"
+          ],
+          "reponse": 2,
+          "explication": "Aucune interpolation : les publications n'en donnent pas la règle, et prolonger une table de quantiles au-delà de son calage produit un débit invérifiable. La case n'est pas vide pour autant — elle porte son motif : hors table."
+        },
+        {
+          "texte": "Que répondre au maître d'ouvrage ?",
+          "type": "choix",
+          "options": [
+            "Accepter : 30 ans est sécuritaire puisque c'est la valeur la plus faible",
+            "Suivre le §4 ouvrage par ouvrage, 30 ans n'étant qu'un plancher pour les petits dalots à faible trafic",
+            "Retenir 100 ans partout, ce qui simplifie aussi"
+          ],
+          "reponse": 1,
+          "explication": "30 ans n'est pas sécuritaire : c'est la période la plus faible, donc le débit le plus petit et l'ouvrage le plus exposé. Homogénéiser à 30 ans reviendrait en outre à se priver du cœur de la régionalisation tunisienne sur les ouvrages qui, par la note, mériteraient 50 ou 100 ans."
+        }
+      ]
+    },
+    {
+      "id": "ch5-e5",
+      "titre": "Les frontières du tableau",
+      "difficulte": 3,
+      "enonce": "Les valeurs exactement sur une frontière sont celles qui se discutent en réunion. Route classée avec dalot dans tous les cas.",
+      "questions": [
+        {
+          "texte": "S = 100 km² exactement, TJMA 200 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 2,
+          "explication": "La colonne S ≥ 100 km² est inclusive : à 100 km² pile, c'est 100 ans, même avec un trafic très faible. Au-delà de cette surface, le trafic ne joue plus du tout."
+        },
+        {
+          "texte": "S = 9,8 km², TJMA 651 v/j.",
+          "type": "choix",
+          "options": ["30 ans", "50 ans", "100 ans"],
+          "reponse": 1,
+          "explication": "TJMA = 651 franchit le seuil de 650 : on passe à la deuxième ligne, où toutes les surfaces sous 100 km² donnent 50 ans. Un véhicule de plus par jour fait changer de ligne — d'où l'importance de justifier le TJMA retenu et son horizon."
+        },
+        {
+          "texte": "S = 9,8 km², TJMA 650 v/j.",
+          "type": "nombre", "unite": "ans", "reponse": 30, "tolerance": 0,
+          "explication": "650 est inclus dans la première ligne (TJMA ≤ 650) et S < 10 km² : T = 30 ans. Comparé à la question précédente, le débit de projet change d'un cran pour une unité de trafic — la frontière est nette, la justification du TJMA doit l'être aussi."
+        }
+      ]
+    }
+  ]
+}

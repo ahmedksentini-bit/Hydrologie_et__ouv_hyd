@@ -1,6 +1,8 @@
 // Accueil et navigation par chapitre. Le contenu vient de data/chapitres.json :
 // ajouter un chapitre ou une notion ne demande aucune modification de ce fichier.
 
+import { chargerBanque, rendreListe, rendreExercice } from "./exercices.js";
+
 const app = document.getElementById("app");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -64,10 +66,11 @@ function carteChapitre(ch) {
   </button>`;
 }
 
-function ouvrirChapitre(id) {
+async function ouvrirChapitre(id) {
   const ch = COURS.chapitres.find((c) => c.id === id);
   if (!ch) return;
   location.hash = `#${id}`;
+  const banque = await chargerBanque(id);
   app.innerHTML = `
     <button class="back" id="retour">← Tous les chapitres</button>
     <section class="chapter-banner"><span class="num">${ch.number}</span>
@@ -75,20 +78,25 @@ function ouvrirChapitre(id) {
     <div class="card">
       <h2>Notions traitées</h2>
       <ul class="notions">${ch.notions.map((n) => `<li>${esc(n)}</li>`).join("")}</ul>
-    </div>
-    <div class="card">
-      <h2>Travailler ce chapitre</h2>
       <div class="actions">
         <a class="primary" href="cours.html#${esc(ch.id)}">Cours interactif</a>
         <a class="secondary" href="exerciseur.html#${esc(ch.id)}">Exerciseur</a>
       </div>
-      <p class="method-note">Exercices, entraînements et sujets d'examen de ce chapitre :
-         en cours de rédaction.</p>
+    </div>
+    <div class="card" id="zoneExos">
+      <h2>Exercices</h2>
+      ${rendreListe(banque, null)}
     </div>`;
   document.getElementById("retour").addEventListener("click", () => {
     location.hash = "";
     accueil();
   });
+  app.querySelectorAll("[data-exo]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const exo = banque.exercices.find((e) => e.id === b.dataset.exo);
+      rendreExercice(exo, app, () => ouvrirChapitre(id));
+      app.focus();
+    }));
   app.focus();
 }
 

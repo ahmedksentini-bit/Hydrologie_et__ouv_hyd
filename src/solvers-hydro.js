@@ -236,6 +236,23 @@ export function synthese(valeurs) {
   };
 }
 
+/**
+ * Risque de dépassement : probabilité qu'un débit de période de retour T soit
+ * atteint ou dépassé au moins une fois pendant n années.
+ *   R = 1 − (1 − 1/T)^n
+ * Une période de retour n'est pas une garantie : à T = 50 ans sur 30 ans de vie,
+ * le risque vaut encore 45 %.
+ */
+export const risqueDepassement = (T, n) =>
+  T > 0 && n > 0 ? 1 - Math.pow(1 - 1 / T, n) : 0;
+
+/**
+ * Période de retour pour un risque accepté sur n années — réciproque de la
+ * précédente : T = 1 / (1 − (1 − R)^(1/n)).
+ */
+export const periodePourRisque = (R, n) =>
+  R > 0 && R < 1 && n > 0 ? 1 / (1 - Math.pow(1 - R, 1 / n)) : 0;
+
 /** Période de retour de projet — note circulaire DGPC N°1054/2019, §4. */
 export function periodeRetour({ categorie, ouvrage, S, tjma = 0 }) {
   if (ouvrage === "submersible") return 100;

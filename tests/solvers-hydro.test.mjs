@@ -119,6 +119,17 @@ test("synthèse — médiane et dispersion", () => {
   assert.equal(h.synthese([]), null);
 });
 
+test("risque de dépassement pendant la durée de vie", () => {
+  proche(h.risqueDepassement(100, 1) * 100, 1, 1e-9, "un an à T = 100");
+  proche(h.risqueDepassement(50, 30) * 100, 45.45, 0.01, "30 ans de vie à T = 50");
+  proche(h.risqueDepassement(100, 30) * 100, 26.03, 0.01, "30 ans de vie à T = 100");
+  proche(h.risqueDepassement(30, 30) * 100, 63.83, 0.01, "30 ans de vie à T = 30");
+  // réciproque : la période qui ramène le risque à la valeur visée
+  const T = h.periodePourRisque(0.10, 30);
+  proche(T, 285.24, 0.05, "10 % de risque sur 30 ans");
+  proche(h.risqueDepassement(T, 30), 0.10, 1e-9, "aller-retour");
+});
+
 test("période de retour — note circulaire DGPC N°1054/2019, §4", () => {
   assert.equal(h.periodeRetour({ categorie: "classee", ouvrage: "dalot", S: 2.35, tjma: 520 }), 30);
   assert.equal(h.periodeRetour({ categorie: "classee", ouvrage: "dalot", S: 42, tjma: 1800 }), 50);
