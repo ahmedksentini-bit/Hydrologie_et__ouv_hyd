@@ -158,3 +158,13 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .survol-carte{pointer-events:none}
 .survol-carte text{font-family:Inter,-apple-system,sans-serif}
 #stFiche h4{color:#075985}
+
+/* ── Fil rouge : la synthèse, et ses cases de résultat ──────────────────── */
+/* Trois colonnes quand la place le permet : la chaîne compte une dizaine de
+   grandeurs par étape, et deux colonnes forcent à trop faire défiler. */
+@media(min-width:900px){#frEtapes .data-summary{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#frEtapes .data-summary small.note{margin-top:3px;font-size:12px;line-height:1.35}
+#frEtapes .data-summary strong{font-variant-numeric:tabular-nums}
+table.synoptique td:first-child{white-space:nowrap}
+table.synoptique td{vertical-align:top}
+#frProfil svg,#frSynoptique{overflow-x:auto}

@@ -47,6 +47,9 @@ function accueil() {
       <h3>Cours interactif</h3><p>Figures, cartes et calculateurs intégrés au fil du texte.</p></a>
     <a class="resource" href="exerciseur.html"><span class="resource-mark">∑</span>
       <h3>Exerciseur</h3><p>Le débit de projet calculé par toutes les méthodes, avec la synthèse.</p></a>
+    <a class="resource" href="fil-rouge.html"><span class="resource-mark">⟶</span>
+      <h3>Fil rouge</h3><p>Un seul franchissement, calculé du bassin versant à la protection
+      de sortie — les neuf chapitres enchaînés sur un même cas.</p></a>
   </section>
 
   ${parPartie}`;

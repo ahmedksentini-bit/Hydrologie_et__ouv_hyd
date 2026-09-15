@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075985">
+<meta name="description" content="Fil rouge — un franchissement calculé d'un bout à l'autre du cours, du bassin versant à la protection de sortie">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="enhancements.css">
+<link rel="stylesheet" href="site.css">
+<title>Fil rouge — un ouvrage, du bassin à la protection</title>
+</head><body>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Retour à l'accueil">
+    <span class="brand-mark">HO</span>
+    <span><strong>Hydrologie &amp; OH</strong><small>Fil rouge</small></span>
+  </a>
+  <div class="header-actions"><a class="ghost course-link" href="cours.html">Cours</a>
+    <a class="ghost course-link" href="exerciseur.html">Exerciseur</a></div>
+</header>
+<main id="app" tabindex="-1">
+  <section class="chapter-banner"><span class="num">⟶</span>
+    <div><h1 id="frTitre">Un ouvrage, d'un bout à l'autre</h1>
+    <p id="frSous">Le même franchissement, calculé du bassin versant à la protection de sortie.</p></div>
+  </section>
+
+  <section class="card">
+    <h2>Pourquoi un fil rouge</h2>
+    <p>Neuf chapitres, chacun avec ses figures et ses exercices, et une question qui reste :
+       <strong>est-ce que tout cela s'enchaîne&nbsp;?</strong> Un cours découpé en chapitres
+       donne à croire que les calculs sont indépendants. Ils ne le sont pas : la surface du
+       chapitre 1 décide de la méthode du chapitre 4, qui décide du débit, qui décide du
+       niveau du chapitre 9, qui décide de la condition aval du chapitre 6, qui décide de la
+       section, qui décide de la vitesse, qui décide de l'enrochement du chapitre 8.</p>
+    <p>Cette page suit <strong>un seul ouvrage</strong> d'un bout à l'autre. Tous les nombres
+       affichés sortent des solveurs des neuf chapitres, dans l'ordre où le projet les
+       demande. Aucun n'est recopié : changez la période de retour en haut de page, et tout
+       ce qui suit se recalcule — jusqu'aux blocs d'enrochement.</p>
+    <div class="hint" id="frAvertissement"></div>
+  </section>
+
+  <section class="card">
+    <h2>Les trois vannes</h2>
+    <p class="method-note" style="margin:0 0 10px">Trois décisions, et trois seulement, sont
+       laissées ouvertes. Tout le reste est calculé. Déplacer l'une d'elles, c'est voir
+       jusqu'où elle porte.</p>
+    <div class="curseurs">
+      <div class="field"><label for="frT">Période de retour</label>
+        <div class="input-wrap"><select id="frT">
+          <option value="auto">Celle du chapitre 5 — calculée</option>
+          <option value="10">10 ans</option><option value="20">20 ans</option>
+          <option value="50">50 ans</option><option value="100">100 ans</option>
+        </select></div></div>
+      <div class="field"><label for="frRegle">Valeur retenue parmi les méthodes applicables</label>
+        <div class="input-wrap"><select id="frRegle">
+          <option value="mediane">La médiane</option>
+          <option value="min">La plus faible</option>
+          <option value="max">La plus forte</option>
+        </select></div></div>
+      <div class="field"><label for="frVmax">Vitesse au-delà de laquelle un candidat est refusé
+        <small>— <span id="frVmaxVal">—</span></small></label>
+        <div class="input-wrap"><input id="frVmax" type="range" min="2.5" max="5" step="0.1" value="4"><span class="unit">m/s</span></div></div>
+    </div>
+    <div id="frAlerte"></div>
+  </section>
+
+  <section class="card">
+    <h2>La chaîne, en une vue</h2>
+    <p class="method-note" style="margin:0 0 10px">Chaque ligne prend ce que la précédente a
+       produit. La colonne de droite est ce qui passe à la suivante.</p>
+    <div id="frSynoptique"></div>
+  </section>
+
+  <section class="card">
+    <h2>Le franchissement, tel qu'il sort du calcul</h2>
+    <div id="frProfil"></div>
+    <p class="method-note">Coupe suivant l'axe de l'oued. Hauteurs exagérées : c'est un
+       schéma de synthèse, pas un plan d'exécution. Toutes les cotes portées sont celles que
+       la chaîne vient de calculer.</p>
+  </section>
+
+  <div id="frEtapes"></div>
+
+  <section class="card">
+    <h2>Ce que le fil rouge démontre</h2>
+    <div id="frBilan"></div>
+    <div class="actions"><a class="primary" href="cours.html">Revenir au cours</a>
+      <a class="secondary" href="exerciseur.html">Ouvrir l'exerciseur</a></div>
+  </section>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="src/cours-fil-rouge.js"></script>
+<script type="module" src="src/tableaux.js"></script>
+</body></html>

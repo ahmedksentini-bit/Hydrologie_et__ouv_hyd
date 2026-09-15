@@ -11,7 +11,7 @@ import { dirname, join } from "node:path";
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lire = (f) => readFileSync(join(racine, f), "utf-8");
-const PAGES = ["index.html", "cours.html", "exerciseur.html"];
+const PAGES = ["index.html", "cours.html", "exerciseur.html", "fil-rouge.html"];
 
 const idsDe = (html) => [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
 
@@ -40,6 +40,17 @@ test("les figures du cours ne visent que des identifiants existants", () => {
     // chaque script doit être chargé par la page
     assert.ok(lire("cours.html").includes(`src/${f}`), `${f} n'est pas chargé par cours.html`);
   }
+});
+
+test("le fil rouge ne vise que des identifiants de sa propre page", () => {
+  const ids = new Set(idsDe(lire("fil-rouge.html")));
+  const src = lire("src/cours-fil-rouge.js");
+  const siens = new Set([...src.matchAll(/\bid="([^"$]+)"/g)].map((m) => m[1]));
+  for (const [, id] of src.matchAll(/\bel\("([^"]+)"\)/g))
+    assert.ok(ids.has(id) || siens.has(id),
+      `cours-fil-rouge.js appelle el("${id}") — absent de fil-rouge.html`);
+  assert.ok(lire("fil-rouge.html").includes("src/cours-fil-rouge.js"),
+    "le script du fil rouge n'est pas chargé par sa page");
 });
 
 test("le service worker précharge tout ce que les pages utilisent", () => {

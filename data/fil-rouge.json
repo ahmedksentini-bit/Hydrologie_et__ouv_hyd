@@ -1,0 +1,81 @@
+{
+  "projet": {
+    "nom": "Oued El Hamra",
+    "route": "RR 71 — déviation de Foussana",
+    "pk": "8 + 420",
+    "situation": "Tunisie centrale, versant nord du Chambi, haut bassin du Zeroud",
+    "maitreOuvrage": "Direction régionale de l'équipement"
+  },
+  "avertissement": [
+    "Cas d'école. Le bassin, le levé de l'oued, la série pluviométrique et le profil de la route sont construits pour l'enseignement : ils ne décrivent aucun ouvrage réel.",
+    "Les données de référence, elles, sont celles du cours : planche SOGREAH et paramètres de Montana lus à la station de Kasserine, tables de Ghorbel, Frigui, Kallel, Fersi et Francou–Rodier.",
+    "Tous les nombres affichés sont recalculés par les solveurs des chapitres 1 à 9. Aucun n'est recopié."
+  ],
+  "bassin": {
+    "S": 12.40,
+    "P": 17.80,
+    "L": 5.60,
+    "longueurReseau": 17.36,
+    "altitudes": { "Hmax": 512, "Hmin": 218, "H5": 455, "H50": 330, "H95": 250, "Hmoy": 336 },
+    "couvertureVegetale": 25,
+    "note": "Délimitation sur MNT 30 m, exutoire au franchissement. L'altitude minimale du bassin est celle du lit au droit de l'ouvrage : c'est elle qui sert de référence à Δh."
+  },
+  "pluie": {
+    "station": "Kasserine",
+    "Pan": 300,
+    "stationMontana": "Kasserine",
+    "stationSogreah": "Kasserine",
+    "serie": [42.5, 61.0, 28.4, 55.2, 39.8, 73.6, 31.2, 48.0, 92.5, 36.4,
+              57.8, 44.1, 26.9, 68.3, 51.5, 33.7, 79.2, 41.0, 60.4, 47.3,
+              35.6, 105.0, 29.8, 53.9, 66.1, 38.2, 45.7, 58.6, 30.5, 49.4],
+    "note": "Maxima journaliers annuels, 30 ans, en millimètres, dans l'ordre chronologique."
+  },
+  "zones": {
+    "ghorbel": "III",
+    "frigui": "CentreSud",
+    "kallel": null,
+    "fersi": null,
+    "francou": null,
+    "note": "Zone III de Ghorbel : Meliane, Merguellil, nord Zeroud. Région Centre-Sud de Frigui. Fersi ne couvre que le Sud-Est et le Sud-Ouest, Kallel et Francou–Rodier ne sont pas zonés ici : leurs cases restent vides, et c'est un motif de rejet à part entière."
+  },
+  "route": {
+    "categorie": "classee",
+    "ouvrage": "dalot",
+    "tjma": 1200,
+    "chaussee": 7.0,
+    "accotement": 1.5,
+    "fruitTalus": 1.5,
+    "biaisDeg": 75,
+    "hauteurRemblai": 3.8,
+    "longueurDeversante": 60,
+    "plateforme": { "largeur": 10, "longueur": 300, "penteFosse": 0.005, "revetementFosse": "terre-vegetalisee" }
+  },
+  "franchissement": {
+    "zTnEntree": 218.03,
+    "zTnSortie": 217.95,
+    "decaissement": 0,
+    "hauteurOuvrage": 2.5,
+    "K": 70,
+    "entree": "box-ailes-evasees",
+    "angleAiles": 45,
+    "note": "Les deux cotes du lit sont levées au droit des futures têtes, à 15 m l'une de l'autre : ce sont elles, et non un choix de projeteur, qui fixent la pente de l'ouvrage."
+  },
+  "oued": {
+    "pente": 0.005,
+    "points": [
+      { "x": -30, "z": 221.30 }, { "x": -24, "z": 220.90 }, { "x": -18, "z": 220.55 },
+      { "x": -12, "z": 220.28 }, { "x": -9, "z": 220.10 }, { "x": -9, "z": 218.55 },
+      { "x": -7, "z": 218.28 }, { "x": -4, "z": 218.05 }, { "x": 0, "z": 218.00 },
+      { "x": 4, "z": 218.08 }, { "x": 7, "z": 218.32 }, { "x": 9, "z": 218.60 },
+      { "x": 9, "z": 220.06 }, { "x": 13, "z": 220.30 }, { "x": 19, "z": 220.60 },
+      { "x": 25, "z": 220.95 }, { "x": 31, "z": 221.35 }
+    ],
+    "sousSections": [
+      { "x0": -30, "x1": -9, "strickler": "majeurCultive", "nom": "lit majeur rive gauche" },
+      { "x0": -9, "x1": 9, "strickler": "litGalets", "nom": "lit mineur" },
+      { "x0": 9, "x1": 31, "strickler": "majeurCultive", "nom": "lit majeur rive droite" }
+    ],
+    "berges": { "gauche": 220.10, "droite": 220.06 },
+    "note": "Levé au pas de 3 m en lit mineur, 6 m en lit majeur, sur 61 m de large. Les deux verticales à ±9 m marquent le sommet des berges."
+  }
+}
