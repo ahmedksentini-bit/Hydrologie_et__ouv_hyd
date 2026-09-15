@@ -4,7 +4,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { AVERSE, DUREE, intensite, cumul, intensiteMax } from "../src/solvers-averse.js";
+import { AVERSE, DUREE, intensite, cumul, intensiteMax, ENREGISTREMENT, N_PAS,
+         DUREES_IDF, courbeIdf, ajusterMontana } from "../src/solvers-averse.js";
 
 const proche = (a, b, tol, msg) =>
   assert.ok(Math.abs(a - b) <= tol, `${msg} : ${a} attendu ${b} ± ${tol}`);
@@ -47,4 +48,88 @@ test("les chiffres publiés dans le cours viennent de cette averse", () => {
   assert.ok(bloc.includes(`${intensiteMax(0.5).toFixed(1).replace(".", ",")} mm/h`), "60,0 mm/h");
   assert.ok(bloc.includes(`${moyenne.toFixed(1).replace(".", ",")} mm/h`), "2,0 mm/h");
   assert.ok(bloc.includes(`facteur ${Math.round(intensiteMax(0.5) / moyenne)}`), "facteur 30");
+});
+
+test("l'enregistrement fin a une pointe, et la courbe IDF descend vraiment", () => {
+  const total = ENREGISTREMENT.reduce((a, v) => a + v, 0);
+  assert.equal(ENREGISTREMENT.length, N_PAS);
+  proche(total, 99.8, 0.05, "hauteur totale de l'enregistrement");
+  const pts = courbeIdf();
+  assert.equal(pts.length, DUREES_IDF.length);
+  // STRICTEMENT décroissante — c'est tout l'objet de la figure. Une courbe
+  // plate sur un intervalle, comme celle de l'averse en paliers, ne montrerait
+  // pas pourquoi elle descend.
+  for (let k = 1; k < pts.length; k++)
+    assert.ok(pts[k].intensite < pts[k - 1].intensite,
+      `intensité non décroissante de ${pts[k - 1].min} à ${pts[k].min} min`);
+  // La hauteur, elle, CROÎT avec la durée : c'est le couple des deux qui
+  // répond à la question des étudiants.
+  for (let k = 1; k < pts.length; k++)
+    assert.ok(pts[k].hauteur >= pts[k - 1].hauteur - 1e-9,
+      `hauteur décroissante de ${pts[k - 1].min} à ${pts[k].min} min`);
+  proche(pts[pts.length - 1].hauteur, total, 1e-9, "sur 24 h, la fenêtre prend tout");
+});
+
+test("la décroissance est une nécessité, pas une observation", () => {
+  // i_max(2t) ≤ i_max(t) pour TOUT enregistrement : une fenêtre de 2t se
+  // découpe en deux fenêtres de t, dont chacune contient au plus le maximum
+  // sur t. On le vérifie sur l'enregistrement, et sur cent autres tirés au
+  // hasard — si l'inégalité pouvait être violée, elle le serait là.
+  const verifier = (serie) => {
+    const max = (n) => {
+      let m = 0;
+      for (let k = 0; k + n <= serie.length; k++) {
+        let s = 0;
+        for (let j = k; j < k + n; j++) s += serie[j];
+        if (s > m) m = s;
+      }
+      return m;
+    };
+    for (const n of [1, 2, 3, 6, 12]) {
+      const i1 = max(n) / n, i2 = max(2 * n) / (2 * n);
+      assert.ok(i2 <= i1 + 1e-12, `i(${2 * n}) = ${i2} > i(${n}) = ${i1}`);
+    }
+  };
+  verifier(ENREGISTREMENT);
+  let graine = 12345;
+  const suivant = () => (graine = (graine * 1103515245 + 12345) % 2147483648) / 2147483648;
+  for (let essai = 0; essai < 100; essai++)
+    verifier(Array.from({ length: 60 }, () => (suivant() < 0.3 ? suivant() * 20 : 0)));
+});
+
+test("Montana ajusté, et ce que son extrapolation coûte", () => {
+  const m = ajusterMontana();
+  proche(m.a, 641, 1, "coefficient a");
+  proche(m.b, 0.644, 1e-3, "exposant b");
+  proche(m.r2, 0.949, 1e-3, "R²");
+  // La dérive systématique citée dans le cours : l'ajustement d'ensemble
+  // surestime aux deux bouts et sous-estime au milieu.
+  const pts = courbeIdf();
+  const ecart = (min) => {
+    const p = pts.find((x) => x.min === min);
+    return (m.a * Math.pow(min, -m.b)) / p.intensite - 1;
+  };
+  proche(ecart(5) * 100, 67, 1, "+67 % à 5 min");
+  proche(ecart(60) * 100, -31, 1, "−31 % à 60 min");
+  proche(ecart(1440) * 100, 43, 1, "+43 % à 1440 min");
+  // Ajusté sur la plage utile, puis extrapolé : un facteur 2,3 à 5 minutes.
+  const utile = ajusterMontana(pts.filter((p) => p.min >= 15 && p.min <= 360));
+  proche(utile.b, 0.684, 1e-3, "exposant sur 15–360 min");
+  proche(utile.r2, 0.976, 1e-3, "R² sur la plage utile");
+  const extrapole = utile.a * Math.pow(5, -utile.b);
+  proche(extrapole, 307, 1, "extrapolation à 5 min");
+  proche(extrapole / pts[0].intensite, 2.26, 0.01, "facteur d'erreur");
+});
+
+test("les chiffres de la dérive publiés dans le cours viennent du calcul", () => {
+  const html = readFileSync(new URL("../cours.html", import.meta.url), "utf-8");
+  const bloc = html.slice(html.indexOf("Mais Montana n'est qu'un ajustement"),
+                          html.indexOf("La courbe intensité–durée–fréquence"));
+  const m = ajusterMontana();
+  for (const [min, attendu] of [[5, "+67 %"], [30, "−27 %"], [60, "−31 %"], [1440, "+43 %"]]) {
+    assert.ok(bloc.includes(attendu), `l'écart ${attendu} à ${min} min manque au cours`);
+  }
+  assert.ok(bloc.includes("307 mm/h"), "l'extrapolation à 5 min manque");
+  assert.ok(bloc.includes(`${m.b.toFixed(3).replace(".", ",")}`)
+         || bloc.includes("0,684"), "l'exposant ajusté manque");
 });

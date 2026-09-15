@@ -21,10 +21,22 @@ for prefixe, sortie in couples:
     fichiers = sorted(dossier.glob(f"{prefixe}-*.png"))
     if not fichiers:
         sys.exit(f"aucune image {prefixe}-*.png dans {dossier}")
-    images = []
+    # Les captures n'ont pas toutes exactement la même hauteur — un texte qui
+    # passe à la ligne suffit. L'encodeur GIF impose la taille de la PREMIÈRE
+    # image et rogne les autres : on aligne donc tout sur la plus grande, en
+    # complétant en blanc, plutôt que de perdre le bas du dernier dessin.
+    brutes = []
     for f in fichiers:
         im = Image.open(f).convert("RGB")
-        im = im.resize((im.width // 2, im.height // 2), Image.LANCZOS)   # retour à 1×
+        brutes.append(im.resize((im.width // 2, im.height // 2), Image.LANCZOS))
+    W = max(im.width for im in brutes)
+    H = max(im.height for im in brutes)
+    images = []
+    for im in brutes:
+        if im.size != (W, H):
+            fond = Image.new("RGB", (W, H), "white")
+            fond.paste(im, (0, 0))
+            im = fond
         images.append(im.convert("P", palette=Image.ADAPTIVE, colors=64))
     chemin = racine / "assets" / sortie
     # Les images identiques sont fusionnées par l'encodeur — le pluviomètre n'a

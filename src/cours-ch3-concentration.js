@@ -203,7 +203,7 @@ function recalculer() {
 function image(ms) {
   if (marche) {
     const duree = 14000;                          // tc + 60 % en quatorze secondes
-    t = ((ms - depart) / duree) * carte.tc * 1.6;
+    t = Math.max(0, ((ms - depart) / duree) * carte.tc * 1.6);
     if (t >= carte.tc * 1.6) { t = carte.tc * 1.6; arreter(); }
     el("tcTemps").value = String(t);
     animer();

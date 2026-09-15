@@ -585,6 +585,81 @@
      pluviographe proche emprunte les siens à une station voisine. Cet emprunt se déclare : il
      est souvent la plus forte hypothèse de toute la note de calcul.</div>
 
+  <h3>Pourquoi la courbe IDF descend</h3>
+  <p>C'est la question que tout le monde pose, et elle est légitime : il pleut <em>plus</em>
+     en une heure qu'en cinq minutes, alors pourquoi l'intensité <em>baisse</em>-t-elle quand
+     la durée augmente ? Parce que l'intensité est une hauteur <strong>divisée par</strong> la
+     durée — et surtout parce qu'on retient à chaque fois le <strong>maximum</strong>.</p>
+  <p>Pour une durée t, on promène une fenêtre de largeur t sur l'enregistrement et on garde
+     la position qui contient le plus d'eau. Sur cinq minutes, la fenêtre se cale exactement
+     sur la pointe de l'orage. Sur une heure, elle ne le peut plus : <strong>une heure, c'est
+     la pointe plus cinquante-cinq minutes de pluie plus faible</strong>. La moyenne tombe.
+     Elle n'a pas le choix.</p>
+  <div class="sanity-check"><h3>Ce n'est pas une observation, c'est une nécessité</h3>
+    <p>La décroissance n'est pas un fait empirique qu'on pourrait trouver démenti sur un autre
+       poste : elle est vraie pour <em>tout</em> enregistrement, quel qu'il soit. Une fenêtre
+       de durée 2t se découpe en deux fenêtres de durée t, dont chacune contient au plus le
+       maximum sur t. Sa hauteur vaut donc au plus deux fois ce maximum — et son intensité,
+       qui est cette hauteur divisée par 2t, au plus l'intensité maximale sur t.</p>
+    <p class="formula">i<sub>max</sub>(2t) ≤ i<sub>max</sub>(t)&nbsp;&nbsp;·&nbsp;&nbsp;
+       et plus généralement i<sub>max</sub> est décroissante</p>
+    <p>Une courbe IDF croissante, même sur un seul intervalle, n'est pas une particularité
+       locale : c'est une erreur de dépouillement.</p>
+  </div>
+
+  <div class="calc" id="calcIdfConstruction">
+    <h3>La construire, fenêtre après fenêtre</h3>
+    <p class="method-note" style="margin:0 0 10px">Un enregistrement de pluviographe : 99,8 mm
+       en 24 heures, avec une pointe brève vers 10 h 30. Pour chaque durée, la fenêtre balaie
+       les vingt-quatre heures, on retient sa meilleure position, et le point (durée,
+       intensité) se plante sur le graphique du bas.</p>
+    <div class="curseurs">
+      <div class="field"><label for="idfEtape">Durée de la fenêtre <small>— <span id="idfDuree">5 min</span></small></label>
+        <div class="input-wrap"><input id="idfEtape" type="range" min="0" max="9" step="1" value="0"></div></div>
+      <div class="actions"><button type="button" class="primary" id="idfPlay">Lecture</button></div>
+    </div>
+    <div class="figures">
+      <div id="idfEnr"></div>
+      <p class="method-note" style="margin:8px 0 10px;min-height:3.4em" id="idfMot">—</p>
+      <div id="idfCourbe"></div>
+    </div>
+    <p class="final-result">Dix durées, dix points, et une droite en log-log : c'est
+      exactement la <strong>loi de Montana</strong> du reste du chapitre.
+      <small><br>L'ajustement de ces dix points donne i = 641·t<sup>−0,644</sup> avec
+      R² = 0,949. L'exposant 0,644 n'a rien d'inventé : c'est l'ordre de grandeur des b
+      tabulés sur les stations tunisiennes — 0,633 à Kasserine. La loi de Montana n'est pas
+      une hypothèse ajoutée aux données : c'est la forme que les données prennent.</small></p>
+  </div>
+
+  <div class="sanity-check"><h3>Mais Montana n'est qu'un ajustement, et il se voit</h3>
+    <p>R² = 0,949 est un bon chiffre, et il cache une dérive systématique. Le même
+       ajustement, confronté aux dix points dont il sort :</p>
+    <table class="resultats"><thead><tr><th>Durée</th><th>Observé</th><th>Montana</th>
+      <th>Écart</th></tr></thead>
+      <tbody>
+        <tr><td>5 min</td><td class="q">136 mm/h</td><td class="q">228 mm/h</td>
+          <td class="q">+67 %</td></tr>
+        <tr><td>30 min</td><td class="q">99 mm/h</td><td class="q">72 mm/h</td>
+          <td class="q">−27 %</td></tr>
+        <tr><td>60 min</td><td class="q">67 mm/h</td><td class="q">46 mm/h</td>
+          <td class="q">−31 %</td></tr>
+        <tr><td>360 min</td><td class="q">14,8 mm/h</td><td class="q">14,5 mm/h</td>
+          <td class="q">−2 %</td></tr>
+        <tr><td>1440 min</td><td class="q">4,2 mm/h</td><td class="q">5,9 mm/h</td>
+          <td class="q">+43 %</td></tr>
+      </tbody></table>
+    <p>Une seule puissance ne peut pas tenir de cinq minutes à vingt-quatre heures. Ajustée
+       sur la seule plage utile aux ouvrages — <strong>15 à 360 minutes</strong> — elle colle
+       bien mieux : i = 924·t<sup>−0,684</sup>, R² = 0,976.</p>
+    <p><strong>Et c'est précisément pour cela qu'on ne l'extrapole pas.</strong> Cet
+       ajustement-là, poussé jusqu'à 5 minutes, annonce 307 mm/h là où l'enregistrement en
+       donne 136 : un facteur 2,3. Un temps de concentration de quelques minutes sur un
+       petit bassin tombe exactement dans ce piège — d'où la <em>durée minimale calée</em>
+       que porte chaque jeu de paramètres, et qu'il faut respecter au lieu de la contourner.</p>
+    <p class="diagram-note">La construction en GIF, tirée de la figure :
+       <a href="assets/courbe-idf.gif" download>la fenêtre, le maximum, le point</a>.</p>
+  </div>
+
   <h3>La courbe intensité–durée–fréquence</h3>
   <p>Ajustée sur les enregistrements d'une station, la courbe IDF se met sous la forme</p>
   <p class="formula">i = a · t<sup>−b</sup> · T<sup>c</sup>&nbsp;&nbsp;&nbsp;
@@ -2359,6 +2434,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch3-pluvio.js"></script>
 <script type="module" src="src/cours-ch3-concentration.js"></script>
+<script type="module" src="src/cours-ch3-idf.js"></script>
 <script type="module" src="src/cours-ch3-montana.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch4-stations.js"></script>

@@ -218,7 +218,9 @@ function dessiner() {
 function image(ms) {
   horloge = ms / 1000;
   if (marche) {
-    t = Math.min(DUREE, ((ms - depart) / 1000 / SECONDES) * DUREE);
+    // max(0) : `ms` peut précéder le départ de quelques dixièmes de
+    // milliseconde, et l'horloge affichait alors « −1 h 00 ».
+    t = Math.min(DUREE, Math.max(0, ((ms - depart) / 1000 / SECONDES) * DUREE));
     if (t >= DUREE) arreter();
   }
   dessiner();
