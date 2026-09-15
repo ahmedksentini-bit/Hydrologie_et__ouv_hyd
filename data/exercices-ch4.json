@@ -475,6 +475,134 @@
           "explication": "Emprunter la valeur d'une localité voisine reviendrait à interpoler entre zones, ce que la règle interdit. La planche a une étendue, et Thala est à sa limite nord. Ce n'est pas une panne — c'est la couverture de la source, et pour le Nord c'est la planche d'origine qu'il faut consulter."
         }
       ]
+    },
+    {
+      "id": "ch4-e11",
+      "titre": "Choisir la zone : un découpage par méthode, et pas de correspondance",
+      "difficulte": 3,
+      "enonce": "Un bassin de 150 km² draine le Zeroud en amont de Kairouan, au nord-ouest de Sbeitla. Périmètre 62 km, pluie annuelle 340 mm, Δh (altitude médiane − franchissement) 210 m. Période de retour imposée par la note DGPC : 100 ans. Le rectangle équivalent donne L = 25,01 km et l'indice de compacité Ic = 1,428. On cherche à quelle zone il appartient dans chaque zonage — et ce que ce choix coûte.",
+      "questions": [
+        {
+          "texte": "Les descriptions de Ghorbel distinguent « Zeroud amont » (zone II) et « nord Zeroud » (zone III). Pour ce bassin, laquelle retenir ?",
+          "type": "choix",
+          "options": [
+            "La zone II : le bassin est sur le Zeroud en amont",
+            "La zone III : le Zeroud est au nord du Sahel",
+            "La zone IV : le bassin se draine vers Kairouan, donc vers le Sahel",
+            "Indifférent : les deux décrivent le Zeroud"
+          ],
+          "reponse": 0,
+          "explication": "Le même oued est partagé entre deux zones, et c'est la POSITION dans le bassin qui tranche : l'amont en II, la partie nord en III. « Indifférent » est le piège : les deux zones existent précisément parce qu'elles ne donnent pas le même résultat."
+        },
+        {
+          "texte": "Débit centennal de Ghorbel si l'on retient la zone II.",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 345.8,
+          "tolerance": 3,
+          "explication": "Qmax = S^0,8 · [1,075·√(P·Δh/L)/Ic − 0,232] avec P en mètres : Qmax = 57,26 m³/s. En zone II, R₁₀₀ = 6,04, donc Q₁₀₀ = 57,26 × 6,04 = 345,8 m³/s."
+        },
+        {
+          "texte": "Et si l'on retient la zone III ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 454.1,
+          "tolerance": 3,
+          "explication": "Le Qmax ne change pas — il ne dépend pas de la zone. Seul R change : 7,93 au lieu de 6,04, donc Q₁₀₀ = 454,1 m³/s."
+        },
+        {
+          "texte": "Rapport entre les deux valeurs.",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1.313,
+          "tolerance": 0.02,
+          "explication": "7,93 / 6,04 = 1,313. Un seul mot de la description — « amont » ou « nord » — déplace le débit de 31 %. La zone n'est pas un réglage fin."
+        },
+        {
+          "texte": "Le bassin étant en zone II chez Ghorbel, quelle région faut-il prendre chez Kallel ?",
+          "type": "choix",
+          "options": [
+            "Celle qui correspond à la zone II : les zonages se recoupent",
+            "Aucune correspondance : il faut relire la description de Kallel et choisir indépendamment",
+            "Le noyau de la dorsale, puisque Ghorbel II contient la dorsale",
+            "La deuxième région de Kallel, comme la zone II est la deuxième de Ghorbel"
+          ],
+          "reponse": 1,
+          "explication": "Chaque zonage découpe le pays à sa manière, sur son propre échantillon de bassins. Il n'y a ni correspondance de numéros, ni correspondance de limites. Déduire une région d'une autre est l'erreur la plus fréquente du chapitre, et rien dans le résultat ne la signale."
+        },
+        {
+          "texte": "Kallel, région « Noyau de la dorsale » : débit centennal.",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 945.9,
+          "tolerance": 8,
+          "explication": "Q = q₀ · S^α · T^0,41 = 2,60 × 150^0,80 × 100^0,41 = 945,9 m³/s."
+        },
+        {
+          "texte": "Kallel, région « Centre et Sahel » : débit centennal.",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 1998.7,
+          "tolerance": 15,
+          "explication": "Au-delà de 20 ans, q₀ = 24,7 et α = 0,50 : Q = 24,7 × 150^0,50 × 100^0,41 = 1 998,7 m³/s. Ce n'est pas seulement q₀ qui change d'une région à l'autre, c'est aussi l'exposant de la surface."
+        },
+        {
+          "texte": "Rapport entre les deux régions de Kallel.",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 2.113,
+          "tolerance": 0.03,
+          "explication": "1 998,7 / 945,9 = 2,11. Le choix de la région DOUBLE le débit. Sur un même bassin, l'incertitude de zonage dépasse de loin celle des mesures morphométriques qu'on soigne pourtant beaucoup plus."
+        },
+        {
+          "texte": "La pluie annuelle vaut 340 mm, sous la limite de 400 mm de Fersi. Pourquoi Fersi ne répond-elle pas ici ?",
+          "type": "choix",
+          "options": [
+            "Hors domaine : la surface de 150 km² dépasse son calage",
+            "Hors zone : Fersi n'a que des secteurs Sud-Est et Sud-Ouest, et le bassin est au Centre",
+            "Hors table : 100 ans n'est pas une période calée",
+            "Elle répond : 340 mm est dans son domaine"
+          ],
+          "reponse": 1,
+          "explication": "Trois motifs de refus différents existent — hors domaine, hors zone, hors table — et les confondre conduit à chercher la mauvaise correction. Ici le domaine de pluie est respecté et 100 ans EST tabulé chez Fersi ; c'est le zonage qui exclut le bassin. Aucune valeur ne doit être produite, et le motif doit être écrit."
+        },
+        {
+          "texte": "À 100 ans, Frigui ne répond pas non plus. Pour quelle raison ?",
+          "type": "choix",
+          "options": [
+            "Hors zone : aucune région de Frigui ne couvre le Centre",
+            "Hors domaine : la pluie annuelle est trop faible",
+            "Hors table : λ n'est calé qu'à 2, 5, 10 et 50 ans",
+            "Hors domaine : la surface est trop petite"
+          ],
+          "reponse": 2,
+          "explication": "Frigui couvre bien le Centre et le Sud, mais sa table de λ s'arrête à 50 ans. Avec la note DGPC qui impose 30, 50 ou 100 ans, Frigui ne sort donc qu'à 50 ans. On n'interpole pas : aucun manuel n'en donne la règle."
+        },
+        {
+          "texte": "Le bassin chevauche la limite entre deux zones de Ghorbel. Que fait-on ?",
+          "type": "choix",
+          "options": [
+            "On interpole entre les deux R selon la part de surface dans chaque zone",
+            "On prend la zone la plus défavorable, sans avoir à le justifier",
+            "On calcule les deux, on déclare le choix retenu et on montre l'écart",
+            "On prend la moyenne des deux débits"
+          ],
+          "reponse": 2,
+          "explication": "Aucun manuel ne donne de règle d'interpolation entre zones — la pondération par les surfaces est une invention plausible, donc dangereuse. Prendre la plus défavorable est défendable, mais seulement si c'est ÉCRIT : le lecteur de la note doit pouvoir refaire le raisonnement. Montrer l'écart de 31 % est ce qui distingue une hypothèse déclarée d'un chiffre subi."
+        },
+        {
+          "texte": "De tout cela, que retenir sur la place du zonage dans une note de calcul ?",
+          "type": "choix",
+          "options": [
+            "C'est un détail de mise en forme : la formule fait le travail",
+            "C'est une hypothèse de premier ordre, qui se déclare avec sa justification géographique",
+            "C'est une donnée mesurée, comme la surface ou le périmètre",
+            "C'est un paramètre de calage qu'on ajuste pour retrouver un débit plausible"
+          ],
+          "reponse": 1,
+          "explication": "La zone n'est pas mesurée : elle est lue sur une description littéraire, puis choisie. Et ce choix pèse plus lourd que la plupart des grandeurs qu'on soigne — un facteur 2 chez Kallel. Il se déclare donc comme une hypothèse, avec la position du bassin et la phrase du manuel sur laquelle on s'est appuyé. L'ajuster pour retrouver un débit attendu est l'inverse exact de la démarche."
+        }
+      ]
     }
   ]
 }

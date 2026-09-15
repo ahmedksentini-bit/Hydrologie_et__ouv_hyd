@@ -88,9 +88,10 @@
         "Frigui",
         "enveloppe de Francou–Rodier",
         "domaines de validité",
-        "dispersion et débit retenu"
+        "dispersion et débit retenu",
+        "choix de la zone"
       ],
-      "exercices": 10,
+      "exercices": 11,
       "cours": true
     },
     {

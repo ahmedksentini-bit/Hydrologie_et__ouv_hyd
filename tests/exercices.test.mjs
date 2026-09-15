@@ -651,3 +651,34 @@ test("ch7 — précalage et alignement recalculés", () => {
   const rehausse = dim.precaler({ ...SITE, biaisDeg: 60, hauteurRemblai: 4.0 });
   vaut(q(b, "ch7-e10", 12), rehausse.L - aligne.L, "allongement dû au rehaussement");
 });
+
+test("ch4 — le choix de la zone recalculé", () => {
+  const b = banque("ch4");
+  const S = 150, P = 62, Pan = 340, dh = 210, T = 100;
+  const { L } = h.rectangleEquivalent(S, P);
+  const Ic = h.gravelius(P, S);
+  const qmax = h.ghorbelQmax123(S, Pan / 1000, dh, L, Ic);
+
+  vaut(q(b, "ch4-e11", 1), qmax * h.GHORBEL_R.II[T], "Ghorbel zone II");
+  vaut(q(b, "ch4-e11", 2), qmax * h.GHORBEL_R.III[T], "Ghorbel zone III");
+  vaut(q(b, "ch4-e11", 3), h.GHORBEL_R.III[T] / h.GHORBEL_R.II[T], "rapport des deux zones");
+  vaut(q(b, "ch4-e11", 5), h.kallel("NoyauDorsale", S, T), "Kallel dorsale");
+  vaut(q(b, "ch4-e11", 6), h.kallel("CentreSahel", S, T), "Kallel Centre-Sahel");
+  vaut(q(b, "ch4-e11", 7), h.kallel("CentreSahel", S, T) / h.kallel("NoyauDorsale", S, T),
+    "rapport des deux régions");
+
+  // Le cœur de l'exercice : le zonage pèse plus lourd que la morphométrie.
+  // Un écart de 10 % sur la surface — déjà généreux pour un MNT — ne déplace
+  // pas le débit autant que le choix d'une région voisine.
+  const parSurface = h.kallel("NoyauDorsale", S * 1.1, T) / h.kallel("NoyauDorsale", S, T);
+  const parZone = h.kallel("CentreSahel", S, T) / h.kallel("NoyauDorsale", S, T);
+  assert.ok(parZone > 8 * (parSurface - 1) + 1,
+    `le zonage (×${parZone.toFixed(2)}) doit dominer 10 % de surface (×${parSurface.toFixed(3)})`);
+
+  // Les trois motifs de refus sont bien distincts sur ce bassin : Fersi est
+  // hors ZONE (sa pluie passe), Frigui hors TABLE (sa zone convient).
+  assert.equal(h.motifsHorsDomaine("fersi", { S, Pan, T, zone: null })[0].startsWith("hors zone"), true);
+  assert.equal(h.motifsHorsDomaine("fersi", { S, Pan, T, zone: "SudEst" }).length, 0,
+    "la pluie de 340 mm est dans le domaine de Fersi");
+  assert.match(h.motifsHorsDomaine("frigui", { S, Pan, T, zone: "CentreSud" })[0], /hors table/);
+});
