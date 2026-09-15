@@ -1440,6 +1440,11 @@
   <p>Le niveau aval TW ne se devine pas : il vient soit d'une PHE connue, soit d'un calcul
      du chenal récepteur, soit de l'hypothèse assumée d'une sortie libre. <strong>Ce mode
      se choisit ; l'état de la sortie, lui, se déduit</strong> :</p>
+  <p class="method-note">Ce « calcul du chenal récepteur » est celui du
+     <a href="#ch9">chapitre 9</a> : la courbe de tarage de l'oued donne la cote du plan
+     d'eau naturel, et TW en est la hauteur au-dessus du radier de sortie. Tant qu'on ne
+     l'a pas fait, TW est une saisie — et c'est la seule grandeur de la chaîne dont on ne
+     sache pas dire d'où elle vient.</p>
   <table class="resultats"><thead><tr><th>Profondeur aval</th><th>État de la sortie</th></tr></thead>
     <tbody>
       <tr><td>TW ≈ 0</td><td class="motif">libre</td></tr>
@@ -2412,6 +2417,233 @@
   <div class="actions"><a class="secondary" href="index.html#ch8">Exercices du chapitre</a></div>
 </section>
 
+<section id="ch9" class="card">
+  <h2>9 · Hydraulique du lit naturel</h2>
+
+  <h3>Le chapitre 6 laissait un fil</h3>
+  <p>Au moment de traiter la condition aval, le chapitre 6 écrit que le niveau TW « vient
+     soit d'une PHE connue, soit d'un <strong>calcul du chenal récepteur</strong>, soit de
+     l'hypothèse assumée d'une sortie libre ». Ce calcul, personne ne l'avait fait. TW restait
+     un champ de saisie — la seule grandeur du cours qu'on demandait sans donner la chaîne qui
+     y mène. Ce chapitre la donne, et deux autres avec elle : jusqu'où l'ouvrage relève le
+     plan d'eau à l'amont, et où se forme le ressaut à sa sortie.</p>
+
+  <h3>Un lit naturel n'est pas un canal</h3>
+  <p>Un canal a une section et une rugosité. Un oued en a au moins trois : le <strong>lit
+     mineur</strong>, qui porte les écoulements courants, et les deux <strong>lits
+     majeurs</strong>, qui ne coulent qu'en crue — moins profonds, plus rugueux, cultivés ou
+     broussailleux. On ne peut pas les traiter d'un bloc.</p>
+  <p class="formula">Q = Σ<sub>i</sub> K<sub>i</sub> · A<sub>i</sub> ·
+     R<sub>i</sub><sup>2/3</sup> · √J&nbsp;&nbsp;avec&nbsp;&nbsp;R<sub>i</sub> =
+     A<sub>i</sub> / P<sub>i</sub></p>
+  <p>Les limites entre lits sont des <strong>verticales</strong>, posées au sommet des berges,
+     et elles <em>ne comptent pas</em> dans le périmètre mouillé : l'eau y frotte contre de
+     l'eau, pas contre le lit. Chaque lit garde son rayon hydraulique et son Strickler.</p>
+
+  <div class="sanity-check"><h3>Le bloc unique dit que l'oued transporte moins d'eau quand il déborde</h3>
+    <p>La tentation est de composer un Strickler moyen, pondéré par les périmètres, et de
+       l'appliquer à la section entière. Voici ce que cela donne sur l'oued de démonstration,
+       dont les berges sont à 137,62 m :</p>
+    <table class="resultats"><thead><tr><th>Cote</th><th>Lits séparés</th><th>D'un seul bloc</th>
+      <th>Écart</th></tr></thead>
+      <tbody>
+        <tr><td>137,60 m — dans le lit mineur</td><td class="q">75,3 m³/s</td>
+          <td class="q">75,3 m³/s</td><td class="q">0 %</td></tr>
+        <tr><td>137,70 m — l'oued vient de déborder</td><td class="q">82,8 m³/s</td>
+          <td class="q">72,4 m³/s</td><td class="q">−13 %</td></tr>
+        <tr class="alerte"><td>138,10 m</td><td class="q">121,8 m³/s</td>
+          <td class="q">59,5 m³/s</td><td class="q">−51 %</td></tr>
+      </tbody></table>
+    <p>Le désaccord n'est pas seulement grand, il est <strong>absurde</strong> : d'après le
+       bloc unique, le débit <em>diminue</em> quand le plan d'eau monte de 137,60 à 138,10 m.
+       La raison est mécanique — dès que le lit majeur se mouille, il ajoute quarante mètres
+       de périmètre pour quelques mètres carrés de section, le rayon hydraulique d'ensemble
+       s'effondre, et Q ∝ R<sup>2/3</sup> suit. Une courbe de tarage calculée ainsi n'est même
+       pas inversible.</p>
+    <p class="method-note">Dans l'autre sens, les lits séparés <strong>majorent un peu</strong> :
+       ils ignorent l'échange de quantité de mouvement entre le lit mineur rapide et le lit
+       majeur lent, qui freine le premier et accélère le second. La vérité est entre les deux,
+       nettement plus près des lits séparés. C'est cette méthode qu'on retient — en sachant
+       qu'elle est optimiste de quelques pour cent, et en le disant.</p>
+  </div>
+
+  <h3>La courbe de tarage, et le TW du chapitre 6</h3>
+  <p>À pente donnée, chaque débit a son tirant normal, donc sa cote de plan d'eau. L'ensemble
+     forme la <strong>courbe de tarage</strong> de la section. C'est elle qui produit les deux
+     grandeurs que le reste du cours demandait sans les fournir :</p>
+  <p class="formula">TW = max(0 ; Z<sub>plan d'eau</sub> − Z<sub>radier aval</sub>)
+     &nbsp;&nbsp;·&nbsp;&nbsp; Z<sub>PHE naturelle</sub> = Z<sub>plan d'eau</sub></p>
+  <div class="hint"><strong>Un tarage n'est pas une mesure.</strong> Celui-ci suppose le
+     régime uniforme, un lit prismatique et des Strickler choisis. Un vrai tarage se
+     <em>jauge</em> : on mesure des couples (hauteur, débit) sur plusieurs crues. Tant qu'on
+     n'en a pas, la courbe calculée reste une hypothèse — et le paragraphe 5 montre de combien
+     de centimètres elle bouge quand on change d'avis sur la rugosité.</div>
+
+  <div class="calc" id="calcRiviere">
+    <h3>La section, ses lits, et ce qu'ils transportent</h3>
+    <p class="method-note" style="margin:0 0 10px">Un levé au pas de cinq mètres en lit majeur
+       et d'un mètre en lit mineur, pente du fond 0,25 %. Faire varier le débit : le plan
+       d'eau monte, et le lit majeur entre en jeu à partir de 137,62 m.</p>
+    <div class="curseurs">
+      <div class="field"><label for="rvQ">Débit de projet <small>— <span id="rvQVal">—</span></small></label>
+        <div class="input-wrap"><input id="rvQ" type="range" min="5" max="180" step="1" value="120"></div></div>
+      <div class="field"><label for="rvRadier">Cote du radier de sortie de l'ouvrage</label>
+        <div class="input-wrap"><input id="rvRadier" type="text" inputmode="decimal" value="135,40"><span class="unit">m</span></div></div>
+      <div class="field"><label for="rvKMineur">Rugosité du lit mineur</label>
+        <div class="input-wrap"><select id="rvKMineur"></select></div></div>
+      <div class="field"><label for="rvKMajeur">Rugosité des lits majeurs</label>
+        <div class="input-wrap"><select id="rvKMajeur"></select></div></div>
+    </div>
+    <div class="duo">
+      <div id="rvSection"></div>
+      <div id="rvTarage"></div>
+    </div>
+    <div id="rvLits"></div>
+    <div id="rvOut"></div>
+    <div id="rvSensibilite"></div>
+  </div>
+
+  <h3>Le remous : jusqu'où l'ouvrage se fait sentir</h3>
+  <p>Le chapitre 6 donne la charge HW <em>à l'ouvrage</em>. Il ne dit pas jusqu'où ce
+     relèvement remonte, et c'est pourtant la question que pose le riverain. La ligne d'eau
+     n'est plus uniforme : elle est <strong>graduellement variée</strong>, et rejoint le tirant
+     normal en s'en approchant asymptotiquement.</p>
+  <p class="formula">z<sub>2</sub> + V<sub>2</sub>²/2g = z<sub>1</sub> + V<sub>1</sub>²/2g +
+     J<sub>f</sub>·Δx&nbsp;&nbsp;avec&nbsp;&nbsp;J<sub>f</sub> = (Q / K)²</p>
+  <p>On remonte de proche en proche depuis l'ouvrage, par tronçons de quelques dizaines de
+     mètres, jusqu'à ce que la ligne d'eau rejoigne le tirant normal. La portée dépend bien
+     moins de la hauteur du relèvement que de la <strong>pente du lit</strong> — et l'écart
+     est spectaculaire. Sur l'oued de démonstration, à 120 m³/s et pour le même exhaussement
+     de 60 cm :</p>
+  <table class="resultats"><thead><tr><th>Pente du lit</th><th>Portée du remous</th></tr></thead>
+    <tbody>
+      <tr><td>0,25 % — l'oued du levé</td><td class="q">760 m</td></tr>
+      <tr><td>0,50 %</td><td class="q">300 m</td></tr>
+      <tr><td>1,00 %</td><td class="q">éteint dès le premier tronçon</td></tr>
+    </tbody></table>
+  <p>Doubler la pente divise la portée par plus de deux ; doubler l'exhaussement, lui, ne
+     l'allonge que d'un cinquième (760 m à 60 cm, 860 m à 80 cm). C'est <strong>en plaine que
+     l'ouvrage se fait sentir loin</strong>, et c'est là que la question du riverain se pose.</p>
+
+  <div class="calc" id="calcRemous">
+    <h3>La ligne d'eau à l'amont</h3>
+    <div class="curseurs">
+      <div class="field"><label for="rvExhaussement">Exhaussement à l'ouvrage <small>— <span id="rvExhaussementVal">—</span></small></label>
+        <div class="input-wrap"><input id="rvExhaussement" type="range" min="0.1" max="1.5" step="0.05" value="0.6"><span class="unit">m</span></div></div>
+    </div>
+    <div id="rvRemous"></div>
+    <p class="method-note">Le lit est supposé <strong>prismatique</strong> — même section d'un
+       bout à l'autre. Sur un oued réel il ne l'est pas, et c'est la première limite de ce
+       calcul : chaque rétrécissement, chaque élargissement déforme la courbe. Un calcul de
+       projet reprend le levé section par section.</p>
+  </div>
+
+  <h3>Le ressaut à la sortie</h3>
+  <p>Un ouvrage en pente rend souvent son eau en régime <strong>torrentiel</strong> : mince et
+     rapide. Le lit aval, lui, est fluvial. Le passage de l'un à l'autre ne peut pas être
+     progressif — il se fait par un <strong>ressaut</strong>, brutal, qui dissipe de l'énergie.</p>
+  <p class="formula">y<sub>2</sub> = (y<sub>1</sub>/2)·(√(1 + 8·Fr<sub>1</sub>²) − 1)
+     &nbsp;&nbsp;·&nbsp;&nbsp; ΔE = (y<sub>2</sub> − y<sub>1</sub>)³ / (4·y<sub>1</sub>·y<sub>2</sub>)</p>
+  <p>Ce qui décide du projet n'est pas la hauteur du ressaut mais sa <strong>position</strong>.
+     On compare la conjuguée y<sub>2</sub> au niveau aval réel :</p>
+  <table class="resultats"><thead><tr><th>Comparaison</th><th>Position</th><th>Conséquence</th></tr></thead>
+    <tbody>
+      <tr><td>TW &gt; y<sub>2</sub></td><td class="motif">noyé</td>
+        <td class="motif">le ressaut remonte sur la sortie — dissipation dans l'ouvrage, pas de fosse</td></tr>
+      <tr><td>TW ≈ y<sub>2</sub></td><td class="motif">en place</td>
+        <td class="motif">il se forme au droit de la sortie, là où la protection est posée</td></tr>
+      <tr class="alerte"><td>TW &lt; y<sub>2</sub></td><td class="motif">rejeté</td>
+        <td class="motif">il part vers l'aval, au-delà de l'enrochement — l'affouillement se creuse là où rien ne protège</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>C'est le cas rejeté qui coûte cher</strong>, et c'est le plus
+     facile à manquer : tout est correct au droit de l'ouvrage, la protection est dimensionnée
+     selon le chapitre 8, et la fosse se creuse trente mètres plus loin. La longueur du
+     ressaut — de l'ordre de 6·(y<sub>2</sub> − y<sub>1</sub>), les guides donnant 5 à 7 selon
+     l'auteur — dit jusqu'où la protection doit aller.</div>
+
+  <div class="calc" id="calcRessaut">
+    <h3>Où se forme-t-il ?</h3>
+    <div class="curseurs">
+      <div class="field"><label for="rvY1">Tirant en sortie d'ouvrage y₁ <small>— <span id="rvY1Val">—</span></small></label>
+        <div class="input-wrap"><input id="rvY1" type="range" min="0.1" max="1.2" step="0.05" value="0.35"><span class="unit">m</span></div></div>
+      <div class="field"><label for="rvFr1">Froude en sortie Fr₁ <small>— <span id="rvFr1Val">—</span></small></label>
+        <div class="input-wrap"><input id="rvFr1" type="range" min="1" max="8" step="0.1" value="3"></div></div>
+      <div class="field"><label for="rvHaval">Niveau aval dans l'oued <small>— <span id="rvHavalVal">—</span></small></label>
+        <div class="input-wrap"><input id="rvHaval" type="range" min="0.1" max="3" step="0.05" value="1.2"><span class="unit">m</span></div></div>
+    </div>
+    <div id="rvRessaut"></div>
+    <p class="method-note">La vitesse V₁ = Fr₁·√(g·y₁) est affichée parce qu'elle est la
+       vraie contrainte : au-delà d'une dizaine de mètres par seconde, aucun dalot ne rend
+       son eau ainsi. La figure accepte ces valeurs — elle sert à voir la mécanique, pas à
+       justifier un projet.</p>
+  </div>
+
+  <h3>Ce qui rend tout cela fragile</h3>
+  <p>Trois calculs, trois figures, des résultats au centimètre. Il faut maintenant dire ce
+     qu'ils valent, et la réponse tient dans une grandeur qu'on ne mesure pas : le
+     <strong>coefficient de Strickler</strong>. On le choisit dans une table, en regardant le
+     lit. Les deux listes de la première figure servent à cela — changer d'avis, et lire le
+     déplacement.</p>
+  <p>Sur l'oued de démonstration, à 120 m³/s, avec le lit mineur en galets pour référence :</p>
+  <table class="resultats"><thead><tr><th>Ce qu'on change</th><th>Déplacement du plan d'eau</th></tr></thead>
+    <tbody>
+      <tr><td>Lit mineur : galets (K 25) → graviers (K 30)</td><td class="q">− 19 cm</td></tr>
+      <tr><td>Lit mineur : galets (K 25) → lit irrégulier (K 20)</td><td class="q">+ 23 cm</td></tr>
+      <tr><td>Lit mineur : galets (K 25) → berges herbeuses (K 18)</td>
+        <td class="q">au-delà du levé</td></tr>
+      <tr><td>Lits majeurs : cultivés (K 14) → boisés (K 7)</td><td class="q">+ 1 cm</td></tr>
+      <tr><td>Pente du lit : 0,25 % → 0,20 %</td><td class="q">+ 12 cm</td></tr>
+    </tbody></table>
+  <div class="sanity-check"><h3>Le lit majeur ne porte presque rien, et décide pourtant de tout</h3>
+    <p>Les deux dernières lignes surprennent. Un lit majeur boisé plutôt que cultivé, c'est la
+       moitié du Strickler, et le plan d'eau ne bouge que d'un centimètre. La raison est dans
+       le tableau de la première figure : à cette cote, <strong>les deux lits majeurs réunis
+       transportent moins de 2 % du débit</strong>. Ils sont larges mais très peu profonds ;
+       leur débitance est négligeable.</p>
+    <p>Et pourtant, ce sont eux qui font échouer le calcul d'un seul bloc, de 51 %. Ils
+       n'apportent presque rien au débit, mais ils apportent <strong>tout leur périmètre</strong>
+       à qui les mélange au lit mineur. C'est exactement pour cela qu'on sépare les lits :
+       non pas pour compter ce qu'ils transportent, mais pour empêcher leur périmètre de
+       contaminer le rayon hydraulique du lit qui, lui, transporte.</p>
+  </div>
+  <p>Ce qui décide vraiment, c'est donc la rugosité du <strong>lit mineur</strong> : une classe
+     d'écart dans la table, et le plan d'eau se déplace de vingt centimètres, dans les deux
+     sens. Vingt centimètres sur TW, c'est un dalot qui passe de sortie libre à sortie noyée
+     au chapitre 6.</p>
+
+  <h3>Trois limites à énoncer avant de livrer un calcul</h3>
+  <ul>
+    <li><strong>Le levé s'arrête.</strong> Au-delà de 161 m³/s, la section levée déborde ;
+       la figure refuse de calculer plutôt que d'extrapoler des berges imaginaires. Un levé
+       doit monter franchement au-dessus de la crue de projet.</li>
+    <li><strong>Le lit est supposé prismatique.</strong> Une seule section sert pour toute la
+       courbe de remous. Sur un oued réel, chaque coude et chaque rétrécissement déforment la
+       ligne d'eau ; un calcul de projet enchaîne les sections levées.</li>
+    <li><strong>Le régime est supposé permanent.</strong> On calcule la crue au pic, comme si
+       elle durait. Le stockage dans le lit majeur — le laminage — n'est pas représenté, et
+       il joue toujours dans le sens de la sécurité.</li>
+  </ul>
+
+  <h3>La vitesse, et le retour au chapitre 8</h3>
+  <p>La courbe de tarage ne donne pas qu'une cote : elle donne aussi une <strong>vitesse
+     moyenne</strong>, affichée sous la première figure. C'est elle qu'il faut confronter aux
+     vitesses admissibles du lit récepteur, celles-là mêmes que le chapitre 8 utilise pour
+     dimensionner la protection — de l'ordre de 0,6 à 0,8 m/s sur des limons nus, 1,2 à
+     1,5 m/s sur un gazon établi, davantage sur enrochement ou maçonnerie.</p>
+  <p>Sur l'oued de démonstration, à 120 m³/s, la vitesse moyenne dépasse 1,7 m/s : le lit
+     naturel travaille déjà au-delà de ce qu'un talus nu supporterait. Cela ne condamne pas
+     l'oued, qui s'est fait lui-même et vit avec son transport solide — mais cela dit
+     clairement ce qui arrive à un remblai neuf laissé sans protection au contact de ce
+     courant.</p>
+  <div class="hint">La boucle est bouclée : le chapitre 6 demandait TW, le chapitre 9 le
+     calcule, et la vitesse qu'il calcule au passage renvoie au chapitre 8. Un ouvrage ne se
+     dimensionne pas contre un débit : il se dimensionne contre un <strong>écoulement</strong>,
+     qui a un niveau, une vitesse et un régime.</div>
+
+  <div class="actions"><a class="primary" href="exerciseur.html">Ouvrir l'exerciseur</a>
+     <a class="secondary" href="index.html#ch9">Exercices du chapitre</a></div>
+</section>
+
 </div>
 
 <aside class="cours-aside">
@@ -2477,5 +2709,6 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch7-precalage.js"></script>
 <script type="module" src="src/cours-ch6-abaques.js"></script>
 <script type="module" src="src/cours-ch8.js"></script>
+<script type="module" src="src/cours-ch9.js"></script>
 <script type="module" src="src/tableaux.js"></script>
 </body></html>

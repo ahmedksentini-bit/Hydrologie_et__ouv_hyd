@@ -1,0 +1,451 @@
+{
+  "chapitre": "ch9",
+  "exercices": [
+    {
+      "id": "ch9-e1",
+      "titre": "Un seul bloc, ou trois lits ?",
+      "difficulte": 1,
+      "enonce": "Un oued est levé sur 110 m de large : un lit mineur de 30 m entre des berges à 137,62 m, et de part et d'autre un lit majeur cultivé. La pente du fond est de 0,25 %. Strickler retenus : 25 dans le lit mineur (galets, berges nettes), 14 dans les lits majeurs. Le plan d'eau est à 137,90 m — la crue vient de déborder.",
+      "questions": [
+        {
+          "texte": "Débit total par la méthode des lits séparés ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 100.95,
+          "tolerance": 1.5,
+          "explication": "Chaque lit garde sa section, son périmètre et son Strickler : Q = Σ K_i·A_i·R_i^(2/3)·√J. Le lit mineur en fournit l'essentiel — il est profond, donc son rayon hydraulique est grand."
+        },
+        {
+          "texte": "Le même calcul mené d'un seul bloc, avec un Strickler pondéré par les périmètres, donne quel débit ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 62.25,
+          "tolerance": 1.5,
+          "explication": "A et P sont ceux de la section entière : R = A/P tombe de 1,79 m (lit mineur seul) à 1,10 m, et Q ∝ R^(2/3) suit. Le calcul est parfaitement exécuté ; c'est le modèle qui est faux."
+        },
+        {
+          "texte": "À 137,60 m — juste sous les berges — les deux méthodes donnaient le même 75,3 m³/s. Que dit le bloc unique du passage de 137,60 m à 137,90 m ?",
+          "type": "choix",
+          "options": [
+            "Que le débit augmente un peu, de 75,3 à 78 m³/s environ",
+            "Que le débit DIMINUE, de 75,3 à 62,2 m³/s, alors que le plan d'eau est monté de 30 cm",
+            "Que le débit augmente fortement, le lit majeur entrant en jeu"
+          ],
+          "reponse": 1,
+          "explication": "C'est le signe qui ne trompe pas : une courbe de tarage décroissante n'est pas une approximation grossière, c'est une impossibilité physique. Le débordement ajoute quarante mètres de périmètre pour quelques mètres carrés de section ; le rayon hydraulique d'ensemble s'effondre et emporte le débit avec lui. Une telle courbe n'est même pas inversible : à un débit correspondraient deux cotes."
+        },
+        {
+          "texte": "Les lits séparés sont-ils pour autant exacts ?",
+          "type": "choix",
+          "options": [
+            "Oui : c'est la méthode de référence",
+            "Non : ils ignorent l'échange de quantité de mouvement entre lit mineur rapide et lit majeur lent, et majorent donc un peu le débit",
+            "Non : ils sous-estiment le débit, car ils oublient les interfaces"
+          ],
+          "reponse": 1,
+          "explication": "Le lit mineur rapide frotte contre le lit majeur lent ; ce cisaillement freine le premier. En l'ignorant, on obtient quelques pour cent de trop. La vérité est entre les deux méthodes, très près des lits séparés — et c'est pour cela qu'on les retient, en le disant."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e2",
+      "titre": "Le périmètre qu'on ne compte pas",
+      "difficulte": 2,
+      "enonce": "Même oued, même cote 137,90 m. Le lit mineur va de x = −15 m à x = +15 m ; les berges y sont levées à 137,65 m et 137,62 m, de sorte que les deux verticales de séparation portent 0,25 m et 0,28 m d'eau à cette cote.",
+      "questions": [
+        {
+          "texte": "Périmètre mouillé retenu pour le lit mineur ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 30.63,
+          "tolerance": 0.4,
+          "explication": "On additionne le fond et les berges du lit mineur, et RIEN d'autre : les deux verticales de séparation ne sont pas comptées. Elles ne sont pas une paroi, mais une frontière entre deux masses d'eau."
+        },
+        {
+          "texte": "Pourquoi les verticales de séparation ne comptent-elles pas dans le périmètre mouillé ?",
+          "type": "choix",
+          "options": [
+            "Parce qu'elles sont verticales, et que Manning ne s'applique qu'aux parois inclinées",
+            "Parce que l'eau y frotte contre de l'eau, pas contre le lit : le frottement de paroi n'y a pas lieu",
+            "Parce qu'elles sont trop courtes pour peser"
+          ],
+          "reponse": 1,
+          "explication": "Le périmètre mouillé mesure la surface de contact avec le SOLIDE. Y ajouter les interfaces liquides reviendrait à facturer deux fois un frottement qui n'existe pas — et à affaiblir artificiellement le lit mineur, celui-là même qui transporte."
+        },
+        {
+          "texte": "Rayon hydraulique du lit mineur ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.785,
+          "tolerance": 0.05,
+          "explication": "R = A/P = 54,7/30,6 ≈ 1,79 m. Le rayon d'ensemble de la section, lui, ne vaut que 1,10 m : c'est tout l'écart entre les deux méthodes."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e3",
+      "titre": "D'où vient le TW du chapitre 6",
+      "difficulte": 1,
+      "enonce": "On projette un dalot sur cet oued. Le débit de projet est de 100 m³/s ; le radier de sortie est calé à 135,40 m. Le chapitre 6 demande le niveau aval TW.",
+      "questions": [
+        {
+          "texte": "Cote du plan d'eau dans l'oued pour 100 m³/s ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 137.89,
+          "tolerance": 0.03,
+          "explication": "C'est la courbe de tarage lue à l'envers : on cherche la cote dont le débit en régime uniforme vaut 100 m³/s. Ici le plan d'eau dépasse les berges de 27 cm : la crue déborde déjà."
+        },
+        {
+          "texte": "Niveau aval TW à retenir pour le calcul de l'ouvrage ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.49,
+          "tolerance": 0.03,
+          "explication": "TW = cote du plan d'eau − cote du radier de sortie = 137,890 − 135,400 = 2,49 m. Avec un dalot de 2,00 m de hauteur, la sortie est noyée : le contrôle est à la sortie, et non à l'entrée."
+        },
+        {
+          "texte": "Que devient TW si le projeteur remonte le radier de sortie de 40 cm ?",
+          "type": "choix",
+          "options": [
+            "TW ne change pas : il est fixé par l'oued",
+            "TW diminue de 40 cm : l'oued impose une cote, pas une hauteur",
+            "TW augmente de 40 cm"
+          ],
+          "reponse": 1,
+          "explication": "L'oued impose une COTE de plan d'eau ; TW est la hauteur d'eau au-dessus du radier, donc une différence. Remonter le radier réduit TW d'autant — et c'est un levier de projet réel, à condition de ne pas créer une chute à la sortie."
+        },
+        {
+          "texte": "La courbe de tarage ainsi calculée peut-elle remplacer un jaugeage ?",
+          "type": "choix",
+          "options": [
+            "Oui, si le levé est bon",
+            "Non : elle suppose le régime uniforme, un lit prismatique et des Strickler choisis dans une table ; un jaugeage mesure des couples hauteur-débit réels"
+          ],
+          "reponse": 1,
+          "explication": "Elle en tient lieu tant qu'on n'a rien de mesuré, et c'est légitime. Mais elle hérite de trois hypothèses et d'un choix de rugosité qui, à lui seul, déplace le plan d'eau de vingt centimètres. On la livre en disant ce qu'elle suppose."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e4",
+      "titre": "Fluvial ou torrentiel, dans l'oued",
+      "difficulte": 2,
+      "enonce": "Toujours 100 m³/s dans le même oued, plan d'eau à 137,89 m.",
+      "questions": [
+        {
+          "texte": "Vitesse moyenne dans la section ?",
+          "type": "nombre",
+          "unite": "m/s",
+          "reponse": 1.765,
+          "tolerance": 0.06,
+          "explication": "V = Q/A. C'est une moyenne de section, pas la vitesse du lit mineur : celui-ci coule plus vite, les lits majeurs beaucoup moins. Pour l'affouillement, c'est la vitesse du lit mineur qui compte."
+        },
+        {
+          "texte": "Nombre de Froude de l'écoulement ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.531,
+          "tolerance": 0.03,
+          "explication": "Fr = V/√(g·A/T), avec T la largeur au miroir. Fr < 1 : l'écoulement est fluvial, et c'est le cas général des oueds en plaine. Une perturbation aval — un ouvrage — remonte donc vers l'amont."
+        },
+        {
+          "texte": "Cote critique pour ce débit ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 136.912,
+          "tolerance": 0.05,
+          "explication": "C'est la cote qui annule Q²·T/(g·A³) − 1. Elle est ici presque un mètre SOUS le plan d'eau réel : l'écoulement est nettement fluvial, avec une bonne marge."
+        },
+        {
+          "texte": "Pourquoi le fait que l'écoulement soit fluvial justifie-t-il de calculer le remous vers l'amont ?",
+          "type": "choix",
+          "options": [
+            "Parce que l'eau coule vers l'aval, donc l'information aussi",
+            "Parce qu'en régime fluvial l'information hydraulique remonte le courant : c'est l'aval qui commande",
+            "Parce que le calcul est plus stable dans ce sens"
+          ],
+          "reponse": 1,
+          "explication": "En fluvial, les ondes de surface vont plus vite que le courant : ce qui se passe à l'ouvrage se propage vers l'amont. On part donc de la section de contrôle aval et on remonte. En torrentiel, ce serait l'inverse — et un ouvrage ne relèverait rien à son amont."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e5",
+      "titre": "Jusqu'où le riverain est-il concerné",
+      "difficulte": 2,
+      "enonce": "L'ouvrage relève le plan d'eau de 50 cm à son droit, pour le débit de projet de 100 m³/s. Le lit est supposé prismatique, avec la même section sur toute la longueur.",
+      "questions": [
+        {
+          "texte": "À quelle distance en amont la ligne d'eau a-t-elle rejoint le tirant normal (à 1 cm près) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 720,
+          "tolerance": 60,
+          "explication": "On remonte par tronçons de 20 m en écrivant l'énergie de part et d'autre : z + V²/2g augmente de la perte de charge, et le fond monte de J·Δx. La courbe s'approche du tirant normal de façon asymptotique, et on convient de l'arrêter au centimètre."
+        },
+        {
+          "texte": "Le même exhaussement de 50 cm, sur un lit de pente 0,50 % au lieu de 0,25 %, porte à quelle distance ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 360,
+          "tolerance": 60,
+          "explication": "La portée est divisée par deux quand la pente double. Le remous vit du déficit de pente entre la ligne d'eau relevée et le fond ; plus le fond monte vite, plus vite il rattrape la ligne d'eau."
+        },
+        {
+          "texte": "Que faut-il retenir pour la conduite d'une étude ?",
+          "type": "choix",
+          "options": [
+            "La portée dépend surtout de la hauteur du relèvement",
+            "La portée dépend surtout de la pente du lit : c'est en plaine qu'un ouvrage se fait sentir loin",
+            "La portée dépend surtout du débit"
+          ],
+          "reponse": 1,
+          "explication": "Doubler l'exhaussement n'allonge la portée que d'un cinquième ; doubler la pente la divise par deux. En plaine, l'enquête parcellaire doit remonter loin ; en montagne, l'effet s'éteint à quelques dizaines de mètres."
+        },
+        {
+          "texte": "Quelle hypothèse du calcul est la plus fragile sur un oued réel ?",
+          "type": "choix",
+          "options": [
+            "Le choix du pas de calcul",
+            "Le lit prismatique : une seule section sert pour toute la courbe, alors que chaque coude et chaque rétrécissement la déforment",
+            "La valeur de g"
+          ],
+          "reponse": 1,
+          "explication": "Le pas de 20 m est un détail numérique qu'on vérifie en le divisant par deux. Le lit prismatique, lui, est une hypothèse de modèle : un calcul de projet enchaîne les sections levées, une par une, de l'ouvrage vers l'amont."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e6",
+      "titre": "La conjuguée de Bélanger",
+      "difficulte": 2,
+      "enonce": "Un dalot en pente rend son eau en régime torrentiel : tirant y₁ = 0,40 m, nombre de Froude Fr₁ = 3,5 à la sortie.",
+      "questions": [
+        {
+          "texte": "Tirant conjugué y₂ ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.79,
+          "tolerance": 0.03,
+          "explication": "y₂ = (y₁/2)·(√(1 + 8·Fr₁²) − 1) = (0,40/2)·(√99 − 1) = 1,79 m. La relation vient de la conservation de la quantité de mouvement à travers le ressaut, et non de l'énergie — qui, elle, se perd."
+        },
+        {
+          "texte": "Perte de charge dans le ressaut ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.938,
+          "tolerance": 0.03,
+          "explication": "ΔE = (y₂ − y₁)³/(4·y₁·y₂) = 1,39³/(4×0,40×1,79) = 0,94 m. C'est de l'énergie détruite par la turbulence — exactement ce qu'on cherche : elle ne creusera pas le lit."
+        },
+        {
+          "texte": "Longueur du ressaut, prise à 6·(y₂ − y₁) ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 8.34,
+          "tolerance": 0.3,
+          "explication": "L ≈ 6 × 1,39 = 8,3 m. Les guides donnent 5 à 7 selon l'auteur : la longueur d'un ressaut n'est pas une grandeur exacte, mais elle fixe la longueur de protection à poser."
+        },
+        {
+          "texte": "Avec Fr₁ = 3,5, de quel type de ressaut s'agit-il ?",
+          "type": "choix",
+          "options": [
+            "Ondulé",
+            "Oscillant — la nappe bat et envoie des ondes à l'aval",
+            "Stable et bien formé"
+          ],
+          "reponse": 1,
+          "explication": "Entre 2,5 et 4,5, le jet oscille du fond à la surface et engendre des ondes qui se propagent loin à l'aval. C'est la plage la moins confortable : la dissipation est réelle mais irrégulière, et l'onde attaque les berges bien au-delà de la protection."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e7",
+      "titre": "Le ressaut est-il là où on l'attend ?",
+      "difficulte": 3,
+      "enonce": "Même sortie : y₁ = 0,40 m, Fr₁ = 3,5, donc y₂ = 1,79 m. La protection en enrochement est posée à la sortie, sur la longueur du ressaut. On fait varier le niveau d'eau dans l'oued à l'aval.",
+      "questions": [
+        {
+          "texte": "Niveau aval 1,30 m : où se forme le ressaut ?",
+          "type": "choix",
+          "options": [
+            "Sur la sortie, noyé",
+            "Au droit de la sortie",
+            "Plus loin à l'aval, au-delà de la protection"
+          ],
+          "reponse": 2,
+          "explication": "Le niveau aval est très inférieur à la conjuguée : l'écoulement torrentiel court sur le lit jusqu'à ce qu'il ait perdu assez de vitesse pour que sa conjuguée descende au niveau de l'oued. Le ressaut se forme là — sur le lit nu."
+        },
+        {
+          "texte": "Niveau aval 1,79 m : où se forme-t-il ?",
+          "type": "choix",
+          "options": [
+            "Au droit de la sortie, sur la protection",
+            "Plus loin à l'aval",
+            "Il disparaît"
+          ],
+          "reponse": 0,
+          "explication": "Le niveau aval égale la conjuguée : c'est exactement la condition d'équilibre. Le ressaut se cale au droit de la sortie, là où la protection l'attend. C'est la situation de projet."
+        },
+        {
+          "texte": "Niveau aval 2,10 m : où se forme-t-il ?",
+          "type": "choix",
+          "options": [
+            "Au droit de la sortie",
+            "Repoussé sur la sortie, noyé",
+            "Rejeté à l'aval"
+          ],
+          "reponse": 1,
+          "explication": "Le niveau aval dépasse la conjuguée : le ressaut est repoussé vers l'amont et se noie dans l'ouvrage. La dissipation se fait à l'intérieur, la fosse ne se creuse pas — mais la capacité de l'ouvrage chute, puisque sa sortie est noyée."
+        },
+        {
+          "texte": "Lequel des trois cas coûte le plus cher, et pourquoi est-il le plus facile à manquer ?",
+          "type": "choix",
+          "options": [
+            "Le ressaut noyé, parce qu'il réduit la capacité",
+            "Le ressaut rejeté : tout est correct au droit de l'ouvrage, la protection est dimensionnée dans les règles, et la fosse se creuse trente mètres plus loin, là où rien ne protège",
+            "Le ressaut en place, parce qu'il use la protection"
+          ],
+          "reponse": 1,
+          "explication": "Le ressaut noyé se voit dans le calcul de capacité : il n'échappe à personne. Le ressaut rejeté, lui, ne se manifeste dans aucune des vérifications faites à l'ouvrage. Il faut le chercher — en comparant la conjuguée au niveau aval, c'est-à-dire en faisant le calcul du chapitre 9 avant de clore le chapitre 8."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e8",
+      "titre": "Ce que coûte un choix de rugosité",
+      "difficulte": 2,
+      "enonce": "Le projeteur hésite sur le lit mineur : galets à berges nettes (K = 25) ou lit de graviers (K = 30) ? Le débit de projet est de 100 m³/s, la pente 0,25 %, les lits majeurs restent cultivés (K = 14).",
+      "questions": [
+        {
+          "texte": "Cote du plan d'eau avec K = 30 dans le lit mineur ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 137.706,
+          "tolerance": 0.04,
+          "explication": "Un lit plus lisse évacue le même débit sous une lame plus mince : 137,706 m au lieu de 137,890 m."
+        },
+        {
+          "texte": "De combien le plan d'eau se déplace-t-il entre les deux choix ?",
+          "type": "nombre",
+          "unite": "cm",
+          "reponse": -18.4,
+          "tolerance": 3,
+          "explication": "Dix-huit centimètres, pour une seule ligne de différence dans une table lue à l'œil. Reportés sur TW, ces 18 cm peuvent faire passer un dalot de sortie libre à sortie noyée : la rugosité n'est pas un détail de calcul, c'est une hypothèse de projet."
+        },
+        {
+          "texte": "Le même écart de rugosité appliqué aux LITS MAJEURS (cultivés K = 14 contre boisés K = 7) déplace le plan d'eau de combien, à cette cote ?",
+          "type": "choix",
+          "options": [
+            "De trente centimètres environ, le lit majeur étant très large",
+            "D'un centimètre à peine : à cette cote, les deux lits majeurs réunis ne transportent que 2 % du débit",
+            "Du même ordre que le lit mineur"
+          ],
+          "reponse": 1,
+          "explication": "Larges mais très peu profonds, les lits majeurs ont une débitance dérisoire. Leur rugosité ne pèse presque rien sur la cote — alors qu'ils suffisent, par leur seul périmètre, à fausser de 40 % un calcul mené d'un seul bloc. Ils comptent très peu dans le débit et énormément dans la méthode."
+        },
+        {
+          "texte": "Quelle conclusion pratique en tirer ?",
+          "type": "choix",
+          "options": [
+            "Soigner surtout la description des lits majeurs, puisqu'ils sont larges",
+            "Soigner la rugosité du lit mineur — et présenter le résultat avec sa fourchette, en donnant la cote pour les deux valeurs plausibles",
+            "Prendre une moyenne des deux rugosités"
+          ],
+          "reponse": 1,
+          "explication": "Une seule cote livrée sans fourchette laisse croire à une précision qui n'existe pas. Le bon livrable donne le plan d'eau pour la rugosité retenue ET pour la voisine, et signale l'écart. Le lecteur sait alors ce que vaut le centimètre affiché."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e9",
+      "titre": "Quand le plan d'eau sort du levé",
+      "difficulte": 1,
+      "enonce": "Le levé topographique de l'oued s'arrête à la cote 138,40 m de part et d'autre. Le calcul de la crue centennale, révisée à la hausse, demande d'écouler 185 m³/s.",
+      "questions": [
+        {
+          "texte": "Le calcul de tirant normal ne converge pas : le plan d'eau dépasse 138,40 m. Que faut-il faire ?",
+          "type": "choix",
+          "options": [
+            "Prolonger les berges à l'horizontale jusqu'à obtenir la section nécessaire",
+            "Prolonger les berges en conservant la pente des derniers points levés",
+            "Retourner sur le terrain : le levé ne couvre pas la crue de projet"
+          ],
+          "reponse": 2,
+          "explication": "Les deux premières solutions fabriquent de la topographie. Or c'est précisément dans cette zone inventée que passerait l'eau supplémentaire : le résultat dépendrait entièrement de l'invention. Un levé doit monter franchement au-dessus de la crue de projet — c'est une exigence de commande, pas un détail d'exécution."
+        },
+        {
+          "texte": "Pourquoi un logiciel qui « trouve quand même » une solution est-il un piège ?",
+          "type": "choix",
+          "options": [
+            "Parce qu'il est plus lent",
+            "Parce que rien, dans le nombre qu'il affiche, ne signale qu'il repose sur une extrapolation",
+            "Parce qu'il utilise une autre formule"
+          ],
+          "reponse": 1,
+          "explication": "Un résultat faux qui se présente comme un résultat est plus dangereux qu'un refus de calculer. Le refus, lui, pose la bonne question — et la pose au moment où elle coûte le moins cher : avant le projet."
+        },
+        {
+          "texte": "Jusqu'à quel débit ce levé permet-il de calculer ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 161,
+          "tolerance": 4,
+          "explication": "C'est le débit que la section levée écoule quand le plan d'eau atteint le point le plus haut du levé, 138,40 m. Au-delà, il n'y a plus de section — et donc plus de calcul."
+        }
+      ]
+    },
+    {
+      "id": "ch9-e10",
+      "titre": "La boucle avec les chapitres 6 et 8",
+      "difficulte": 3,
+      "enonce": "Récapitulatif : un dalot est à dimensionner sur l'oued étudié, pour 100 m³/s. On a calculé le plan d'eau naturel à 137,89 m, une vitesse moyenne de 1,77 m/s, un Froude de 0,53, et le radier de sortie est à 135,40 m.",
+      "questions": [
+        {
+          "texte": "Dans quel ordre les trois chapitres s'enchaînent-ils ?",
+          "type": "choix",
+          "options": [
+            "6 (ouvrage) puis 8 (protection) puis 9 (oued)",
+            "9 (l'oued donne TW) puis 6 (l'ouvrage se dimensionne) puis 8 (la protection se pose), avec un retour au 9 pour vérifier la position du ressaut",
+            "L'ordre est indifférent"
+          ],
+          "reponse": 1,
+          "explication": "L'oued est la condition aux limites : il existe avant l'ouvrage et il impose le niveau aval. Puis l'ouvrage se dimensionne, et sa sortie produit un y₁ et un Fr₁ qu'il faut reprendre au chapitre 9 pour savoir où tombe le ressaut. C'est une boucle, pas une chaîne."
+        },
+        {
+          "texte": "La vitesse de 1,77 m/s dans l'oued naturel dépasse les vitesses admissibles d'un talus en terre nue (0,6 à 0,8 m/s). Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "L'oued est en train de se creuser : il faut le protéger sur toute sa longueur",
+            "L'oued vit avec son transport solide depuis toujours ; c'est le remblai neuf, mis au contact de ce courant, qui doit être protégé",
+            "La vitesse calculée est fausse, puisqu'elle dépasse l'admissible"
+          ],
+          "reponse": 1,
+          "explication": "Les vitesses admissibles s'appliquent à ce qu'on construit, pas à ce qui existe. Un oued a atteint son propre équilibre entre érosion et dépôt. Le talus de remblai, lui, est neuf, non consolidé et placé en travers : c'est lui que le chapitre 8 protège."
+        },
+        {
+          "texte": "Le Froude de 0,53 dans l'oued et le Froude de 3,5 en sortie d'ouvrage : que signale leur écart ?",
+          "type": "choix",
+          "options": [
+            "Une erreur de calcul : les deux devraient être voisins",
+            "Que l'ouvrage accélère l'écoulement et le rend torrentiel, et qu'il faudra donc un ressaut pour revenir au régime de l'oued",
+            "Que l'ouvrage est sous-dimensionné"
+          ],
+          "reponse": 1,
+          "explication": "L'ouvrage resserre et redresse : il accélère. Le retour au régime de l'oued ne peut pas être progressif — c'est un ressaut, et toute la question du chapitre est de savoir où il se forme et si la protection l'atteint."
+        },
+        {
+          "texte": "Quelle grandeur, parmi celles du chapitre, n'existe dans aucun des chapitres précédents et les commande pourtant tous ?",
+          "type": "choix",
+          "options": [
+            "Le débit de projet",
+            "Le niveau du plan d'eau dans le lit naturel",
+            "La pente du radier"
+          ],
+          "reponse": 1,
+          "explication": "Le débit vient des chapitres 1 à 5, la pente du radier du chapitre 7. Le niveau du plan d'eau, lui, n'était calculé nulle part — on le saisissait. C'était la seule grandeur du cours qu'on demandait sans donner la chaîne qui y mène."
+        }
+      ]
+    }
+  ]
+}

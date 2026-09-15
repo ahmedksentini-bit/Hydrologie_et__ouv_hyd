@@ -7,6 +7,7 @@ import * as h from "../src/solvers-hydro.js";
 import * as o from "../src/solvers-ouvrages.js";
 import * as dim from "../src/solvers-dimensionnement.js";
 import * as st from "../src/solvers-stats.js";
+import * as riv from "../src/solvers-riviere.js";
 
 const banque = (ch) => JSON.parse(readFileSync(new URL(`../data/exercices-${ch}.json`, import.meta.url)));
 const q = (b, exoId, i) => b.exercices.find((e) => e.id === exoId).questions[i];
@@ -14,7 +15,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -681,4 +682,69 @@ test("ch4 — le choix de la zone recalculé", () => {
   assert.equal(h.motifsHorsDomaine("fersi", { S, Pan, T, zone: "SudEst" }).length, 0,
     "la pluie de 340 mm est dans le domaine de Fersi");
   assert.match(h.motifsHorsDomaine("frigui", { S, Pan, T, zone: "CentreSud" })[0], /hors table/);
+});
+
+test("ch9 — l'oued de démonstration recalculé", () => {
+  const b = banque("ch9");
+  const oued = JSON.parse(readFileSync(new URL("../data/oued-demo.json", import.meta.url)));
+  const S = riv.sectionNaturelle(oued.points, oued.sousSections);
+  const J = oued.pente;
+
+  // e1 — lits séparés contre bloc unique, au-dessus des berges
+  const d = riv.debitA(S, 137.90, J);
+  vaut(q(b, "ch9-e1", 0), d.Q, "débit par lits séparés");
+  vaut(q(b, "ch9-e1", 1), d.Qbloc, "débit d'un seul bloc");
+
+  // e2 — le périmètre du lit mineur exclut les verticales de séparation
+  const mineur = d.lits[1];
+  vaut(q(b, "ch9-e2", 0), mineur.perimetre, "périmètre du lit mineur");
+  vaut(q(b, "ch9-e2", 2), mineur.R, "rayon hydraulique du lit mineur");
+  const bornes = oued.sousSections[1];
+  const seul = riv.trancheMouillee(S, bornes.x0, bornes.x1, 137.90);
+  assert.ok(Math.abs(mineur.perimetre - seul.perimetre) < 1e-9,
+    "aucune longueur ajoutée aux interfaces");
+
+  // e3 — la courbe de tarage produit TW
+  const z100 = riv.tirantNormal(S, 100, J);
+  vaut(q(b, "ch9-e3", 0), z100, "cote du plan d'eau à 100 m³/s");
+  vaut(q(b, "ch9-e3", 1), z100 - 135.40, "TW au-dessus du radier de sortie");
+
+  // e4 — régime
+  const d100 = riv.debitA(S, z100, J);
+  vaut(q(b, "ch9-e4", 0), d100.vitesse, "vitesse moyenne");
+  vaut(q(b, "ch9-e4", 1), d100.froude, "Froude");
+  vaut(q(b, "ch9-e4", 2), riv.coteCritique(S, 100), "cote critique");
+
+  // e5 — portée du remous, et son effondrement quand la pente double
+  const portee = (pente) => {
+    const hn = riv.tirantNormal(S, 100, pente) - S.zMin;
+    return riv.remous(S, { Q: 100, J: pente, hAval: hn + 0.5, pas: 20, longueur: 20000 }).portee;
+  };
+  vaut(q(b, "ch9-e5", 0), portee(J), "portée à 0,25 %");
+  vaut(q(b, "ch9-e5", 1), portee(0.005), "portée à 0,50 %");
+
+  // e6 — Bélanger
+  const j = riv.ressaut(0.40, 3.5);
+  vaut(q(b, "ch9-e6", 0), j.y2, "conjuguée");
+  vaut(q(b, "ch9-e6", 1), j.perte, "perte de charge");
+  vaut(q(b, "ch9-e6", 2), j.longueur, "longueur du ressaut");
+  assert.equal(j.type, "oscillant", "type de ressaut annoncé par l'énoncé");
+
+  // e7 — les trois positions, dans l'ordre des options de la banque
+  const positions = ["rejeté", "en place", "noyé"];
+  [1.30, 1.79, 2.10].forEach((TW, i) => {
+    assert.equal(riv.positionRessaut(0.40, 3.5, TW).position, positions[i],
+      `position du ressaut pour TW = ${TW}`);
+  });
+
+  // e8 — ce que coûte une classe de Strickler
+  const graviers = riv.sectionNaturelle(oued.points, oued.sousSections.map((ss, i) =>
+    ({ ...ss, strickler: i === 1 ? "litGravier" : ss.strickler })));
+  const zGraviers = riv.tirantNormal(graviers, 100, J);
+  vaut(q(b, "ch9-e8", 0), zGraviers, "cote avec un lit de graviers");
+  vaut(q(b, "ch9-e8", 1), (zGraviers - z100) * 100, "déplacement en centimètres");
+
+  // e9 — le débit que le levé permet encore de calculer
+  vaut(q(b, "ch9-e9", 2), riv.debitA(S, S.zMax, J).Q, "débit à la limite du levé");
+  assert.equal(riv.tirantNormal(S, 185, J), null, "185 m³/s est bien hors du levé");
 });

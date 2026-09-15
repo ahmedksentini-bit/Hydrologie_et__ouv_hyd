@@ -167,6 +167,30 @@
       ],
       "cours": true,
       "exercices": 8
+    },
+    {
+      "id": "ch9",
+      "number": 9,
+      "partie": "B",
+      "title": "Hydraulique du lit naturel",
+      "description": "Section composée et lits séparés, courbe de tarage et niveau aval TW, régime et cote critique, courbe de remous à l'amont, ressaut à la sortie et sa position.",
+      "notions": [
+        "section composée",
+        "lits séparés",
+        "périmètre mouillé aux interfaces",
+        "courbe de tarage",
+        "niveau aval TW",
+        "tirant normal",
+        "cote critique",
+        "courbe de remous",
+        "portée du remous",
+        "ressaut hydraulique",
+        "conjuguée de Bélanger",
+        "position du ressaut",
+        "sensibilité au Strickler"
+      ],
+      "cours": true,
+      "exercices": 10
     }
   ]
 }
