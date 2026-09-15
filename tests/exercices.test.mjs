@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as h from "../src/solvers-hydro.js";
 import * as o from "../src/solvers-ouvrages.js";
+import * as dim from "../src/solvers-dimensionnement.js";
 
 const banque = (ch) => JSON.parse(readFileSync(new URL(`../data/exercices-${ch}.json`, import.meta.url)));
 const q = (b, exoId, i) => b.exercices.find((e) => e.id === exoId).questions[i];
@@ -12,7 +13,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -263,4 +264,76 @@ test("ch6 — vitesse et régime recalculés", () => {
   assert.ok(r.profondeurNormale < r.profondeurCritique, "écoulement torrentiel");
   assert.equal(r.penteSuperieureACritique, true, "pente au-dessus de la pente critique");
   assert.equal(r.vitesseOk, false, "au-delà de la vitesse admissible de 3 m/s");
+});
+
+// ── Chapitre 7 : les réponses sortent de la recherche, pas d'un relevé ──────
+const ENTREE7 = "box-ailes-evasees";
+const SITE7 = { forme: "dalot", Q: 12, L: 14, K: 70, entree: ENTREE7, tw: 0, cellulesMax: 4 };
+
+test("ch7 — catalogue et nombre de candidats", () => {
+  const b = banque("ch7");
+  vaut(q(b, "ch7-e1", 0), dim.catalogue("dalot", { Bmin: 1, Bmax: 4, Dmin: 1, Dmax: 3 }).length, "géométries");
+  vaut(q(b, "ch7-e1", 1), dim.proposer({ ...SITE7, J: 0.005 }).examines, "candidats examinés");
+});
+
+test("ch7 — la pente change le nombre d'admissibles", () => {
+  const b = banque("ch7");
+  vaut(q(b, "ch7-e2", 0), dim.proposer({ ...SITE7, J: 0.01 }).admissibles.length, "admissibles à 1 %");
+  vaut(q(b, "ch7-e2", 1), dim.proposer({ ...SITE7, J: 0.005 }).admissibles.length, "admissibles à 0,5 %");
+});
+
+test("ch7 — pentes de calage", () => {
+  const b = banque("ch7");
+  vaut(q(b, "ch7-e3", 0), dim.penteDeCalage(0.3779), "calage de 0,3779 %");
+  vaut(q(b, "ch7-e3", 1), dim.penteDeCalage(0.519), "calage de 0,519 %");
+  vaut(q(b, "ch7-e3", 3), dim.penteDeCalage(0.700), "calage de 0,700 %");
+});
+
+test("ch7 — la solution retenue et sa chaîne de cotes", () => {
+  const b = banque("ch7");
+  const s = dim.proposer({ ...SITE7, J: 0, zRadierAmont: 100, zRoute: 102 });
+  const c = s.retenue;
+  assert.equal(c.libelle, "2 × 3 × 1,5 m", "solution retenue à pente libre");
+  assert.equal(c.J, 0.004, "calée à 0,4 %");
+  vaut(q(b, "ch7-e4", 0), dim.coteRadierAval(100, c.J, 14), "radier aval");
+  vaut(q(b, "ch7-e4", 1), dim.cotePheAmont(100, c.r.HW), "plan d'eau amont");
+  vaut(q(b, "ch7-e4", 2), c.revanche, "revanche");
+  assert.equal(dim.verdictRevanche(c.revanche), "conforme");
+});
+
+test("ch7 — vérification au débit majorant", () => {
+  const b = banque("ch7");
+  const ouv = { forme: "dalot", B: 3, D: 1.5, cellules: 2, L: 14, J: 0.004, K: 70, entree: ENTREE7, tw: 0 };
+  const r = o.calculerOuvrage({ ...ouv, Q: 18 });
+  vaut(q(b, "ch7-e6", 0), dim.cotePheAmont(100, r.HW), "cote amont à Q100");
+  vaut(q(b, "ch7-e6", 1), dim.revanche(102, dim.cotePheAmont(100, r.HW)), "revanche à Q100");
+  assert.equal(dim.verdictRevanche(dim.revanche(102, dim.cotePheAmont(100, r.HW))), "insuffisante");
+  // la surverse annoncée vers 26 m³/s
+  assert.ok(dim.revanche(102, dim.cotePheAmont(100, o.calculerOuvrage({ ...ouv, Q: 26 }).HW)) < 0,
+    "la route déverse à 26 m³/s");
+  assert.ok(dim.revanche(102, dim.cotePheAmont(100, o.calculerOuvrage({ ...ouv, Q: 22 }).HW)) > 0,
+    "mais pas encore à 22 m³/s");
+});
+
+test("ch7 — partage du débit avec la route", () => {
+  const b = banque("ch7");
+  const ouv = { forme: "dalot", B: 3, D: 1.5, cellules: 2, L: 14, J: 0.004, K: 70, entree: ENTREE7, tw: 0 };
+  const sansPartage = dim.cotePheAmont(100, o.calculerOuvrage({ ...ouv, Q: 22 }).HW);
+  vaut(q(b, "ch7-e7", 0), sansPartage, "cote sans partage");
+  const p = dim.partageDebit({ ...ouv, Q: 22 }, { zRadierAmont: 100, zRoute: 101.5, Lr: 30 });
+  vaut(q(b, "ch7-e7", 2), p.qOuvrage, "débit dans l'ouvrage");
+  vaut(q(b, "ch7-e7", 3), sansPartage - p.zEau, "surestimation de la cote");
+});
+
+test("ch7 — §6 DGPC et comparaison dalot / buse", () => {
+  const b = banque("ch7");
+  vaut(q(b, "ch7-e8", 2), 0.10 * 1.5 * 100, "hauteur morte en cm");
+  assert.ok(dim.reglesDgpcSix(1.0, 34).some((x) => x.verdict === "non conforme"),
+    "le 4 × 3,0 × 1,0 est écarté par le §6");
+
+  const buse = dim.proposer({ forme: "buse", Q: 12, L: 14, J: 0, K: 70,
+    entree: "buse-emboitement", tw: 0, cellulesMax: 4, zRadierAmont: 100, zRoute: 102 });
+  const dalot = dim.proposer({ ...SITE7, J: 0, zRadierAmont: 100, zRoute: 102 });
+  assert.equal(buse.retenue.libelle, "4 × Ø 1,50 m", "solution buse retenue");
+  vaut(q(b, "ch7-e9", 1), buse.retenue.r.HW - dalot.retenue.r.HW, "écart de charge amont");
 });

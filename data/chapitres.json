@@ -143,7 +143,8 @@
         "multi-cellules",
         "vérification au débit majorant"
       ],
-      "cours": false
+      "cours": true,
+      "exercices": 9
     },
     {
       "id": "ch8",

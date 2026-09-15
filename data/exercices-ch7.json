@@ -1,0 +1,427 @@
+{
+  "chapitre": "ch7",
+  "exercices": [
+    {
+      "id": "ch7-e1",
+      "titre": "Le catalogue et les critères durs",
+      "difficulte": 1,
+      "enonce": "Site de référence du chapitre : débit de projet Q₅₀ = 12 m³/s, dalot en béton, longueur 14 m, Strickler K = 70, entrée à ailes évasées 30° à 75°, sortie libre. Exigences : vitesse ≤ 3,00 m/s, remplissage ≤ 75 %, HW/D ≤ 1,20, revanche ≥ 0,50 m. Radier amont calé à 100,00 m, point bas de la chaussée à 102,00 m. On explore les largeurs B de 1 à 4 m (pas de 1 m), les hauteurs D de 1,0 à 3,0 m (pas de 0,5 m) et 1 à 4 cellules.",
+      "questions": [
+        {
+          "texte": "Combien de géométries (B, D) la règle de forme H ≤ B ≤ H + 2 m laisse-t-elle subsister ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 12,
+          "tolerance": 0.5,
+          "explication": "Sur les 4 × 5 = 20 couples, la règle en écarte 8. B = 1 ne garde que D = 1,0 ; B = 2 garde 1,0 à 2,0 ; B = 3 garde 1,0 à 3,0 ; B = 4 garde 2,0 à 3,0 (D = 1,0 et 1,5 violeraient B ≤ D + 2). Total 1 + 3 + 5 + 3 = 12."
+        },
+        {
+          "texte": "Combien de candidats faut-il alors évaluer au total ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 48,
+          "tolerance": 0.5,
+          "explication": "12 géométries × 4 nombres de cellules = 48. C'est peu : on ne cherche pas à être malin, on les passe tous au moteur du chapitre 6. C'est bien pour cela qu'aucune formule n'est nécessaire — ni possible."
+        },
+        {
+          "texte": "Le candidat 4 × 2,0 × 1,0 m à 1 % de pente donne V = 3,25 m/s, remplissage 55 %, HW/D = 0,93. Est-il acceptable ?",
+          "type": "choix",
+          "options": [
+            "Oui : il tient trois critères sur quatre, et de peu sur le quatrième",
+            "Non : la vitesse dépasse 3,00 m/s, et un critère dur ne se compense pas"
+          ],
+          "reponse": 1,
+          "explication": "Les critères durs éliminent individuellement. Tenir trois critères sur quatre n'est pas « presque acceptable » : c'est refusé. Rien dans la marge des autres critères ne rachète une vitesse de 3,25 m/s — l'érosion du lit récepteur ne consulte pas le taux de remplissage."
+        },
+        {
+          "texte": "Que signifie exactement le fait d'arriver premier au classement des candidats acceptables ?",
+          "type": "choix",
+          "options": [
+            "Que c'est la solution optimale au sens mathématique",
+            "Que c'est celle que la convention de pondération retenue préfère — un choix de projet, qui se discute",
+            "Que les autres candidats sont faux"
+          ],
+          "reponse": 1,
+          "explication": "Le classement pondère des préférences : peu de cellules, encombrement réduit, remplissage moyen, charge amont modérée. Ce sont des choix de projet, pas des lois. Tous les candidats acceptables sont acceptables ; le classement dit seulement lequel on préfère, et il faut pouvoir dire pourquoi."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e2",
+      "titre": "Quel critère élimine ?",
+      "difficulte": 2,
+      "enonce": "Site de référence du chapitre : débit de projet Q₅₀ = 12 m³/s, dalot en béton, longueur 14 m, Strickler K = 70, entrée à ailes évasées 30° à 75°, sortie libre. Exigences : vitesse ≤ 3,00 m/s, remplissage ≤ 75 %, HW/D ≤ 1,20, revanche ≥ 0,50 m. Radier amont calé à 100,00 m, point bas de la chaussée à 102,00 m. On lance la recherche deux fois sur les 48 candidats, à 1 % puis à 0,5 % de pente.",
+      "questions": [
+        {
+          "texte": "Combien de candidats sont acceptables à 1 % de pente ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 8,
+          "tolerance": 0.5,
+          "explication": "8 sur 48. Le classement place en tête un 4 × 3,0 × 1,0 m (HW = 0,743 m) : il faut quatre cellules de 3 m de large pour tenir les critères."
+        },
+        {
+          "texte": "Combien le sont à 0,5 % ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 28,
+          "tolerance": 0.5,
+          "explication": "28 sur 48, et la solution retenue tombe à 2 cellules (2 × 3,0 × 1,5 m, HW = 1,219 m). Diviser la pente par deux a plus que triplé le nombre de solutions et divisé par deux le nombre de cellules."
+        },
+        {
+          "texte": "À 1 %, la vitesse met en défaut 40 candidats, la charge amont 12, le remplissage 8, la capacité 4. À 0,5 %, la vitesse n'en met plus en défaut que 17, les autres comptes bougeant à peine. Qu'en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que la section est trop petite : il faut agrandir l'ouvrage",
+            "Que le critère qui bloque est la vitesse, et que la vitesse se commande par la pente, pas par la section",
+            "Que le seuil de 3 m/s est trop sévère et devrait être relevé"
+          ],
+          "reponse": 1,
+          "explication": "Un seul compte s'effondre quand la pente change : celui de la vitesse. Les trois autres sont quasi insensibles. C'est le diagnostic : agrandir la section pour faire baisser une vitesse est un geste coûteux et peu efficace — Manning fait dépendre V de √J, et c'est là qu'est le levier."
+        },
+        {
+          "texte": "Devant un dimensionnement qui ne passe pas, quel est le premier réflexe ?",
+          "type": "choix",
+          "options": [
+            "Augmenter le nombre de cellules jusqu'à ce que ça passe",
+            "Regarder QUEL critère bloque, avant de décider quoi changer",
+            "Relâcher le critère le plus contraignant"
+          ],
+          "reponse": 1,
+          "explication": "Les trois gestes existent, mais l'ordre compte. Le compte des rejets par critère est un diagnostic gratuit : il désigne la variable à reprendre. Augmenter les cellules au hasard, c'est traiter un symptôme dont on n'a pas identifié la cause — et payer un ouvrage plus cher pour rien."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e3",
+      "titre": "La pente de calage",
+      "difficulte": 2,
+      "enonce": "Quand le terrain n'impose pas la pente, on cale le radier juste au-dessus de la pente critique I_c, au pas de projet de 0,1 %.",
+      "questions": [
+        {
+          "texte": "Le candidat 2 × 3,0 × 1,5 m écoule 6 m³/s par cellule et a une pente critique I_c = 0,3779 %. Quelle pente de calage retenir ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.4,
+          "tolerance": 0.01,
+          "explication": "0,3779 / 0,1 = 3,779, arrondi par excès à 4, soit J = 0,4 %. La pente retenue est le premier multiple de 0,1 % qui atteint I_c."
+        },
+        {
+          "texte": "Une autre configuration donne I_c = 0,519 %. Quelle pente de calage ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.6,
+          "tolerance": 0.01,
+          "explication": "0,519 / 0,1 = 5,19 → 6, soit 0,6 %. L'arrondi au plus proche aurait donné 0,5 % — et 0,5 % est INFÉRIEUR à I_c = 0,519 %. On serait passé de l'autre côté du régime, ce qu'on cherchait précisément à éviter, pour un millimètre par mètre."
+        },
+        {
+          "texte": "Pourquoi arrondir par excès et non au plus proche ?",
+          "type": "choix",
+          "options": [
+            "Pour prendre une marge de sécurité sur la capacité",
+            "Parce qu'un arrondi au plus proche peut descendre sous I_c et faire basculer le régime",
+            "Parce que les pentes de projet sont toujours des nombres pairs"
+          ],
+          "reponse": 1,
+          "explication": "Ce n'est pas une marge de sécurité, c'est une question de côté : I_c est une frontière de régime. Un arrondi au plus proche traverse la frontière une fois sur deux. Le plafond garantit qu'on reste du côté visé, quel que soit le chiffre."
+        },
+        {
+          "texte": "Une configuration donne I_c = 0,700 %, pile sur un multiple du pas. Quelle pente de calage ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.7,
+          "tolerance": 0.01,
+          "explication": "0,7 %. Une pente critique déjà posée sur un multiple du pas ne se relève pas au suivant : il n'y a rien à corriger. La règle est « le premier multiple qui atteint I_c », pas « le premier strictement au-dessus »."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e4",
+      "titre": "Le calage altimétrique",
+      "difficulte": 2,
+      "enonce": "Site de référence du chapitre : débit de projet Q₅₀ = 12 m³/s, dalot en béton, longueur 14 m, Strickler K = 70, entrée à ailes évasées 30° à 75°, sortie libre. Exigences : vitesse ≤ 3,00 m/s, remplissage ≤ 75 %, HW/D ≤ 1,20, revanche ≥ 0,50 m. Radier amont calé à 100,00 m, point bas de la chaussée à 102,00 m. Le dimensionnement a retenu un dalot 2 × 3,0 × 1,5 m calé à J = 0,4 %, pour lequel le moteur donne HW = 1,220 m.",
+      "questions": [
+        {
+          "texte": "Cote du radier de sortie ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 99.944,
+          "tolerance": 0.01,
+          "explication": "Z_radier aval = Z_radier amont − J·L = 100,00 − 0,004 × 14 = 100,00 − 0,056 = 99,944 m. La longueur employée est la longueur HORIZONTALE suivant l'axe hydraulique, pas la longueur inclinée de l'ouvrage."
+        },
+        {
+          "texte": "Cote du plan d'eau amont ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 101.22,
+          "tolerance": 0.01,
+          "explication": "Z_PHE amont = Z_radier amont + HW = 100,00 + 1,220 = 101,220 m. HW est compté depuis le radier d'ENTRÉE — c'est la seule origine qui donne la bonne cote amont."
+        },
+        {
+          "texte": "Revanche sous le point bas de la chaussée ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.78,
+          "tolerance": 0.01,
+          "explication": "R = Z_chaussée − Z_PHE amont = 102,00 − 101,220 = 0,780 m, au-dessus des 0,50 m exigés : conforme. Noter que la revanche se compte sur le plan d'eau AMONT, le plus haut des deux."
+        },
+        {
+          "texte": "On ne dispose pas du profil en long du projet routier, mais un MNT donne 101,80 m au droit de l'ouvrage. Peut-on prendre cette valeur comme cote de chaussée ?",
+          "type": "choix",
+          "options": [
+            "Oui : c'est la meilleure information disponible",
+            "Non : un MNT donne le terrain naturel avant travaux, pas la chaussée finie — la revanche reste non vérifiable, et il faut le dire"
+          ],
+          "reponse": 1,
+          "explication": "Un MNT décrit le sol tel qu'il est, pas le projet tel qu'il sera. Le remblai routier peut placer la chaussée un mètre plus haut, ou un déblai la placer plus bas. Utiliser la cote MNT donnerait ici R = 0,58 m — un verdict « conforme » entièrement inventé. Tant que la cote de projet manque, le verdict est « non vérifiable »."
+        },
+        {
+          "texte": "Quelle est la relation correcte entre la profondeur aval TW et les cotes ?",
+          "type": "choix",
+          "options": [
+            "TW = Z_PHE aval − Z_radier amont",
+            "TW = max(0 ; Z_PHE aval − Z_radier aval)",
+            "TW = Z_PHE amont − Z_PHE aval"
+          ],
+          "reponse": 1,
+          "explication": "TW est une hauteur d'eau au-dessus du radier de SORTIE — pas une cote, pas une dénivelée entre amont et aval. Le max(0 ; …) traduit qu'une cote d'eau aval sous le radier ne donne pas une profondeur négative : elle donne une sortie libre."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e5",
+      "titre": "Les quatre verdicts de la revanche",
+      "difficulte": 1,
+      "enonce": "La revanche minimale exigée est R_min = 0,50 m. Classer chacune des situations suivantes.",
+      "questions": [
+        {
+          "texte": "R = 0,780 m",
+          "type": "choix",
+          "options": [
+            "conforme",
+            "insuffisante",
+            "surverse de la route",
+            "non vérifiable"
+          ],
+          "reponse": 0,
+          "explication": "R ≥ R_min : conforme. C'est la situation du débit de projet sur le site de référence."
+        },
+        {
+          "texte": "R = 0,333 m",
+          "type": "choix",
+          "options": [
+            "conforme",
+            "insuffisante",
+            "surverse de la route",
+            "non vérifiable"
+          ],
+          "reponse": 1,
+          "explication": "0 ≤ R < R_min : insuffisante. La chaussée n'est pas submergée — il reste 33 cm d'eau à monter — mais la marge exigée n'y est pas. C'est un verdict distinct de la surverse, et il appelle une décision, pas une alarme."
+        },
+        {
+          "texte": "R = −0,162 m",
+          "type": "choix",
+          "options": [
+            "conforme",
+            "insuffisante",
+            "surverse de la route",
+            "non vérifiable"
+          ],
+          "reponse": 2,
+          "explication": "R < 0 : le plan d'eau amont passe au-dessus du point bas de la chaussée. La route déverse, et le calcul du chapitre change de nature — le débit se partage."
+        },
+        {
+          "texte": "La cote du point bas de la chaussée n'est pas connue",
+          "type": "choix",
+          "options": [
+            "conforme",
+            "insuffisante",
+            "surverse de la route",
+            "non vérifiable"
+          ],
+          "reponse": 3,
+          "explication": "Non vérifiable — et surtout pas « conforme ». C'est le cas le plus dangereux des quatre parce qu'il ressemble à un succès : aucun avertissement ne s'affiche, et rien n'a été vérifié. Une vérification qu'on n'a pas pu faire se dit."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e6",
+      "titre": "Vérification au débit majorant",
+      "difficulte": 2,
+      "enonce": "Le dalot 2 × 3,0 × 1,5 m à J = 0,4 % a été dimensionné pour Q₅₀ = 12 m³/s. On le vérifie à Q₁₀₀ = 18 m³/s. Le moteur donne HW = 1,667 m, V = 3,11 m/s, remplissage 64 %.",
+      "questions": [
+        {
+          "texte": "Cote du plan d'eau amont au débit majorant ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 101.667,
+          "tolerance": 0.01,
+          "explication": "100,00 + 1,667 = 101,667 m, soit 45 cm de plus qu'au débit de projet. La charge ne croît pas proportionnellement au débit : +50 % de débit donne +37 % de charge. Entre les deux, l'entrée a changé de régime — X passe de 1,97 (transition) à 2,96 (noyée), où la charge suit un C·X² qui monte plus vite. Extrapoler linéairement depuis le débit de projet aurait donné 1,83 m au lieu de 1,67 m."
+        },
+        {
+          "texte": "Revanche correspondante ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.333,
+          "tolerance": 0.01,
+          "explication": "R = 102,00 − 101,667 = 0,333 m : insuffisante au sens du critère de projet, mais positive. La route reste hors d'eau à la crue centennale."
+        },
+        {
+          "texte": "La vitesse atteint 3,11 m/s, au-delà des 3,00 m/s admis. Le dimensionnement est-il à refaire ?",
+          "type": "choix",
+          "options": [
+            "Oui : un critère de projet est dépassé",
+            "Non : les critères de projet s'appliquent au débit de projet. Au débit majorant on vérifie que la défaillance reste connue et progressive"
+          ],
+          "reponse": 1,
+          "explication": "Vérifier n'est pas dimensionner. Au débit majorant on n'exige pas que tous les critères tiennent — sinon on aurait dimensionné à ce débit-là. On regarde la NATURE de la défaillance : ici la revanche se réduit et la vitesse dépasse un peu, sans surverse ni mise en charge. C'est une dégradation progressive et documentée, ce qu'on attend d'un ouvrage."
+        },
+        {
+          "texte": "À quel débit ce même ouvrage fait-il déverser la route ?",
+          "type": "choix",
+          "options": [
+            "Dès 18 m³/s",
+            "Vers 26 m³/s, quand HW = 2,16 m porte le plan d'eau à 102,16 m",
+            "Jamais : la revanche reste positive"
+          ],
+          "reponse": 1,
+          "explication": "À 26 m³/s, HW = 2,162 m donne Z = 102,162 m, soit 16 cm au-dessus du point bas de la chaussée. Connaître ce débit-là est une information de projet : il dit de combien la crue doit dépasser le projet pour que la route soit coupée."
+        },
+        {
+          "texte": "Au débit de projet, ce dalot donne HW = 1,220 m sous contrôle à l'entrée et 1,204 m sous contrôle à la sortie. Que faut-il en retenir ?",
+          "type": "choix",
+          "options": [
+            "Que les deux calculs sont redondants puisqu'ils donnent presque la même valeur",
+            "Que l'ouvrage fonctionne tout près du basculement : un allongement, un envasement ou une montée de l'aval feraient passer le contrôle à la sortie"
+          ],
+          "reponse": 1,
+          "explication": "Seize millimètres d'écart : l'ouvrage est au point de bascule entre les deux contrôles. Ce n'est pas une redondance, c'est une information de sensibilité. Tout ce qui alourdit le contrôle à la sortie — plus de longueur, plus de rugosité par envasement, un niveau aval qui monte — le fait passer devant, et l'ouvrage cesse d'obéir à sa tête pour obéir à son aval. À 18 m³/s l'écart est déjà de 17 cm : le basculement s'éloigne quand le débit croît."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e7",
+      "titre": "Surverse et partage du débit",
+      "difficulte": 3,
+      "enonce": "Même ouvrage 2 × 3,0 × 1,5 m à J = 0,4 %, mais le point bas de la chaussée n'est qu'à 101,50 m. La crête déversante équivalente mesure L_r = 30 m, avec C_d = 1,70 et k_t = 1,00. On examine une crue de 22 m³/s.",
+      "questions": [
+        {
+          "texte": "Si l'on fait passer tout le débit dans l'ouvrage, quelle cote amont obtient-on ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 101.892,
+          "tolerance": 0.02,
+          "explication": "HW = 1,892 m à 22 m³/s, soit Z = 100,00 + 1,892 = 101,892 m. C'est 39 cm au-dessus de la chaussée : la route déverse, donc cette hypothèse est fausse — elle suppose dans l'ouvrage un débit qui n'y passe pas."
+        },
+        {
+          "texte": "Pourquoi ne peut-on pas calculer directement la hauteur sur la crête à partir du débit total ?",
+          "type": "choix",
+          "options": [
+            "Parce que la formule du déversoir n'est pas valable pour une chaussée",
+            "Parce que la hauteur sur la crête dépend du niveau amont, qui dépend du débit resté dans l'ouvrage, qui dépend de ce qui déverse : c'est une équation implicite"
+          ],
+          "reponse": 1,
+          "explication": "Q_total = Q_ouvrage + Q_route, où Q_route dépend de H_r, qui dépend de HW, qui dépend de Q_ouvrage = Q_total − Q_route. La boucle est fermée : il faut la résoudre par approximations successives, et à CHAQUE débit essayé recalculer tout le fonctionnement de l'ouvrage — contrôle à l'entrée, contrôle à la sortie, maximum des deux."
+        },
+        {
+          "texte": "Après résolution, quel débit passe réellement dans l'ouvrage ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 18.196,
+          "tolerance": 0.15,
+          "explication": "18,196 m³/s dans le dalot, 3,804 m³/s sur la route, somme 22,000 m³/s. Le plan d'eau s'établit à 101,677 m, soit H_r = 0,177 m sur la crête. Contrôle : 1,70 × 1,00 × 30 × 0,177^1,5 = 3,80 m³/s — le bilan boucle."
+        },
+        {
+          "texte": "De combien l'hypothèse « tout passe dans l'ouvrage » surestime-t-elle la cote amont ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.215,
+          "tolerance": 0.02,
+          "explication": "101,892 − 101,677 = 0,215 m. Vingt et un centimètres, et du mauvais côté si l'on s'en sert pour dimensionner la protection de la chaussée : on surestime la hauteur d'eau sur la route tout en ignorant la lame qui y circule réellement, ce qui n'est pas la même erreur et ne se compense pas."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e8",
+      "titre": "Quand l'exploitation écarte le meilleur candidat",
+      "difficulte": 2,
+      "enonce": "On reprend le site de référence avec la pente imposée à 1 %. Le classement place en tête un dalot 4 × 3,0 × 1,0 m : tous les critères hydrauliques sont tenus et sa charge amont, HW = 0,743 m, est la plus faible de toute la liste des acceptables.",
+      "questions": [
+        {
+          "texte": "Le §6 de la note circulaire DGPC N°1054/2019 impose une hauteur minimale. Ce candidat la respecte-t-il ?",
+          "type": "choix",
+          "options": [
+            "Oui : 1,00 m suffit pour l'écoulement",
+            "Non : la hauteur minimale est de 1,50 m, pour que l'ouvrage puisse être curé"
+          ],
+          "reponse": 1,
+          "explication": "1,00 m < 1,50 m. La règle ne parle pas d'hydraulique : elle dit qu'un homme doit pouvoir entrer curer l'ouvrage. Le candidat suivant qui la respecte est le 4 × 3,0 × 1,5 m (HW = 0,878 m) — plus cher, moins bien classé, et le bon choix."
+        },
+        {
+          "texte": "Un candidat parfait hydrauliquement peut-il être écarté par une règle d'exploitation ?",
+          "type": "choix",
+          "options": [
+            "Non : l'hydraulique décide, le reste s'adapte",
+            "Oui : les règles d'exploitation s'ajoutent aux critères hydrauliques et ne se négocient pas contre un score"
+          ],
+          "reponse": 1,
+          "explication": "Le score pondère des préférences hydrauliques et économiques ; il ne voit pas le curage, ni les dépôts, ni l'accès. Ces règles-là ne participent pas au classement : elles filtrent, comme les critères durs. Un ouvrage qu'on ne peut pas entretenir se bouche, et un ouvrage bouché n'a plus aucune des qualités hydrauliques qu'on lui a calculées."
+        },
+        {
+          "texte": "Quelle hauteur morte le §6 demande-t-il de prévoir sur un ouvrage de 1,50 m de hauteur ?",
+          "type": "nombre",
+          "unite": "cm",
+          "reponse": 15,
+          "tolerance": 0.5,
+          "explication": "10 % × H = 0,10 × 1,50 = 0,15 m, soit 15 cm, pour le dépôt des solides en bassin rural ou périurbain. C'est une hauteur perdue pour l'écoulement : elle se prévoit au calage du radier, pas après coup."
+        },
+        {
+          "texte": "Le §6 limite aussi la PHE à 80 % de la hauteur pour les ouvrages de H ≤ 5 m. Le 4 × 3,0 × 1,5 m, rempli à 22 %, est-il concerné ?",
+          "type": "choix",
+          "options": [
+            "Oui, il dépasse la limite",
+            "Non : à 22 % de remplissage il en est très loin — la règle est vérifiée, pas violée"
+          ],
+          "reponse": 1,
+          "explication": "Vérifier une règle et la violer sont deux résultats différents, et il faut dire lequel des deux on a obtenu. Ici la marge est large. Ce n'est pas toujours le cas : un ouvrage dimensionné au plus juste sur le critère des 75 % de remplissage se retrouve à quelques points de la limite des 80 % sur la PHE, qui porte sur une grandeur voisine mais pas identique."
+        }
+      ]
+    },
+    {
+      "id": "ch7-e9",
+      "titre": "Dalot ou buse ?",
+      "difficulte": 2,
+      "enonce": "Sur le même site (Q = 12 m³/s, L = 14 m, K = 70, pente libre, radier 100,00 m, chaussée 102,00 m), on compare la solution dalot à une solution en buses béton à emboîtement, cherchées dans la gamme normalisée des diamètres.",
+      "questions": [
+        {
+          "texte": "Les buses se cherchent dans une gamme normalisée (0,60 · 0,80 · 1,00 · 1,20 · 1,50 · 1,80 · 2,00 · 2,50 · 3,00 m). Pourquoi ne pas chercher le diamètre optimal en continu ?",
+          "type": "choix",
+          "options": [
+            "Parce que le calcul serait trop long",
+            "Parce qu'une buse se commande dans un catalogue de fabricant : un Ø 1,63 m n'existe pas"
+          ],
+          "reponse": 1,
+          "explication": "C'est la même raison que pour les largeurs de dalot au mètre. L'optimum continu n'a pas de sens : il faudrait ensuite l'arrondir à une dimension commandable, et cet arrondi peut faire perdre un critère. Autant chercher directement dans le catalogue réel."
+        },
+        {
+          "texte": "La recherche retient 4 × Ø 1,50 m à J = 0,5 %, pour HW = 1,382 m. Le dalot retenu (2 × 3,0 × 1,5 m) donne HW = 1,220 m. Quel écart de charge amont, en mètres, entre les deux solutions ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.162,
+          "tolerance": 0.02,
+          "explication": "1,382 − 1,220 = 0,162 m en faveur du dalot, qui fait en outre le travail avec 2 cellules au lieu de 4 buses. Sur ce site le dalot l'emporte, et la raison tient à la forme : à encombrement voisin, une section rectangulaire offre plus de largeur au miroir près du radier qu'un cercle, où la section s'annule en pointe."
+        },
+        {
+          "texte": "Cette conclusion est-elle générale ?",
+          "type": "choix",
+          "options": [
+            "Oui : le dalot est toujours préférable au-delà de 10 m³/s",
+            "Non : elle dépend du débit, de la pente, de la hauteur disponible sous chaussée et du coût local — elle se refait à chaque site"
+          ],
+          "reponse": 1,
+          "explication": "Rien dans le calcul ne produit une règle générale : c'est une comparaison de deux listes de candidats sur un site donné, avec une pondération donnée. Sous faible remblai, la buse perd davantage ; sur un petit débit avec un lit stable, elle gagne presque toujours sur le coût. La comparaison se refait, elle ne se retient pas."
+        }
+      ]
+    }
+  ]
+}

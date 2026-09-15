@@ -71,14 +71,14 @@ function maj() {
 
   el("oFig").innerHTML = profil(r, J, L, tw);
 
-  const gagne = (c) => r.controle === c ? ' class="retenue"' : "";
+  const gagne = (c) => r.controle === c ? " q retenue" : " q";
   el("oTable").innerHTML = `<table class="resultats abaque">
     <thead><tr><th>Contrôle</th><th>HW (m)</th><th>détail</th></tr></thead>
     <tbody>
-      <tr><td>à l'entrée</td><td class="q"${gagne("entrée")}>${fr(r.entreeC.HW, 3)}</td>
+      <tr><td>à l'entrée</td><td class="${gagne("entrée")}">${fr(r.entreeC.HW, 3)}</td>
         <td class="motif">X = ${fr(r.entreeC.X, 3)} · entrée ${r.entreeC.regime} ·
           HW/D = ${fr(r.entreeC.ratio, 3)}</td></tr>
-      <tr><td>à la sortie</td><td class="q"${gagne("sortie")}>${fr(r.sortieC.HW, 3)}</td>
+      <tr><td>à la sortie</td><td class="${gagne("sortie")}">${fr(r.sortieC.HW, 3)}</td>
         <td class="motif">${r.sortieC.methode} · pertes ${fr(r.sortieC.pertes, 3)} m
           (entrée ${fr(r.sortieC.perteEntree, 3)} · frottement ${fr(r.sortieC.perteFrottement, 3)} ·
           sortie ${fr(r.sortieC.perteSortie, 3)})</td></tr>

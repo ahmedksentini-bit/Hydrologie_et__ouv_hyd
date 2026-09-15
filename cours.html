@@ -24,7 +24,7 @@
   <p>Le cours au fil du texte, avec ses figures, ses cartes et ses calculateurs.</p></div>
 </section>
 
-<div class="workspace">
+<div class="workspace cours-layout">
 <div>
 
 <section id="ch1" class="card">
@@ -602,17 +602,194 @@
   <div class="actions"><a class="secondary" href="index.html#ch6">Exercices du chapitre</a></div>
 </section>
 
+<section id="ch7" class="card">
+  <h2>7 · Dimensionnement des ouvrages</h2>
+
+  <h3>Le problème s'inverse</h3>
+  <p>Le chapitre 6 partait d'un ouvrage donné et calculait la charge amont. Dimensionner,
+     c'est l'inverse : le débit est connu, la géométrie est l'inconnue. Et cette question-là
+     <strong>n'a pas de formule</strong>. Non pas parce qu'on ne saurait pas la résoudre,
+     mais parce qu'elle n'est pas posée comme une équation : le catalogue des sections est
+     <strong>discret</strong>, et les exigences sont des <strong>inégalités</strong>. On
+     n'inverse donc rien — on énumère, on filtre, on classe.</p>
+  <p class="formula">énumérer le catalogue → évaluer chaque candidat au chapitre 6 →
+     éliminer → classer ce qui reste</p>
+
+  <h3>Le catalogue n'est pas continu</h3>
+  <p>Un ouvrage ne se fabrique pas en dimensions quelconques. Les largeurs de dalot vont au
+     mètre, les hauteurs au demi-mètre, et les buses se commandent dans une gamme de
+     diamètres normalisés : 0,60 · 0,80 · 1,00 · 1,20 · 1,50 · 1,80 · 2,00 · 2,50 · 3,00 m.
+     S'ajoute une règle de forme des dalots :</p>
+  <p class="formula">H ≤ B ≤ H + 2 m</p>
+  <p>La hauteur ne dépasse jamais la largeur — un dalot plus haut que large n'a pas de sens
+     constructif — et la largeur ne la dépasse pas de plus de 2 m, faute de quoi la dalle
+     devient déraisonnable. Avec B de 1 à 4 m et D de 1,0 à 3,0 m, cette règle ne laisse que
+     <strong>12 géométries</strong> sur les 25 combinaisons possibles ; multipliées par le
+     nombre de cellules, de 1 à 4, cela fait 48 candidats à examiner. C'est peu : on les
+     passe tous.</p>
+
+  <h3>Critères durs et préférences : deux natures de règles</h3>
+  <p>Un candidat est éliminé si <em>un seul</em> des critères suivants n'est pas tenu. Ils ne
+     se compensent pas entre eux.</p>
+  <table class="resultats"><thead><tr><th>Critère dur</th><th>Seuil usuel</th><th>Ce qu'il protège</th></tr></thead>
+    <tbody>
+      <tr><td>Capacité</td><td class="q">non dépassée</td><td class="motif">la section suffit sans mise en charge subie</td></tr>
+      <tr><td>Taux de remplissage</td><td class="q">≤ 75 %</td><td class="motif">garde au-dessus du plan d'eau, passage des flottants</td></tr>
+      <tr><td>Vitesse</td><td class="q">≤ 3,00 m/s</td><td class="motif">érosion du lit récepteur et de l'ouvrage</td></tr>
+      <tr><td>Charge amont</td><td class="q">HW/D ≤ 1,20</td><td class="motif">mise en charge et remous amont acceptables</td></tr>
+      <tr><td>Revanche</td><td class="q">≥ 0,50 m</td><td class="motif">la chaussée reste hors d'eau</td></tr>
+    </tbody></table>
+  <p>Les survivants sont ensuite <strong>classés</strong> : peu de cellules, encombrement
+     réduit, remplissage moyen, vitesse suffisante pour le curage, charge amont modérée,
+     revanche confortable. Mais ce classement est une <strong>convention de projet, pas une
+     loi physique</strong> : il pondère des préférences, il se discute, et il se règle.
+     Passer les critères durs rend un ouvrage <em>acceptable</em> ; arriver premier au
+     classement le rend seulement <em>préféré</em>. Ne jamais présenter le premier du
+     classement comme « la » solution : présenter la liste des acceptables, et dire pourquoi
+     on retient celui-là.</p>
+
+  <h3>La pente de calage : plafond, pas arrondi</h3>
+  <p>Quand la pente n'est pas imposée par le terrain, on la cale juste au-dessus de la pente
+     critique I<sub>c</sub>, pour rester du côté torrentiel, et on l'arrondit au pas de
+     projet de 0,1 % — un ouvrage ne se cale pas au millième. Mais il faut arrondir
+     <strong>par excès</strong> :</p>
+  <div class="hint"><strong>I<sub>c</sub> = 0,519 %.</strong> Arrondi au plus proche : 0,5 % —
+     soit <em>en dessous</em> de la pente critique, donc de l'autre côté du régime, ce qu'on
+     cherchait précisément à éviter. Par excès : <strong>0,6 %</strong>. L'écart est d'un
+     millimètre par mètre, et il change le régime d'écoulement.</div>
+
+  <div class="sanity-check"><h3>Le vrai levier n'est pas la section</h3>
+    <p>Sur un débit de 12 m³/s, avec la vitesse limitée à 3 m/s, le même catalogue de 48
+       candidats donne <strong>8 solutions acceptables à 1 % de pente, et 28 à 0,5 %</strong>.
+       Le critère qui élimine n'est pas la capacité : c'est la vitesse. Diviser la pente par
+       deux libère plus de solutions qu'agrandir l'ouvrage, et fait passer la solution
+       retenue de 4 cellules à 2.</p>
+    <p>Réflexe à prendre : devant un dimensionnement qui ne passe pas, regarder d'abord
+       <em>quel</em> critère bloque. Si c'est la vitesse, agrandir la section est le mauvais
+       geste — c'est la pente qu'il faut reprendre.</p>
+  </div>
+
+  <h3>Le calage altimétrique : quatre cotes qui ne se confondent jamais</h3>
+  <p>Jusqu'ici tout était compté depuis le radier. Un ouvrage se pose dans un site, et il
+     faut passer aux cotes réelles. Quatre altitudes coexistent, et les confondre est l'erreur
+     la plus fréquente du dimensionnement :</p>
+  <table class="resultats"><thead><tr><th>Cote</th><th>Ce que c'est</th></tr></thead>
+    <tbody>
+      <tr><td>Z fil d'eau</td><td class="motif">le radier de l'ouvrage, à l'amont et à l'aval</td></tr>
+      <tr><td>Z terrain naturel</td><td class="motif">le sol avant travaux — ce que donne un MNT</td></tr>
+      <tr><td>Z plan d'eau</td><td class="motif">la PHE, amont et aval</td></tr>
+      <tr><td>Z chaussée</td><td class="motif">le point bas de la route finie</td></tr>
+    </tbody></table>
+  <p class="formula">Z<sub>radier aval</sub> = Z<sub>radier amont</sub> − J·L&nbsp;&nbsp;·&nbsp;&nbsp;
+     Z<sub>PHE amont</sub> = Z<sub>radier amont</sub> + HW<br>
+     TW = max(0 ; Z<sub>PHE aval</sub> − Z<sub>radier aval</sub>)&nbsp;&nbsp;·&nbsp;&nbsp;
+     R = Z<sub>chaussée</sub> − Z<sub>PHE amont</sub></p>
+  <div class="hint"><strong>Deux pièges dans ces quatre lignes.</strong> La longueur L est la
+     longueur <em>horizontale</em> suivant l'axe hydraulique, pas la longueur inclinée de
+     l'ouvrage : sur 14 m à 5 %, l'écart est déjà centimétrique. Et une cote lue sur un MNT
+     est du <em>terrain naturel</em> : ce n'est ni un fil d'eau, ni la chaussée finie. La
+     prendre pour l'une ou pour l'autre fausse la revanche sans que rien ne le signale.</div>
+
+  <h3>La revanche a quatre verdicts, pas deux</h3>
+  <table class="resultats"><thead><tr><th>Revanche R</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>R ≥ R<sub>min</sub></td><td class="motif">conforme</td></tr>
+      <tr><td>0 ≤ R &lt; R<sub>min</sub></td><td class="motif">insuffisante — la route n'est pas submergée, mais la marge n'y est pas</td></tr>
+      <tr><td>R &lt; 0</td><td class="motif">surverse de la route</td></tr>
+      <tr><td>Z chaussée inconnue</td><td class="motif">non vérifiable — et surtout pas « conforme »</td></tr>
+    </tbody></table>
+  <p class="method-note">Le quatrième cas est le plus dangereux, parce qu'il ressemble à un
+     succès : aucun avertissement ne s'affiche, et rien n'a été vérifié. Une vérification
+     qu'on n'a pas pu faire se dit, elle ne se tait pas.</p>
+
+  <h3>Surverse : le débit se partage</h3>
+  <p>Si le plan d'eau amont dépasse le point bas de la chaussée, la route devient un
+     déversoir et une partie du débit passe par-dessus :</p>
+  <p class="formula">Q<sub>route</sub> = C<sub>d</sub> · k<sub>t</sub> · L<sub>r</sub> ·
+     H<sub>r</sub><sup>1,5</sup>&nbsp;&nbsp;(C<sub>d</sub> ≈ 1,70 en SI)&nbsp;&nbsp;·&nbsp;&nbsp;
+     Q<sub>total</sub> = Q<sub>ouvrage</sub> + Q<sub>route</sub></p>
+  <p>Ces deux lignes forment une <strong>équation implicite</strong> : la hauteur sur la
+     crête H<sub>r</sub> dépend du niveau amont, qui dépend du débit qui passe dans
+     l'ouvrage, qui dépend de ce qui déverse. On la résout par approximations successives —
+     et la règle qui compte est celle-ci : <strong>à chaque débit essayé, tout le
+     fonctionnement de l'ouvrage est recalculé</strong>. Contrôle à l'entrée, contrôle à la
+     sortie, le maximum des deux. On ne déduit jamais H<sub>r</sub> du débit total.</p>
+  <div class="hint"><strong>Ignorer le partage surestime le niveau.</strong> Sur l'ouvrage
+     du calculateur ci-dessous à 22 m³/s, faire passer tout le débit dans le dalot donne une
+     cote amont de 101,89 m ; le partage réel — 18,21 m³/s dans l'ouvrage, 3,79 m³/s sur la
+     route — la ramène à 101,68 m. Vingt et un centimètres d'écart, du mauvais côté si on
+     dimensionne la protection de la chaussée sur la première valeur.</div>
+
+  <div class="calc" id="calcDim">
+    <h3>Dimensionner : le catalogue, le filtre, le classement</h3>
+    <div class="data-grid">
+      <div class="field"><label for="dimForme">Forme</label>
+        <div class="input-wrap"><select id="dimForme">
+          <option value="dalot">Dalot rectangulaire</option>
+          <option value="buse">Buse circulaire</option></select></div></div>
+      <div class="field"><label for="dimEntree">Type d'entrée</label>
+        <div class="input-wrap"><select id="dimEntree"></select></div></div>
+      <div class="field"><label for="dimQ">Débit de projet Q</label>
+        <div class="input-wrap"><input id="dimQ" type="text" inputmode="decimal" value="12"><span class="unit">m³/s</span></div></div>
+      <div class="field"><label for="dimL">Longueur L</label>
+        <div class="input-wrap"><input id="dimL" type="text" inputmode="decimal" value="14"><span class="unit">m</span></div></div>
+      <div class="field"><label for="dimJ">Pente J (0 = libre, calée sur I<sub>c</sub>)</label>
+        <div class="input-wrap"><input id="dimJ" type="text" inputmode="decimal" value="0"><span class="unit">%</span></div></div>
+      <div class="field"><label for="dimK">Strickler K</label>
+        <div class="input-wrap"><input id="dimK" type="text" inputmode="decimal" value="70"></div></div>
+      <div class="field"><label for="dimV">Vitesse admissible</label>
+        <div class="input-wrap"><input id="dimV" type="text" inputmode="decimal" value="3"><span class="unit">m/s</span></div></div>
+      <div class="field"><label for="dimN">Cellules au plus</label>
+        <div class="input-wrap"><input id="dimN" type="text" inputmode="numeric" value="4"></div></div>
+      <div class="field"><label for="dimZr">Cote du radier amont</label>
+        <div class="input-wrap"><input id="dimZr" type="text" inputmode="decimal" value="100"><span class="unit">m</span></div></div>
+      <div class="field"><label for="dimZc">Cote du point bas de la chaussée</label>
+        <div class="input-wrap"><input id="dimZc" type="text" inputmode="decimal" value="102"><span class="unit">m</span></div></div>
+    </div>
+    <div id="dimTable"></div>
+    <div id="dimRejets"></div>
+    <p class="final-result" id="dimOut"></p>
+  </div>
+
+  <h3>Vérifier au débit majorant</h3>
+  <p>L'ouvrage est dimensionné au débit de projet — T = 50 ans pour une route principale, par
+     exemple. Il faut ensuite le <strong>vérifier</strong> à un débit supérieur, T = 100 ans,
+     pour savoir ce qui se passe quand la crue dépasse le projet. On ne cherche pas à ce que
+     tous les critères soient encore tenus : on cherche à ce que la défaillance, si elle
+     arrive, soit <em>connue et progressive</em>. Une revanche qui tombe de 0,78 m à 0,33 m
+     est une information ; une route qui passe sous l'eau sans qu'on l'ait prévu en est une
+     autre.</p>
+
+  <h3>Les règles d'exploitation : §6 de la note DGPC N°1054/2019</h3>
+  <p>Trois règles qui ne parlent pas d'hydraulique mais d'exploitation, et qui s'ajoutent aux
+     critères précédents :</p>
+  <table class="resultats"><thead><tr><th>Règle</th><th>Motif</th></tr></thead>
+    <tbody>
+      <tr><td>Hauteur ≥ 1,50 m</td><td class="motif">un homme doit pouvoir entrer curer l'ouvrage</td></tr>
+      <tr><td>PHE ≤ 80 % de H (pour H ≤ 5 m)</td><td class="motif">garde au-dessus du plan d'eau — à proscrire au-delà</td></tr>
+      <tr><td>Hauteur morte de 10 % × H</td><td class="motif">volume de dépôt des solides, bassins ruraux et périurbains</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>Elles peuvent disqualifier le meilleur candidat hydraulique.</strong>
+     Sur le cas à 1 % de pente, le classement place en tête un 4 × 3,0 × 1,0 m : tous les
+     critères hydrauliques sont tenus, la charge amont est la plus faible de la liste. Mais
+     1,00 m de hauteur, personne ne vient y curer. Le §6 l'écarte, et on remonte au
+     4 × 3,0 × 1,5 m — plus cher, moins bien classé, et le bon choix. Un critère
+     d'exploitation ne se négocie pas contre un score.</div>
+
+  <div class="actions"><a class="secondary" href="index.html#ch7">Exercices du chapitre</a></div>
+</section>
+
 <section class="card">
-  <h2>Chapitres en préparation</h2>
-  <p class="en-preparation">Les chapitres 7 et 8 sont en cours de rédaction.
-     Leur plan est visible depuis l'accueil.</p>
+  <h2>Chapitre en préparation</h2>
+  <p class="en-preparation">Le chapitre 8 — ouvrages annexes et protection — est en cours de
+     rédaction. Son plan est visible depuis l'accueil.</p>
 </section>
 
 </div>
 
-<aside>
-  <div class="card"><h2>Sommaire</h2>
-    <ul class="chapitre-sommaire" id="sommaire"></ul></div>
+<aside class="cours-aside">
+  <nav class="card" aria-label="Sommaire du cours"><h2>Sommaire</h2>
+    <ul class="chapitre-sommaire" id="sommaire"></ul></nav>
 </aside>
 </div>
 </main>
@@ -622,9 +799,39 @@ const r = await fetch("data/chapitres.json");
 const { chapitres } = await r.json();
 document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
   const pret = document.getElementById(c.id);
-  return `<li><a href="${pret ? "#" + c.id : "index.html#" + c.id}">
+  return `<li><a data-ch="${c.id}" href="${pret ? "#" + c.id : "index.html#" + c.id}">
     ${c.number} · ${c.title}<small>${pret ? "disponible" : "en préparation"}</small></a></li>`;
 }).join("");
+
+// Sommaire actif : la section dont le titre est le dernier franchi vers le haut.
+const liens = new Map([...document.querySelectorAll("#sommaire a[data-ch]")]
+  .map((a) => [a.dataset.ch, a]));
+const sections = chapitres.map((c) => document.getElementById(c.id)).filter(Boolean);
+
+function marquerSectionLue() {
+  const repere = 120;                       // sous la barre collante
+  let courante = sections[0];
+  for (const sec of sections)
+    if (sec.getBoundingClientRect().top <= repere) courante = sec;
+  for (const [id, a] of liens) a.classList.toggle("actif", id === courante?.id);
+  const actif = liens.get(courante?.id);
+  // Garder le lien actif visible quand le sommaire défile de lui-même.
+  if (actif && liens.size > 6) {
+    const boite = actif.closest("ul");
+    const dessus = actif.offsetTop - boite.scrollTop;
+    if (dessus < 0 || dessus > boite.clientHeight - actif.offsetHeight)
+      boite.scrollTop = actif.offsetTop - boite.clientHeight / 2;
+  }
+}
+
+let planifie = false;
+addEventListener("scroll", () => {
+  if (planifie) return;
+  planifie = true;
+  requestAnimationFrame(() => { planifie = false; marquerSectionLue(); });
+}, { passive: true });
+addEventListener("resize", marquerSectionLue, { passive: true });
+marquerSectionLue();
 </script>
 <script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch2.js"></script>
@@ -632,4 +839,5 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
+<script type="module" src="src/cours-ch7.js"></script>
 </body></html>
