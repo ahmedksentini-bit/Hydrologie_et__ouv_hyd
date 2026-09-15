@@ -9,27 +9,42 @@
       "questions": [
         {
           "texte": "Profondeur critique dans l'ouvrage ?",
-          "type": "nombre", "unite": "m", "reponse": 1.177, "tolerance": 0.02,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.177,
+          "tolerance": 0.02,
           "explication": "Section rectangulaire : y_c = (q²/(g·b²))^⅓ = (64/(9,81 × 4))^⅓ = 1,177 m. Elle reste inférieure à la hauteur de 1,50 m : l'ouvrage n'est pas plein à la section critique."
         },
         {
           "texte": "Intensité adimensionnelle X du contrôle à l'entrée ?",
-          "type": "nombre", "unite": "", "reponse": 3.943, "tolerance": 0.05,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 3.943,
+          "tolerance": 0.05,
           "explication": "X = 1,811·q/(A_pleine·√D) = 1,811 × 8 / (3,00 × √1,50) = 14,488 / 3,674 = 3,943. Au-delà de 2,21 : l'entrée est noyée, on applique la forme HW/D = C·X² + Y + Kpente·J."
         },
         {
           "texte": "Charge amont sous contrôle à l'entrée ?",
-          "type": "nombre", "unite": "m", "reponse": 2.017, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.017,
+          "tolerance": 0.04,
           "explication": "HW/D = 0,0347 × 3,943² + 0,81 − 0,50 × 0,01 = 0,5395 + 0,81 − 0,005 = 1,345 ; HW = 1,345 × 1,50 = 2,017 m. Ni la longueur ni la rugosité n'interviennent : le contrôle à l'entrée ne connaît que la tête et la pente."
         },
         {
           "texte": "Charge amont sous contrôle à la sortie ?",
-          "type": "nombre", "unite": "m", "reponse": 1.78, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.78,
+          "tolerance": 0.04,
           "explication": "V = q/A = 8/3 = 2,667 m/s ; V²/2g = 0,362 m. Pertes = 0,40 × 0,362 (entrée) + J_f × 12 (frottement) + 1,0 × 0,362 (sortie) = 0,561 m. Sortie libre : h₀ = (y_c + D)/2 = (1,177 + 1,50)/2 = 1,339 m. HW = 1,339 + 0,561 − 0,01 × 12 = 1,780 m."
         },
         {
           "texte": "Charge amont retenue ?",
-          "type": "nombre", "unite": "m", "reponse": 2.017, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.017,
+          "tolerance": 0.04,
           "explication": "HW = max(2,017 ; 1,780) = 2,017 m : l'ouvrage est contrôlé à l'entrée. C'est le cas usuel d'un ouvrage court, raide et à sortie libre — l'entrée n'avale pas plus, quelle que soit la facilité avec laquelle l'aval évacue."
         }
       ]
@@ -43,18 +58,28 @@
         {
           "texte": "Quel est l'état de la sortie ?",
           "type": "choix",
-          "options": ["libre", "partiellement noyée", "noyée"],
+          "options": [
+            "libre",
+            "partiellement noyée",
+            "noyée"
+          ],
           "reponse": 2,
           "explication": "TW = 2,50 m dépasse la hauteur D = 1,50 m : la sortie est noyée et le calcul passe en énergie de pleine section, la ligne d'énergie étant continue depuis l'aval. L'état de la sortie se déduit de TW — il ne se coche jamais."
         },
         {
           "texte": "Nouvelle charge amont sous contrôle à la sortie ?",
-          "type": "nombre", "unite": "m", "reponse": 2.941, "tolerance": 0.05,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.941,
+          "tolerance": 0.05,
           "explication": "Sortie noyée : HW = TW + pertes − J·L = 2,50 + 0,561 − 0,12 = 2,941 m. On part du niveau aval réel au lieu de la hauteur conventionnelle (y_c + D)/2."
         },
         {
           "texte": "Charge amont retenue, et contrôle ?",
-          "type": "nombre", "unite": "m", "reponse": 2.941, "tolerance": 0.05,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.941,
+          "tolerance": 0.05,
           "explication": "HW = max(2,017 ; 2,941) = 2,941 m : le contrôle est passé à la sortie. Le contrôle à l'entrée n'a pas bougé d'un centimètre — il ignore l'aval — mais il ne commande plus, parce que l'autre calcul donne davantage."
         },
         {
@@ -77,12 +102,18 @@
       "questions": [
         {
           "texte": "Charge amont sous contrôle à l'entrée, après allongement ?",
-          "type": "nombre", "unite": "m", "reponse": 2.017, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.017,
+          "tolerance": 0.04,
           "explication": "Inchangée : 2,017 m. La longueur n'intervient pas dans le contrôle à l'entrée — c'est la section d'entrée qui limite, pas le conduit."
         },
         {
           "texte": "Charge amont sous contrôle à la sortie, après allongement ?",
-          "type": "nombre", "unite": "m", "reponse": 1.598, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.598,
+          "tolerance": 0.04,
           "explication": "Le frottement augmente (J_f × 45 au lieu de J_f × 12), mais la dénivelée du radier augmente davantage : J·L passe de 0,12 à 0,45 m. HW = 1,339 + 0,653 − 0,45 = 1,598 m — soit 18 cm de MOINS qu'avec 12 m."
         },
         {
@@ -99,7 +130,10 @@
         {
           "texte": "Le contrôle change-t-il après allongement ?",
           "type": "choix",
-          "options": ["Oui, il passe à la sortie", "Non, il reste à l'entrée : 2,017 > 1,598"],
+          "options": [
+            "Oui, il passe à la sortie",
+            "Non, il reste à l'entrée : 2,017 > 1,598"
+          ],
           "reponse": 1,
           "explication": "L'écart entre les deux contrôles s'est même creusé. Allonger un ouvrage déjà contrôlé à l'entrée ne change rien au niveau amont — c'est la tête qu'il faut reprendre, ou la section."
         }
@@ -113,7 +147,10 @@
       "questions": [
         {
           "texte": "Avec des ailes parallèles, charge amont sous contrôle à l'entrée ?",
-          "type": "nombre", "unite": "m", "reponse": 2.209, "tolerance": 0.05,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.209,
+          "tolerance": 0.05,
           "explication": "HW/D = 0,0423 × 3,943² + 0,82 − 0,005 = 1,473 ; HW = 2,209 m, soit 19 cm de plus que les ailes évasées. Une tête mal profilée se paie directement en niveau amont."
         },
         {
@@ -128,12 +165,18 @@
         },
         {
           "texte": "Avec deux cellules, quelle est l'intensité adimensionnelle X ?",
-          "type": "nombre", "unite": "", "reponse": 1.972, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1.972,
+          "tolerance": 0.04,
           "explication": "Le débit se partage : q = 4 m³/s par cellule. X = 1,811 × 4 / (3,00 × √1,50) = 1,972. La valeur tombe entre 1,93 et 2,21 : on est dans la zone de transition, et le ratio s'obtient par interpolation entre la forme dénoyée et la forme noyée."
         },
         {
           "texte": "Charge amont retenue avec deux cellules ?",
-          "type": "nombre", "unite": "m", "reponse": 1.216, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.216,
+          "tolerance": 0.04,
           "explication": "HW = 1,216 m, contre 2,017 m à une cellule : 80 cm de gagnés. Doubler les cellules divise le débit unitaire par deux et fait basculer l'entrée du régime noyé vers la transition. C'est le levier le plus efficace quand le contrôle est à l'entrée."
         }
       ]
@@ -146,17 +189,26 @@
       "questions": [
         {
           "texte": "Intensité adimensionnelle X ?",
-          "type": "nombre", "unite": "", "reponse": 2.924, "tolerance": 0.05,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 2.924,
+          "tolerance": 0.05,
           "explication": "A_pleine = πD²/4 = 1,131 m² ; X = 1,811 × 2 / (1,131 × √1,20) = 3,622 / 1,239 = 2,924. Au-delà de 2,21 : entrée noyée."
         },
         {
           "texte": "Charge amont sous contrôle à l'entrée, avec l'entrée béton à arête vive ?",
-          "type": "nombre", "unite": "m", "reponse": 1.203, "tolerance": 0.03,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.203,
+          "tolerance": 0.03,
           "explication": "HW/D = 0,0398 × 2,924² + 0,67 − 0,50 × 0,015 = 0,3403 + 0,67 − 0,0075 = 1,003 ; HW = 1,203 m. La buse est tout juste en charge à l'entrée."
         },
         {
           "texte": "Avec l'entrée métallique coupée suivant le talus ?",
-          "type": "nombre", "unite": "m", "reponse": 1.387, "tolerance": 0.04,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.387,
+          "tolerance": 0.04,
           "explication": "HW/D = 0,0463 × 2,924² + 0,75 + 0,70 × 0,015 = 0,3958 + 0,75 + 0,0105 = 1,156 ; HW = 1,387 m. Noter le signe : la correction de pente AJOUTE ici au lieu de retrancher."
         },
         {
@@ -180,12 +232,18 @@
       "questions": [
         {
           "texte": "Tirant normal dans l'ouvrage ?",
-          "type": "nombre", "unite": "m", "reponse": 0.93, "tolerance": 0.03,
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.93,
+          "tolerance": 0.03,
           "explication": "Manning-Strickler : Q = K·A·R^(2/3)·√J, résolu en y. On trouve y_n = 0,930 m, soit un remplissage de 62 % : l'ouvrage n'est pas en charge."
         },
         {
           "texte": "Vitesse correspondante ?",
-          "type": "nombre", "unite": "m/s", "reponse": 4.3, "tolerance": 0.15,
+          "type": "nombre",
+          "unite": "m/s",
+          "reponse": 4.3,
+          "tolerance": 0.15,
           "explication": "V = q/A = 8/(2 × 0,930) = 4,30 m/s. Au-delà des 3 m/s retenus : il faut soit élargir l'ouvrage, soit protéger la sortie contre l'érosion."
         },
         {
@@ -239,6 +297,190 @@
           ],
           "reponse": 1,
           "explication": "Les planches sont organisées par matériau — béton, métal ondulé, bague biseautée — et chacune porte plusieurs échelles, une par type de tête. Une référence d'entrée s'écrit donc toujours en deux morceaux : abaque n, échelle x. La confusion conduit à lire une échelle sur la mauvaise planche, donc à appliquer les coefficients d'un autre matériau."
+        }
+      ]
+    },
+    {
+      "id": "ch6-e8",
+      "titre": "La variable réduite de l'abaque",
+      "difficulte": 1,
+      "enonce": "Franchissement sur route classée, Q₅₀ = 12 m³/s. Dalot en béton à cellules de 3,00 × 1,50 m, entrée à ailes évasées 30° à 75°, longueur 14 m, pente 0,40 %, Strickler 70, sortie libre. Lecture sur l'abaque BCEOM, figure 77, courbe A. On essaie deux cellules, soit q = 6,000 m³/s par cellule.",
+      "questions": [
+        {
+          "texte": "Quelle expression de Q* s'applique à la figure 77 ?",
+          "type": "choix",
+          "options": [
+            "Q* = q / √(2g·D⁵)",
+            "Q* = q / (B·D·√(2g·D))",
+            "Q* = q / (A_pleine·√D)"
+          ],
+          "reponse": 1,
+          "explication": "La figure 77 est celle du dalot rectangulaire : Q* = q/(B·D·√(2gD)). La première expression est celle des buses circulaires (planches 71, 72, 73) et la troisième n'appartient pas aux abaques — c'est la forme X = 1,811·q/(A√D) du contrôle à l'entrée HDS-5, qui vit dans un tout autre calcul."
+        },
+        {
+          "texte": "Valeur de √(2g·D) ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 5.4249,
+          "tolerance": 0.01,
+          "explication": "√(2 × 9,81 × 1,50) = √29,430 = 5,4249. C'est la vitesse de chute libre sur la hauteur D, au facteur √2 près — elle sert d'échelle de vitesse pour adimensionner le débit."
+        },
+        {
+          "texte": "Débit réduit Q* ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.24578,
+          "tolerance": 0.003,
+          "explication": "B·D·√(2gD) = 3,00 × 1,50 × 5,4249 = 24,4122, puis Q* = 6,000 / 24,4122 = 0,24578. Grandeur sans dimension : c'est l'abscisse de lecture sur la planche."
+        },
+        {
+          "texte": "Sur une section CIRCULAIRE, quel serait l'effet d'employer Q* = q/(A·√(2gD)) au lieu de q/√(2g·D⁵) ?",
+          "type": "choix",
+          "options": [
+            "Aucun : les deux expressions sont équivalentes",
+            "Le débit réduit serait multiplié par 4/π ≈ 1,273, et la charge lue serait donc trop FORTE",
+            "Le débit réduit serait multiplié par 4/π ≈ 1,273, et la charge lue serait donc trop faible — l'erreur va dans le sens rassurant"
+          ],
+          "reponse": 1,
+          "explication": "A = πD²/4, donc q/(A√(2gD)) = (4/π)·q/√(2gD⁵) : le débit réduit est multiplié par 1,273. Les courbes étant croissantes, la charge lue est plus FORTE — sur une buse Ø 1,50 m à 3 m³/s, 1,674 m au lieu de 1,409 m, soit +18,8 %. La confusion inverse, appliquer la formule de buse à un dalot, multiplie Q* par B/D : ici par 2,00, et la charge lue passe de 0,774 à 1,280 en réduit, soit +65 %. Les deux erreurs vont donc dans le sens prudent, ce qui est une consolation et non une excuse : une lecture fausse des deux tiers ne contrôle plus rien. Les deux formules ne coïncident que si B = D."
+        }
+      ]
+    },
+    {
+      "id": "ch6-e9",
+      "titre": "Interpoler sur la planche, à la main",
+      "difficulte": 2,
+      "enonce": "Franchissement sur route classée, Q₅₀ = 12 m³/s. Dalot en béton à cellules de 3,00 × 1,50 m, entrée à ailes évasées 30° à 75°, longueur 14 m, pente 0,40 %, Strickler 70, sortie libre. Lecture sur l'abaque BCEOM, figure 77, courbe A. Q* = 0,24578 tombe entre deux points relevés de la courbe A : (0,20 ; 0,70) et (0,25 ; 0,78).",
+      "questions": [
+        {
+          "texte": "Position relative t, en interpolation logarithmique ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.92368,
+          "tolerance": 0.01,
+          "explication": "log₁₀(0,24578) = −0,60946 ; log₁₀(0,20) = −0,69897 ; log₁₀(0,25) = −0,60206. t = (−0,60946 + 0,69897)/(−0,60206 + 0,69897) = 0,08951/0,09691 = 0,92368. Le point est presque sur la borne haute de l'intervalle."
+        },
+        {
+          "texte": "Charge réduite H1/D lue ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.77358,
+          "tolerance": 0.008,
+          "explication": "log₁₀(H1*) = log₁₀(0,70) + t·[log₁₀(0,78) − log₁₀(0,70)] = −0,15490 + 0,92368 × 0,04699 = −0,11150, d'où H1* = 10^(−0,11150) = 0,77358."
+        },
+        {
+          "texte": "Charge amont H1 correspondante ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.1604,
+          "tolerance": 0.02,
+          "explication": "H1 = H1* · D = 0,77358 × 1,50 = 1,1604 m. Et H1/D = 0,774 reste sous 1,20 : pas de mise en charge amont excessive."
+        },
+        {
+          "texte": "Une interpolation linéaire donnerait 0,7732 au lieu de 0,77358, soit 0,05 % d'écart. Sur toutes les courbes des planches 72 et 77, l'écart maximal entre les deux règles vaut 0,26 %. Pourquoi imposer quand même le log-log ?",
+          "type": "choix",
+          "options": [
+            "Parce que l'écart est significatif",
+            "Parce que c'est ainsi que la planche a été tracée : une lecture doit suivre la construction de ce qu'elle lit — et le jour où les points relevés seront plus espacés, l'écart cessera d'être négligeable"
+          ],
+          "reponse": 1,
+          "explication": "La règle ne se justifie pas par le gain numérique, et il vaut mieux le dire que de laisser croire à une précision qu'elle n'apporte pas. Elle se justifie par la cohérence avec le support : sur du papier log-log, une droite entre deux points relevés EST l'interpolation naturelle. Une méthode qu'on ne change pas quand la densité des points change est une méthode sûre."
+        }
+      ]
+    },
+    {
+      "id": "ch6-e10",
+      "titre": "Quand l'abaque cesse de décrire l'ouvrage",
+      "difficulte": 3,
+      "enonce": "Franchissement sur route classée, Q₅₀ = 12 m³/s. Dalot en béton à cellules de 3,00 × 1,50 m, entrée à ailes évasées 30° à 75°, longueur 14 m, pente 0,40 %, Strickler 70, sortie libre. Lecture sur l'abaque BCEOM, figure 77, courbe A. On compare maintenant deux et trois cellules. À trois cellules, q = 4,000 m³/s, Q* = 0,16385, et l'abaque lit H1 = 0,9436 m.",
+      "questions": [
+        {
+          "texte": "Contrôle à la sortie à trois cellules : quelles sont les pertes totales ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 0.06207,
+          "tolerance": 0.004,
+          "explication": "V = 4,000/4,500 = 0,8889 m/s, donc V²/2g = 0,04027 m. Pertes = Ke·V²/2g + Jf·L + Ks·V²/2g = 0,40 × 0,04027 + 0,00569 + 1,00 × 0,04027 = 0,06207 m. La vitesse est faible, donc les pertes le sont aussi — c'est bien pour cela que l'ouvrage se dégage."
+        },
+        {
+          "texte": "Charge amont sous contrôle à la sortie ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.039,
+          "tolerance": 0.02,
+          "explication": "y_c = 0,5659 m, donc h₀ = (y_c + D)/2 = (0,5659 + 1,50)/2 = 1,0329 m. HW = h₀ + pertes − J·L = 1,0329 + 0,0621 − 0,0560 = 1,0390 m. Le contrôle à l'entrée, lui, donne 0,8971 m."
+        },
+        {
+          "texte": "L'abaque annonce 0,944 m, le calcul retient 1,039 m. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que la lecture d'abaque était fausse",
+            "Que la planche, qui ne décrit que le contrôle à l'entrée, ne pouvait pas voir que la sortie avait pris la main"
+          ],
+          "reponse": 1,
+          "explication": "Confronté au contrôle à l'ENTRÉE (0,8971 m), l'abaque est à 4,9 % — parfaitement dans l'incertitude annoncée de son relevé. C'est confronté à la charge RETENUE qu'il s'écarte de 9,2 %, et l'écart ne vient pas d'un défaut de la planche : elle ne connaît ni la longueur, ni la rugosité, ni les pertes de charge. Elle répond à une autre question."
+        },
+        {
+          "texte": "À quatre cellules, l'abaque lit 0,792 m et le calcul retient 0,963 m. Écart relatif de l'abaque à la charge retenue, en pourcentage ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": -17.7,
+          "tolerance": 1.5,
+          "explication": "(0,792 − 0,963)/0,963 = −17,7 %. L'écart passe de 5 % à 18 % à mesure que l'ouvrage se dégage et que la sortie prend la main. Ce n'est pas la précision du relevé qui se dégrade : c'est le sujet qui change."
+        },
+        {
+          "texte": "Dans quel sens va systématiquement l'erreur ?",
+          "type": "choix",
+          "options": [
+            "Par excès : l'abaque majore la charge, on est du côté prudent",
+            "Par défaut : l'abaque sous-estime la charge retenue, donc surestime la revanche"
+          ],
+          "reponse": 1,
+          "explication": "Sur les quatre configurations, la lecture d'abaque est toujours inférieure à la charge retenue. Une revanche calculée sur la seule lecture d'abaque est donc toujours trop confortable — à trois cellules, 1,056 m annoncés contre 0,961 m réels. C'est la raison de fond pour laquelle l'abaque contrôle mais ne décide pas."
+        }
+      ]
+    },
+    {
+      "id": "ch6-e11",
+      "titre": "Hors domaine, et la fausse familiarité de Q*",
+      "difficulte": 2,
+      "enonce": "Deux situations rencontrées en marge du TD précédent.",
+      "questions": [
+        {
+          "texte": "Une buse béton Ø 1,50 m unique évacue 1,00 m³/s. Quel est son débit réduit sur la figure 72 ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.0819,
+          "tolerance": 0.002,
+          "explication": "√(2g·D⁵) = √(2 × 9,81 × 7,59375) = √148,99 = 12,2061, d'où Q* = 1,000/12,2061 = 0,0819."
+        },
+        {
+          "texte": "La figure 72 est tracée de Q* = 0,12 à Q* = 1,40. Que faire ?",
+          "type": "choix",
+          "options": [
+            "Prolonger la courbe vers le bas : la tendance est claire",
+            "Ne rien lire, et le dire : on n'extrapole pas une courbe relevée sur un scan ancien"
+          ],
+          "reponse": 1,
+          "explication": "Prolonger reviendrait à inventer des points que l'auteur n'a jamais publiés, sur un relevé déjà annoncé à ± 5 %. Le calcul HDS-5, lui, répond quand même : 0,956 m, et sous contrôle à la sortie. C'est exactement ce qui sépare une planche d'une formule — l'une a un domaine tracé, l'autre pas."
+        },
+        {
+          "texte": "Le dalot 2 × 3,00 × 1,50 m donne Q* = 0,24578. Une buse Ø 1,50 m à 4 cellules, même débit total, donne q = 3,000 m³/s. Quel est SON débit réduit ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.24578,
+          "tolerance": 0.003,
+          "explication": "3,000 / 12,2061 = 0,24578 — exactement le même nombre, par pure coïncidence des deux normalisations. Q* = q/(B·D·√(2gD)) pour le dalot, Q* = q/√(2gD⁵) pour la buse."
+        },
+        {
+          "texte": "Les deux configurations ont le même Q*. Ont-elles la même charge réduite ?",
+          "type": "choix",
+          "options": [
+            "Oui : même Q*, même H1/D",
+            "Non : la figure 72 lit 0,9394 quand la figure 77 lisait 0,7736"
+          ],
+          "reponse": 1,
+          "explication": "Q* n'est pas une grandeur physique transférable : c'est une coordonnée de lecture propre à chaque planche, construite avec sa propre normalisation et lue sur sa propre courbe. Deux abscisses égales sur deux abaques différents ne disent rien l'une de l'autre. La charge vaut ici 1,409 m pour la buse contre 1,160 m pour le dalot."
         }
       ]
     }

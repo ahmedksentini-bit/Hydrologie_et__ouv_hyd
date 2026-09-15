@@ -378,3 +378,107 @@ test("ch2 — la rupture de l'exercice est bien au rang annoncé", () => {
   assert.ok(pt.p < 0.05 && st.wilcoxon(rupture).p > 0.05,
     "Pettitt rejette là où Wilcoxon conserve");
 });
+
+// ── Chapitre 6, TD corrigé à l'abaque : tout se recalcule ──────────────────
+import * as abq from "../src/solvers-abaques.js";
+const ABAQUES = abq.preparer(JSON.parse(
+  readFileSync(new URL("../data/abaques-bceom.json", import.meta.url))));
+const F77 = ABAQUES.parFigure.get(77), F72 = ABAQUES.parFigure.get(72);
+const DALOT_TD = { forme: "dalot", B: 3, D: 1.5, Q: 12, L: 14, J: 0.004, K: 70,
+                   entree: "box-ailes-evasees", tw: 0 };
+
+test("ch6 — variable réduite du TD", () => {
+  const b = banque("ch6");
+  vaut(q(b, "ch6-e8", 1), Math.sqrt(2 * abq.G * 1.5), "√(2gD)");
+  const lu = abq.lireAbaque(F77, "A_ailes_30_75", { Q: 6, D: 1.5, B: 3 });
+  vaut(q(b, "ch6-e8", 2), lu.qReduit, "Q* à deux cellules");
+});
+
+test("ch6 — interpolation de la planche 77 refaite", () => {
+  const b = banque("ch6");
+  const courbe = F77.courbes.find((c) => c.id === "A_ailes_30_75");
+  const Q = 6 / (3 * 1.5 * Math.sqrt(2 * abq.G * 1.5));
+  // l'énoncé cite l'encadrement (0,20 ; 0,70) et (0,25 ; 0,78)
+  let i = 1; while (courbe.points[i][0] < Q) i++;
+  assert.deepEqual(courbe.points[i - 1], [0.2, 0.7], "borne basse citée dans l'énoncé");
+  assert.deepEqual(courbe.points[i], [0.25, 0.78], "borne haute citée dans l'énoncé");
+  const [q0, h0] = courbe.points[i - 1], [q1, h1] = courbe.points[i];
+  const t = (Math.log10(Q) - Math.log10(q0)) / (Math.log10(q1) - Math.log10(q0));
+  vaut(q(b, "ch6-e9", 0), t, "position relative t");
+  const H1r = abq.lireCourbe(courbe, Q).valeur;
+  vaut(q(b, "ch6-e9", 1), H1r, "H1/D lu");
+  vaut(q(b, "ch6-e9", 2), H1r * 1.5, "H1 en mètres");
+  // l'écart log-log / linéaire annoncé à 0,05 %
+  const lineaire = h0 + ((Q - q0) / (q1 - q0)) * (h1 - h0);
+  assert.ok(Math.abs(H1r - lineaire) / lineaire * 100 < 0.1,
+    `écart log-log / linéaire annoncé négligeable : ${(Math.abs(H1r - lineaire) / lineaire * 100).toFixed(3)} %`);
+});
+
+test("ch6 — le contrôle bascule à la sortie, et l'abaque ne le voit pas", () => {
+  const b = banque("ch6");
+  const r3 = o.calculerOuvrage({ ...DALOT_TD, cellules: 3 });
+  vaut(q(b, "ch6-e10", 0), r3.sortieC.pertes, "pertes au contrôle à la sortie");
+  vaut(q(b, "ch6-e10", 1), r3.sortieC.HW, "charge sous contrôle à la sortie");
+  assert.equal(r3.controle, "sortie", "à trois cellules, la sortie commande");
+
+  const lu3 = abq.lireAbaque(F77, "A_ailes_30_75", { Q: 4, D: 1.5, B: 3 });
+  const ecartEntree = Math.abs(abq.ecartRelatif(r3.entreeC.HW, lu3.H1));
+  assert.ok(ecartEntree < 6,
+    `l'abaque suit le contrôle à l'entrée à ${ecartEntree.toFixed(1)} %`);
+
+  const r4 = o.calculerOuvrage({ ...DALOT_TD, cellules: 4 });
+  const lu4 = abq.lireAbaque(F77, "A_ailes_30_75", { Q: 3, D: 1.5, B: 3 });
+  vaut(q(b, "ch6-e10", 3), abq.ecartRelatif(lu4.H1, r4.HW), "écart abaque / retenu à 4 cellules");
+
+  // la propriété enseignée : l'abaque sous-estime TOUJOURS la charge retenue
+  for (const n of [1, 2, 3, 4]) {
+    const r = o.calculerOuvrage({ ...DALOT_TD, cellules: n });
+    const lu = abq.lireAbaque(F77, "A_ailes_30_75", { Q: 12 / n, D: 1.5, B: 3 });
+    assert.ok(lu.H1 < r.HW, `${n} cellules : abaque ${lu.H1.toFixed(3)} < retenu ${r.HW.toFixed(3)}`);
+  }
+  // le tableau du corrigé : entrée commande à 1 et 2 cellules, sortie à 3 et 4
+  for (const [n, attendu] of [[1, "entrée"], [2, "entrée"], [3, "sortie"], [4, "sortie"]])
+    assert.equal(o.calculerOuvrage({ ...DALOT_TD, cellules: n }).controle, attendu,
+      `contrôle à ${n} cellules`);
+});
+
+test("ch6 — hors domaine et non-transférabilité de Q*", () => {
+  const b = banque("ch6");
+  const hd = abq.lireAbaque(F72, "emboitement_femelle", { Q: 1, D: 1.5 });
+  vaut(q(b, "ch6-e11", 0), hd.qReduit, "Q* de la buse à 1 m³/s");
+  assert.equal(hd.H1, null, "sous le domaine tracé");
+  // le calcul répond là où la planche se tait
+  const hds = o.calculerOuvrage({ forme: "buse", D: 1.5, cellules: 1, Q: 1, L: 14,
+    J: 0.005, K: 70, entree: "buse-emboitement", tw: 0 });
+  assert.ok(hds.HW > 0.9 && hds.HW < 1.0, `HDS-5 répond : ${hds.HW.toFixed(3)} m`);
+  assert.equal(hds.controle, "sortie");
+
+  // même Q* sur deux planches, deux lectures
+  const qDalot = abq.lireAbaque(F77, "A_ailes_30_75", { Q: 6, D: 1.5, B: 3 });
+  const qBuse = abq.lireAbaque(F72, "emboitement_femelle", { Q: 3, D: 1.5 });
+  vaut(q(b, "ch6-e11", 2), qBuse.qReduit, "Q* de la buse à 3 m³/s");
+  assert.ok(Math.abs(qDalot.qReduit - qBuse.qReduit) < 1e-4,
+    "les deux configurations partagent bien le même Q*");
+  assert.ok(Math.abs(qDalot.h1Reduit - qBuse.h1Reduit) > 0.15,
+    "mais pas la même charge réduite");
+});
+
+test("ch6 — le sens de l'erreur de normalisation, tel que le cours l'affirme", () => {
+  const c72 = F72.courbes[0], c77 = F77.courbes.find((c) => c.id === "A_ailes_30_75");
+  const D = 1.5;
+  // buse lue avec la formule d'arche : Q* × 4/π, donc charge MAJORÉE
+  const bon = 3 / Math.sqrt(2 * abq.G * Math.pow(D, 5));
+  const faux = 3 / ((Math.PI * D * D / 4) * Math.sqrt(2 * abq.G * D));
+  assert.ok(Math.abs(faux / bon - 4 / Math.PI) < 1e-9, "rapport 4/π");
+  assert.ok(abq.lireCourbe(c72, faux).valeur > abq.lireCourbe(c72, bon).valeur,
+    "la charge lue est majorée, donc l'erreur va dans le sens prudent");
+  // dalot lu avec la formule de buse : Q* × B/D
+  const bon2 = 6 / (3 * D * Math.sqrt(2 * abq.G * D));
+  const faux2 = 6 / Math.sqrt(2 * abq.G * Math.pow(D, 5));
+  assert.ok(Math.abs(faux2 / bon2 - 3 / D) < 1e-9, "rapport B/D");
+  assert.ok(abq.lireCourbe(c77, faux2).valeur > abq.lireCourbe(c77, bon2).valeur,
+    "majorée là aussi");
+  // et les deux formules coïncident exactement quand B = D
+  assert.ok(Math.abs(3 / (D * D * Math.sqrt(2 * abq.G * D))
+    - 3 / Math.sqrt(2 * abq.G * Math.pow(D, 5))) < 1e-12, "B = D : mêmes formules");
+});

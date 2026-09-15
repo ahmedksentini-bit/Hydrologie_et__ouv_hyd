@@ -1015,9 +1015,13 @@
      dalot (77) : Q* = Q / (B·D·√(2g·D))&nbsp;&nbsp;·&nbsp;&nbsp;
      H1* = H1 / D</p>
   <div class="hint"><strong>Les buses circulaires n'emploient pas la même normalisation que
-     l'arche et le dalot.</strong> Q/√(2gD⁵) et Q/(A√(2gD)) diffèrent d'un facteur 4/π ≈ 1,273
-     sur une section circulaire. Employer la seconde sur la planche 71 décale la lecture d'un
-     quart, dans le sens rassurant — la charge lue est trop faible.</div>
+     l'arche et le dalot.</strong> Sur une section circulaire, Q/(A√(2gD)) vaut 4/π ≈ 1,273
+     fois Q/√(2gD⁵) ; sur un dalot, appliquer par erreur la formule de buse multiplie Q* par
+     B/D. Les courbes étant croissantes, ces deux confusions <strong>majorent</strong> la
+     charge lue — de 19 % pour une buse Ø 1,50 m, de 65 % pour un dalot 3,00 × 1,50 m. Elles
+     vont donc dans le sens prudent, ce qui est une consolation et non une excuse : une
+     lecture fausse de deux tiers ne contrôle plus rien. Les deux formules coïncident
+     exactement quand B = D, et seulement là.</div>
   <div class="hint"><strong>Deux règles de lecture, et pas de troisième.</strong>
      L'interpolation se fait linéairement en log₁₀(Q*) / log₁₀(H1*), comme sur le papier. Et
      <strong>on n'extrapole pas</strong> : hors du domaine tracé, on ne lit rien et on dit
@@ -1041,6 +1045,138 @@
     <div id="abFig"></div>
     <div id="abTable"></div>
     <p class="final-result" id="abOut"></p>
+  </div>
+
+  <h3>TD corrigé : dimensionner à l'abaque, contrôler au calcul</h3>
+  <div class="given-data">
+    <h3>Énoncé</h3>
+    <p>Franchissement sur route classée. Le chapitre 4 a donné <strong>Q₅₀ = 12 m³/s</strong>.
+       On envisage un dalot en béton à cellules de <strong>3,00 × 1,50 m</strong>, entrée à
+       ailes évasées 30° à 75°, longueur 14 m, pente du radier 0,40 %, Strickler 70, sortie
+       libre. Le radier amont se cale à 100,00 m, le point bas de la chaussée est à
+       102,00 m, la revanche minimale exigée est de 0,50 m.</p>
+    <p><strong>Déterminer le nombre de cellules</strong> en lisant la charge amont sur
+       l'abaque BCEOM (figure 77), puis contrôler la lecture par le calcul HDS-5.</p>
+  </div>
+
+  <div class="solution-step" data-step="1">
+    <h3>Choisir la variable réduite — et la bonne</h3>
+    <p>La figure 77 est celle du dalot rectangulaire. Son débit réduit s'écrit</p>
+    <p class="formula">Q* = q / ( B · D · √(2g·D) )&nbsp;&nbsp;·&nbsp;&nbsp;q = débit par cellule</p>
+    <p>Essayons <strong>2 cellules</strong> : q = 12 / 2 = 6,000 m³/s.</p>
+    <p class="explanation">√(2gD) = √(2 × 9,81 × 1,50) = √29,430 = <strong>5,4249</strong><br>
+       B · D · √(2gD) = 3,00 × 1,50 × 5,4249 = <strong>24,4122</strong><br>
+       Q* = 6,000 / 24,4122 = <strong>0,24578</strong></p>
+    <div class="hint"><strong>Ne pas prendre la formule de la buse.</strong> Les planches 71,
+       72 et 73 emploient Q* = q/√(2gD⁵), les planches 75 et 77 emploient Q* = q/(A·√(2gD)).
+       Ici l'erreur multiplierait Q* par B/D = 2,00 : on lirait H1/D = 1,2799 au lieu de
+       0,7736, soit une charge majorée de 65 %. L'erreur va dans le sens prudent — mais une
+       lecture fausse des deux tiers ne contrôle plus rien.</div>
+  </div>
+
+  <div class="solution-step" data-step="2">
+    <h3>Lire la planche, à la main</h3>
+    <p>Sur la courbe A (murs en aile faisant 30° à 75°), Q* = 0,24578 tombe entre deux points
+       relevés : (0,20 ; 0,70) et (0,25 ; 0,78). L'interpolation se fait linéairement en
+       log₁₀(Q*) / log₁₀(H1*), comme sur le papier logarithmique.</p>
+    <p class="explanation">log₁₀(0,24578) = −0,60946 · log₁₀(0,20) = −0,69897 · log₁₀(0,25) = −0,60206<br>
+       t = (−0,60946 + 0,69897) / (−0,60206 + 0,69897) = 0,08951 / 0,09691 = <strong>0,92368</strong><br>
+       log₁₀(H1*) = −0,15490 + 0,92368 × (−0,10791 + 0,15490) = −0,15490 + 0,04340 = −0,11150<br>
+       H1* = 10<sup>−0,11150</sup> = <strong>0,77358</strong></p>
+    <div class="sanity-check"><h3>Log-log ou linéaire : ce que la règle change vraiment</h3>
+      <p>Sur le même point, une interpolation linéaire donnerait 0,7732 au lieu de 0,77358 —
+         <strong>0,05 % d'écart</strong>. Sur l'ensemble des courbes des planches 72 et 77,
+         l'écart maximal entre les deux règles atteint <strong>0,26 %</strong>.</p>
+      <p>Autrement dit : la règle du log-log ne se justifie <em>pas</em> par le gain
+         numérique. Elle se justifie parce que c'est ainsi que la planche a été tracée, et
+         qu'une lecture doit suivre la construction de ce qu'elle lit. Le jour où les points
+         relevés seront plus espacés, l'écart cessera d'être négligeable — et on n'aura pas
+         à changer de méthode.</p>
+    </div>
+  </div>
+
+  <div class="solution-step" data-step="3">
+    <h3>Revenir aux mètres, et au site</h3>
+    <p class="explanation">H1 = H1* · D = 0,77358 × 1,50 = <strong>1,1604 m</strong><br>
+       Z<sub>PHE amont</sub> = 100,00 + 1,160 = <strong>101,160 m</strong><br>
+       R = 102,00 − 101,160 = <strong>0,840 m</strong> ≥ 0,50 m → revanche conforme</p>
+    <p>Et H1/D = 0,774 reste bien au-dessous de 1,20 : pas de mise en charge amont excessive.
+       Sur la seule lecture d'abaque, deux cellules conviennent.</p>
+  </div>
+
+  <div class="solution-step" data-step="4">
+    <h3>Essayer trois cellules</h3>
+    <p>q = 12 / 3 = 4,000 m³/s, donc Q* = 4,000 / 24,4122 = <strong>0,16385</strong>, et la
+       même lecture donne H1* = 0,6291, soit <strong>H1 = 0,9436 m</strong>. La charge tombe
+       de 22 cm, la revanche monte à 1,056 m. Sur l'abaque, trois cellules font mieux que
+       deux — comme on s'y attendait.</p>
+  </div>
+
+  <div class="solution-step" data-step="5">
+    <h3>La contre-épreuve — et la surprise</h3>
+    <p>Le calcul HDS-5 mène les <em>deux</em> contrôles. À trois cellules :</p>
+    <p class="explanation">contrôle à l'entrée : <strong>0,8971 m</strong> — l'abaque annonçait
+       0,9436, soit 4,9 % d'écart, dans l'incertitude du relevé<br>
+       contrôle à la sortie : V = 4,000/4,500 = 0,8889 m/s · V²/2g = 0,04027 m<br>
+       pertes = 0,40 × 0,04027 + 0,00569 + 1,00 × 0,04027 = <strong>0,06207 m</strong><br>
+       y<sub>c</sub> = 0,5659 m · h₀ = (0,5659 + 1,50)/2 = 1,0329 m · J·L = 0,004 × 14 = 0,0560 m<br>
+       HW<sub>sortie</sub> = 1,0329 + 0,0621 − 0,0560 = <strong>1,0390 m</strong></p>
+    <p>HW = max(0,897 ; 1,039) = <strong>1,039 m</strong> : à trois cellules, <strong>le
+       contrôle est passé à la sortie</strong>. L'abaque annonçait 0,944 m ; la charge réelle
+       est de 1,039 m, soit <strong>9,2 % de plus</strong>.</p>
+    <div class="hint"><strong>L'abaque n'a pas tort — il répond à une autre question.</strong>
+       Les planches 71 à 77 donnent le niveau amont sous <em>contrôle à l'entrée</em> en
+       sortie libre. Elles ne connaissent ni la longueur, ni la rugosité, ni les pertes de
+       charge : elles ne peuvent pas prévenir que la sortie a pris la main. Confronté au
+       contrôle à l'entrée, l'abaque reste à ± 5 % ; confronté à la charge <em>retenue</em>,
+       il s'écarte dès que l'autre contrôle commande — et toujours <strong>par
+       défaut</strong>, c'est-à-dire du côté qui rassure à tort.</div>
+  </div>
+
+  <div class="solution-step" data-step="6">
+    <h3>Le tableau complet</h3>
+    <table class="resultats"><thead><tr><th>Cellules</th><th>Q*</th><th>Abaque H1 (m)</th>
+      <th>HDS-5 entrée</th><th>HDS-5 sortie</th><th>Retenu</th><th>Abaque / retenu</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="q">0,4916</td><td class="q">1,920</td><td class="q">2,021</td><td class="motif">1,841</td><td class="q">2,021 · entrée</td><td class="motif">−5,0 %</td></tr>
+        <tr><td>2</td><td class="q">0,2458</td><td class="q">1,160</td><td class="q">1,220</td><td class="motif">1,204</td><td class="q">1,220 · entrée</td><td class="motif">−4,9 %</td></tr>
+        <tr><td>3</td><td class="q">0,1639</td><td class="q">0,944</td><td class="motif">0,897</td><td class="q">1,039</td><td class="q">1,039 · <strong>sortie</strong></td><td class="motif">−9,2 %</td></tr>
+        <tr><td>4</td><td class="q">0,1229</td><td class="q">0,792</td><td class="motif">0,736</td><td class="q">0,963</td><td class="q">0,963 · <strong>sortie</strong></td><td class="motif">−17,7 %</td></tr>
+      </tbody></table>
+    <p class="method-note">La lecture d'abaque suit le contrôle à l'entrée à ± 5 % sur les
+       quatre configurations — c'est une bonne planche. Mais l'écart à la charge
+       <em>retenue</em> passe de 5 % à 18 % à mesure que l'ouvrage se dégage et que la sortie
+       prend la main. Ce n'est pas la précision du relevé qui se dégrade : c'est le sujet qui
+       change.</p>
+  </div>
+
+  <div class="solution-step" data-step="7">
+    <h3>Conclusion du TD</h3>
+    <p><strong>Deux cellules de 3,00 × 1,50 m</strong>, HW = 1,220 m, contrôle à l'entrée,
+       revanche 0,780 m. C'est la configuration la plus compacte qui tienne tous les critères,
+       et la seule des quatre où la lecture d'abaque et la charge retenue coïncident à
+       5 % près — parce que c'est là que le contrôle est encore à l'entrée.</p>
+    <p>Trois cellules abaisseraient la charge à 1,039 m, mais pour une cellule de plus, un
+       voile intermédiaire de plus, et une charge qui ne descend que de 15 cm au lieu des
+       22 cm annoncés par l'abaque.</p>
+    <p class="method-note">Ordre de travail à retenir : l'abaque pour dégrossir et pour
+       contrôler, le calcul pour décider. Jamais l'inverse — une planche qui ne connaît qu'un
+       des deux contrôles ne peut pas arbitrer entre eux.</p>
+  </div>
+
+  <div class="sanity-check"><h3>Deux pièges rencontrés en chemin</h3>
+    <p><strong>Le même Q* ne se lit pas sur deux planches.</strong> Le dalot 2 × 3,00 × 1,50 m
+       donne Q* = 0,24578. Une buse Ø 1,50 m à 4 cellules, pour le même débit total, donne
+       q = 3,000 m³/s et Q* = 3,000 / √(2 × 9,81 × 1,50⁵) = 3,000 / 12,2061 =
+       <strong>0,24578</strong> — le même nombre. Mais la figure 72 y lit H1* = 0,9394 quand
+       la figure 77 lisait 0,7736. Deux normalisations différentes et deux courbes
+       différentes : Q* n'est pas une grandeur transférable d'une planche à l'autre, c'est
+       une coordonnée de lecture propre à chacune.</p>
+    <p><strong>Hors domaine, la planche se tait et le calcul répond.</strong> Une buse Ø 1,50 m
+       unique pour 1 m³/s donne Q* = 0,0819, sous la borne basse de la figure 72 (0,12). On
+       ne lit rien — on n'extrapole pas une courbe relevée sur un scan ancien. Le calcul, lui,
+       donne 0,956 m, <em>sous contrôle à la sortie</em>. Là encore l'abaque, même prolongé,
+       n'aurait pas décrit le bon mécanisme.</p>
   </div>
 
   <h3>Les abaques : l'abaque dit le matériau, l'échelle dit l'entrée</h3>
