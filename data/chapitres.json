@@ -33,7 +33,8 @@
         "indice global de pente Ig",
         "pente équivalente Ieq",
         "densité de drainage"
-      ]
+      ],
+      "exercices": 7
     },
     {
       "id": "ch2",

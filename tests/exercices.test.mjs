@@ -11,7 +11,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch4", "ch5"]) {
+for (const ch of ["ch1", "ch4", "ch5"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -34,6 +34,45 @@ for (const ch of ["ch4", "ch5"]) {
     }
   });
 }
+
+test("ch1 — rectangle équivalent de BV2 recalculé", () => {
+  const b = banque("ch1");
+  const { Ic, L, l } = h.rectangleEquivalent(42, 31);
+  vaut(q(b, "ch1-e1", 0), Ic, "Ic");
+  vaut(q(b, "ch1-e1", 1), L, "L_rect");
+  vaut(q(b, "ch1-e1", 2), l, "l_rect");
+  vaut(q(b, "ch1-e1", 3), L * l, "contrôle L×l");
+});
+
+test("ch1 — indices de compacité des trois bassins", () => {
+  const b = banque("ch1");
+  vaut(q(b, "ch1-e2", 0), h.gravelius(7.2, 2.35), "Ic de BV1");
+  vaut(q(b, "ch1-e2", 1), h.gravelius(82, 265), "Ic de BV3");
+});
+
+test("ch1 — effet de l'échelle sur les indices", () => {
+  const b = banque("ch1");
+  const fin = h.rectangleEquivalent(42, 37);
+  vaut(q(b, "ch1-e3", 0), fin.Ic, "Ic au tracé fin");
+  vaut(q(b, "ch1-e3", 1), fin.L, "L_rect au tracé fin");
+  vaut(q(b, "ch1-e3", 2), h.indiceGlobalPente(740, 418, fin.L), "Ig au tracé fin");
+});
+
+test("ch1 — indices de pente et densité de drainage", () => {
+  const b = banque("ch1");
+  const { L } = h.rectangleEquivalent(42, 31);
+  const Ig = h.indiceGlobalPente(740, 418, L);
+  vaut(q(b, "ch1-e4", 0), Ig, "Ig");
+  vaut(q(b, "ch1-e4", 1), (Ig / (1.8 * 10) - 1) * 100, "écart au raccourci Ieq×10");
+  vaut(q(b, "ch1-e6", 0), h.densiteDrainage(63, 42), "densité de drainage");
+});
+
+test("ch1 — les trois dénivelées de BV1", () => {
+  const b = banque("ch1");
+  vaut(q(b, "ch1-e5", 0), 739 - 693, "Δh de Ghorbel");
+  vaut(q(b, "ch1-e5", 1), 744 - 690, "Hmoy de Giandotti");
+  vaut(q(b, "ch1-e5", 2), 789 - 693, "D de Kirpich");
+});
 
 test("ch4 — morphométrie de BV1 recalculée", () => {
   const b = banque("ch4");

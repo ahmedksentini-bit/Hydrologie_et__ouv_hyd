@@ -1,0 +1,241 @@
+{
+  "chapitre": "ch1",
+  "exercices": [
+    {
+      "id": "ch1-e1",
+      "titre": "Gravelius et rectangle équivalent",
+      "difficulte": 1,
+      "enonce": "Bassin de la dorsale relevé au 1/50 000 : surface S = 42 km², périmètre P = 31 km. Rappels : Ic = 0,2821·P/√S ; f = Ic·√S/1,128 ; L, l = f·[1 ± √(1 − (1,128/Ic)²)].",
+      "questions": [
+        {
+          "texte": "Indice de compacité de Gravelius ?",
+          "type": "nombre", "unite": "", "reponse": 1.349, "tolerance": 0.01,
+          "explication": "√42 = 6,4807 ; Ic = 0,28209 × 31,0 / 6,4807 = 1,349. Le bassin est modérément allongé : son contour mesure 35 % de plus que celui du disque de même surface."
+        },
+        {
+          "texte": "Longueur du rectangle équivalent ?",
+          "type": "nombre", "unite": "km", "reponse": 12.007, "tolerance": 0.1,
+          "explication": "f = 1,349 × 6,4807 / 1,128 = 7,7525 ; (1,128/1,349)² = 0,6989 ; √(1 − 0,6989) = 0,5488 ; L = 7,7525 × 1,5488 = 12,007 km."
+        },
+        {
+          "texte": "Largeur du rectangle équivalent ?",
+          "type": "nombre", "unite": "km", "reponse": 3.498, "tolerance": 0.05,
+          "explication": "l = 7,7525 × (1 − 0,5488) = 3,498 km."
+        },
+        {
+          "texte": "Contrôle : produit L × l ?",
+          "type": "nombre", "unite": "km²", "reponse": 42, "tolerance": 0.3,
+          "explication": "12,007 × 3,498 = 42,0 km² = S. Ce contrôle doit être fait systématiquement : s'il échoue, c'est que Ic est passé sous 1,128 et que le rectangle a dégénéré en carré."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e2",
+      "titre": "Trois bassins, trois formes",
+      "difficulte": 1,
+      "enonce": "Trois bassins du même projet : BV1 (S = 2,35 km², P = 7,20 km), BV2 (S = 42 km², P = 31 km), BV3 (S = 265 km², P = 82 km).",
+      "questions": [
+        {
+          "texte": "Indice de compacité de BV1 ?",
+          "type": "nombre", "unite": "", "reponse": 1.325, "tolerance": 0.01,
+          "explication": "Ic = 0,28209 × 7,20 / √2,35 = 2,0310 / 1,5330 = 1,325."
+        },
+        {
+          "texte": "Indice de compacité de BV3 ?",
+          "type": "nombre", "unite": "", "reponse": 1.421, "tolerance": 0.01,
+          "explication": "Ic = 0,28209 × 82,0 / √265 = 23,131 / 16,2788 = 1,421. C'est le plus allongé des trois — un oued du Sud-Est, long et étroit."
+        },
+        {
+          "texte": "À surface égale, lequel donnerait la pointe de crue la plus forte : un bassin ramassé ou un bassin allongé ?",
+          "type": "choix",
+          "options": [
+            "Le bassin allongé, car l'eau y parcourt plus de distance",
+            "Le bassin ramassé, car les apports des différentes parties arrivent en même temps",
+            "Les deux donnent la même pointe, seule la surface compte"
+          ],
+          "reponse": 1,
+          "explication": "Dans un bassin ramassé, les distances à l'exutoire sont voisines : les apports se superposent et la pointe est forte et brève. Dans un bassin allongé ils s'échelonnent, l'hydrogramme s'étale et s'aplatit. C'est pour cela que Ic figure au dénominateur de la formule de Ghorbel : plus il est grand, plus le débit calculé est faible."
+        },
+        {
+          "texte": "Une note de calcul annonce Ic = 1,05 pour un bassin. Qu'en penser ?",
+          "type": "choix",
+          "options": [
+            "C'est un bassin exceptionnellement ramassé, presque circulaire",
+            "C'est impossible : le disque minimise le périmètre, donc Ic ≥ 1,128 — la mesure est fausse",
+            "C'est possible si le bassin est très petit"
+          ],
+          "reponse": 1,
+          "explication": "À surface donnée, aucun contour n'a un périmètre plus court que celui du disque : Ic = 1,128 est un plancher géométrique, pas une valeur rare. Une valeur inférieure signale une erreur sur S ou sur P — typiquement un périmètre relevé sur un tracé trop généralisé."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e3",
+      "titre": "L'échelle de la carte change les indices",
+      "difficulte": 3,
+      "enonce": "Le bassin BV2 (S = 42 km²) est redélimité sur une carte au 1/25 000 : le contour, suivi plus finement, mesure maintenant P = 37 km au lieu de 31 km. La surface, elle, ne bouge pas. Les altitudes hypsométriques restent H 5 % = 740 m et H 95 % = 418 m.",
+      "questions": [
+        {
+          "texte": "Nouvel indice de compacité ?",
+          "type": "nombre", "unite": "", "reponse": 1.611, "tolerance": 0.02,
+          "explication": "Ic = 0,28209 × 37,0 / 6,4807 = 1,611, contre 1,349 auparavant : +19 %. Le terrain n'a pas changé, seule la finesse du tracé."
+        },
+        {
+          "texte": "Nouvelle longueur du rectangle équivalent ?",
+          "type": "nombre", "unite": "km", "reponse": 15.86, "tolerance": 0.2,
+          "explication": "f = 1,611 × 6,4807 / 1,128 = 9,2528 ; √(1 − (1,128/1,611)²) = 0,7138 ; L = 9,2528 × 1,7138 = 15,86 km, contre 12,01 km."
+        },
+        {
+          "texte": "Nouvel indice global de pente Ig = (H5 % − H95 %) / L_rectangle ?",
+          "type": "nombre", "unite": "m/km", "reponse": 20.31, "tolerance": 0.4,
+          "explication": "Ig = (740 − 418) / 15,86 = 20,31 m/km, contre 26,82 m/km avec le tracé précédent — soit 24 % de moins pour un relief identique."
+        },
+        {
+          "texte": "Qu'en conclure pour la note de calcul ?",
+          "type": "choix",
+          "options": [
+            "Toujours utiliser la carte la plus fine, qui donne les valeurs les plus exactes",
+            "Relever S et P sur la même carte, écrire l'échelle, et ne comparer que des indices établis à la même échelle",
+            "Prendre la moyenne des indices obtenus aux différentes échelles"
+          ],
+          "reponse": 1,
+          "explication": "Le périmètre d'un contour naturel croît indéfiniment quand on affine le tracé : il n'existe pas de valeur « exacte » indépendante de l'échelle. Ce qui compte est la cohérence — même carte, même échelle, échelle écrite — sans quoi ni Ic, ni le rectangle équivalent, ni Ig ne sont comparables d'un bassin à l'autre."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e4",
+      "titre": "Les deux indices de pente",
+      "difficulte": 2,
+      "enonce": "BV2 : rectangle équivalent de 12,007 km de long, H 5 % = 740 m, H 95 % = 418 m. Le profil en long de l'écoulement principal donne par ailleurs une pente équivalente Ieq = 1,80 %.",
+      "questions": [
+        {
+          "texte": "Indice global de pente Ig ?",
+          "type": "nombre", "unite": "m/km", "reponse": 26.82, "tolerance": 0.3,
+          "explication": "Ig = (740 − 418) / 12,007 = 26,82 m/km. On utilise H 5 % et H 95 %, et non H max et H min : un sommet isolé ne représente presque aucune surface et ne commande aucun écoulement."
+        },
+        {
+          "texte": "Écart entre Ig et le raccourci Ieq × 10, en pour cent ?",
+          "type": "nombre", "unite": "%", "reponse": 49, "tolerance": 3,
+          "explication": "Ieq × 10 = 18,0 m/km contre Ig = 26,82 : l'écart atteint 49 %. Sur ce bassin, le raccourci serait une approximation grossière — le long bief aval plat abaisse fortement la pente équivalente sans changer le relief."
+        },
+        {
+          "texte": "Pourquoi a-t-on presque toujours Ieq inférieure à la pente brute D/L ?",
+          "type": "choix",
+          "options": [
+            "Parce que Ieq néglige les biefs amont, les plus raides",
+            "Parce que la vitesse varie en √i : les biefs plats pèsent lourd dans le temps de parcours, donc dans la moyenne pondérée",
+            "Parce que Ieq est exprimée en pour cent et D/L en m/km"
+          ],
+          "reponse": 1,
+          "explication": "Ieq = (L / Σ lᵢ/√iᵢ)² est la pente d'un chenal uniforme que l'eau mettrait le même temps à parcourir. Comme la vitesse varie en √i, un bief plat consomme beaucoup de temps et tire la pente équivalente vers le bas — alors que D/L, simple moyenne géométrique du profil, l'ignore."
+        },
+        {
+          "texte": "Ig et Ieq sont-ils interchangeables ?",
+          "type": "choix",
+          "options": [
+            "Oui, à la conversion d'unité près : Ig (m/km) = Ieq (%) × 10",
+            "Non : ils décrivent l'un le relief, l'autre le temps de parcours, et alimentent des formules différentes"
+          ],
+          "reponse": 1,
+          "explication": "Ig est construit sur la courbe hypsométrique et le rectangle équivalent, Ieq sur le profil en long bief par bief. Ig alimente la méthode de Fersi ; Ieq le temps de concentration et la classe de pente de l'abaque C. Le rapprochement Ig ≈ Ieq × 10 est un ordre de grandeur, à signaler quand on y recourt faute de mieux."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e5",
+      "titre": "Trois dénivelées, trois usages",
+      "difficulte": 2,
+      "enonce": "BV1 : H max 816 m, H min 690 m, H moyenne 744 m, H médiane 739 m, altitude au franchissement 693 m. Le profil en long de l'écoulement principal descend de 789 m à 693 m.",
+      "questions": [
+        {
+          "texte": "Dénivelée Δh de la formule de Ghorbel ?",
+          "type": "nombre", "unite": "m", "reponse": 46, "tolerance": 0.5,
+          "explication": "Δh = H médiane − altitude au franchissement = 739 − 693 = 46 m."
+        },
+        {
+          "texte": "Dénivelée moyenne Hmoy de la formule de Giandotti ?",
+          "type": "nombre", "unite": "m", "reponse": 54, "tolerance": 0.5,
+          "explication": "Hmoy = H moyenne − H min = 744 − 690 = 54 m. Ce n'est ni Δh, ni le dénivelé total."
+        },
+        {
+          "texte": "Dénivelé D de la formule de Kirpich ?",
+          "type": "nombre", "unite": "m", "reponse": 96, "tolerance": 0.5,
+          "explication": "D se lit le long du profil de l'écoulement : 789 − 693 = 96 m. La tête du profil (789 m) n'est pas le point culminant du bassin (816 m), qui se trouve sur une crête latérale."
+        },
+        {
+          "texte": "Le dénivelé total H max − H min vaut 126 m. Dans laquelle des trois formules l'emploie-t-on ?",
+          "type": "choix",
+          "options": ["Dans Ghorbel", "Dans Giandotti", "Dans Kirpich", "Dans aucune des trois"],
+          "reponse": 3,
+          "explication": "Aucune. Le dénivelé total est la plus disponible des grandeurs et la plus tentante : c'est précisément pour cela qu'elle se glisse à la place des trois autres. Chez Ghorbel elle majore le débit de 30 à 70 %, chez Giandotti elle raccourcit le temps de concentration donc majore l'intensité."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e6",
+      "titre": "Densité de drainage",
+      "difficulte": 1,
+      "enonce": "Sur la carte au 1/50 000 du bassin BV2 (42 km²), la somme des longueurs du réseau hydrographique — talwegs permanents et temporaires — atteint 63 km.",
+      "questions": [
+        {
+          "texte": "Densité de drainage ?",
+          "type": "nombre", "unite": "km/km²", "reponse": 1.5, "tolerance": 0.05,
+          "explication": "Dd = 63 / 42 = 1,5 km/km². Une densité élevée signale un terrain peu perméable et un ruissellement rapide et concentré."
+        },
+        {
+          "texte": "Relevé au 1/25 000, le même réseau mesurerait davantage. La densité de drainage obtenue serait alors…",
+          "type": "choix",
+          "options": [
+            "identique : la densité est une propriété du terrain",
+            "plus forte : comme le périmètre, elle dépend de l'échelle du document sur lequel le réseau est relevé",
+            "plus faible : la surface augmente aussi"
+          ],
+          "reponse": 1,
+          "explication": "Une carte plus fine montre des talwegs que la précédente ignorait : la longueur cumulée croît, la surface non. Comme pour le périmètre, la valeur ne vaut rien sans l'échelle qui l'accompagne — et deux densités relevées à des échelles différentes ne se comparent pas."
+        }
+      ]
+    },
+    {
+      "id": "ch1-e7",
+      "titre": "Délimiter : ce que le tracé décide",
+      "difficulte": 2,
+      "enonce": "Questions de méthode sur la délimitation du bassin versant d'un franchissement routier.",
+      "questions": [
+        {
+          "texte": "Où se place l'exutoire du bassin à délimiter ?",
+          "type": "choix",
+          "options": [
+            "À la confluence de l'oued avec le cours d'eau principal",
+            "Au franchissement lui-même : c'est l'ouvrage qui fixe l'exutoire",
+            "Au point le plus bas du terrain naturel"
+          ],
+          "reponse": 1,
+          "explication": "Le bassin à considérer est celui qui draine vers l'ouvrage. Déplacer le franchissement de quelques centaines de mètres change la surface drainée, donc le débit de projet : l'exutoire n'est pas un lieu naturel, c'est une donnée du projet."
+        },
+        {
+          "texte": "Une ligne de partage des eaux proposée recoupe un talweg. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "C'est acceptable si le talweg est de faible importance",
+            "Le tracé est faux : l'eau du talweg traverserait la limite, qui doit passer par les points hauts",
+            "Il faut ajouter la surface du talweg au bassin"
+          ],
+          "reponse": 1,
+          "explication": "La ligne de partage passe par les crêtes et coupe les courbes de niveau à angle droit. Qu'elle recoupe un talweg signifie qu'elle fait sortir du bassin de l'eau qui y entre — le tracé est à reprendre, quelle que soit la taille du talweg."
+        },
+        {
+          "texte": "Sur un terrain karstique, le bassin topographique et le bassin réel peuvent différer. Comment traiter ce cas ?",
+          "type": "choix",
+          "options": [
+            "Abandonner la délimitation topographique, inutilisable",
+            "Retenir le tracé topographique comme base du calcul, et écrire la réserve dans la note",
+            "Doubler la surface pour tenir compte des apports souterrains"
+          ],
+          "reponse": 1,
+          "explication": "Les circulations souterraines ne se délimitent pas sur une carte topographique, et aucune règle simple ne permet de les chiffrer. Le tracé topographique reste la base défendable du calcul ; ce qui ne doit pas manquer, c'est la réserve écrite — elle dit au relecteur que la question a été vue, pas ignorée."
+        }
+      ]
+    }
+  ]
+}

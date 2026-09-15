@@ -17,6 +17,24 @@ test("morphométrie — Gravelius et rectangle équivalent", () => {
   proche(h.indiceGlobalPente(800, 696, L), 37.89, 0.02, "Ig");
 });
 
+test("plancher géométrique de Gravelius et rectangle dégénéré", () => {
+  // bassin réel : le contrôle L × l = S tient
+  const normal = h.rectangleEquivalent(42, 31);
+  assert.equal(normal.quasiCirculaire, false);
+  proche(normal.L * normal.l, 42, 1e-3, "contrôle L×l");
+  // Ic sous 1,128 : géométriquement impossible, le rectangle dégénère en carré
+  const impossible = h.rectangleEquivalent(42, 24);
+  assert.ok(impossible.Ic < h.IC_MINIMUM, "Ic sous le plancher");
+  assert.equal(impossible.quasiCirculaire, true);
+  proche(impossible.L, impossible.l, 1e-9, "le rectangle devient un carré");
+  assert.ok(Math.abs(impossible.L * impossible.l - 42) > 1, "le contrôle L×l ne tient plus");
+});
+
+test("densité de drainage", () => {
+  proche(h.densiteDrainage(63, 42), 1.5, 1e-9, "Dd");
+  assert.equal(h.densiteDrainage(63, 0), 0);
+});
+
 test("temps de concentration — quatre formules, unités ramenées aux minutes", () => {
   const tc = h.tempsConcentration({ S: 2.35, L: 2.85, D: 96, iPct: 3.4, Hmoy: 54 });
   proche(tc.kirpich, 32.90, 0.02, "Kirpich");

@@ -60,17 +60,35 @@ export const FRANCOU_K = {
 export const gravelius = (P, S) => (S > 0 ? P / (2 * Math.sqrt(Math.PI * S)) : 0);
 
 /**
+ * Plancher géométrique de l'indice de compacité : le disque minimise le
+ * périmètre à surface donnée, donc Ic ≥ 2/√π / … = 1,128. Une valeur inférieure
+ * n'est pas un bassin très ramassé, c'est une mesure fausse.
+ */
+export const IC_MINIMUM = 1.128;
+
+/**
  * Rectangle équivalent : même surface et même indice de compacité que le bassin.
- * Renvoie { L, l } en km. Contrôle : L × l = S.
+ * Renvoie { Ic, L, l } en km, et `quasiCirculaire` quand Ic descend sous le
+ * plancher géométrique — le rectangle dégénère alors en carré et le contrôle
+ * L × l = S n'est plus vérifié : c'est le signe qu'il faut reprendre le tracé.
  */
 export function rectangleEquivalent(S, P) {
   const Ic = gravelius(P, S);
-  if (!(Ic > 0)) return { Ic: 0, L: 0, l: 0 };
-  const disc = Math.max(0, 1 - Math.pow(1.128 / Ic, 2));
-  const f = (Ic * Math.sqrt(S)) / 1.128;
-  const r = Math.sqrt(disc);
-  return { Ic, L: f * (1 + r), l: f * (1 - r) };
+  if (!(Ic > 0)) return { Ic: 0, L: 0, l: 0, quasiCirculaire: false };
+  const brut = 1 - Math.pow(IC_MINIMUM / Ic, 2);
+  const quasiCirculaire = brut <= 0;
+  const f = (Ic * Math.sqrt(S)) / IC_MINIMUM;
+  const r = Math.sqrt(Math.max(0, brut));
+  return { Ic, L: f * (1 + r), l: f * (1 - r), quasiCirculaire };
 }
+
+/**
+ * Densité de drainage : Dd = longueur totale du réseau / surface, en km/km².
+ * Elle dépend de l'échelle de la carte sur laquelle le réseau a été relevé :
+ * la valeur ne vaut rien sans l'échelle qui l'accompagne.
+ */
+export const densiteDrainage = (longueurTotaleKm, S) =>
+  S > 0 ? longueurTotaleKm / S : 0;
 
 /** Indice global de pente : Ig = (H5% − H95%) / L_rectangle — en m/km. */
 export const indiceGlobalPente = (H5, H95, Lrect) => (Lrect > 0 ? (H5 - H95) / Lrect : 0);

@@ -27,6 +27,117 @@
 <div class="workspace">
 <div>
 
+<section id="ch1" class="card">
+  <h2>1 · Le bassin versant</h2>
+
+  <h3>Délimiter</h3>
+  <p>Le bassin versant d'un franchissement, c'est la surface qui draine vers <em>ce</em>
+     point. L'exutoire n'est donc pas un lieu naturel : c'est l'ouvrage lui-même qui le
+     fixe. Déplacer le franchissement de deux cents mètres change le bassin, donc le
+     débit.</p>
+  <p>La limite est la <strong>ligne de partage des eaux</strong> : elle passe par les
+     points hauts, coupe les courbes de niveau à angle droit et se referme sur
+     l'exutoire. Une ligne qui recoupe un talweg est fausse — l'eau la traverserait.</p>
+  <div class="hint">Le bassin <strong>topographique</strong> n'est pas toujours le bassin
+     <strong>réel</strong> : en terrain karstique ou sur des formations perméables
+     inclinées, une partie de l'eau passe sous la ligne de crête. Le tracé
+     topographique reste la base du calcul, mais la réserve doit être écrite.</div>
+
+  <h3>Surface et périmètre</h3>
+  <p>La surface se mesure par planimétrage ou par un logiciel de cartographie. Le
+     périmètre demande plus de précaution : <strong>il dépend de la finesse du tracé</strong>.
+     Un contour suivi au détail près est plus long que le même contour généralisé — et
+     comme l'indice de compacité est proportionnel à P, il s'en trouve gonflé.</p>
+  <p class="method-note">Règle pratique : relever la surface et le périmètre sur
+     <em>la même carte, à la même échelle</em>, et écrire cette échelle dans la note.
+     Un Ic sans son échelle n'est pas comparable à un autre.</p>
+
+  <h3>La forme : indice de compacité de Gravelius</h3>
+  <p class="formula">I<sub>c</sub> = P / (2√(πS)) = 0,2821 · P / √S</p>
+  <p>C'est le rapport entre le périmètre du bassin et celui du disque de même surface.
+     Le disque minimise le périmètre à surface donnée : <strong>I<sub>c</sub> ne peut pas
+     descendre sous 1,128</strong>. Une valeur inférieure n'est pas un bassin
+     exceptionnellement ramassé — c'est une erreur de mesure.</p>
+  <p>Plus I<sub>c</sub> est grand, plus le bassin est allongé, plus les apports arrivent
+     étalés dans le temps : à surface égale, un bassin allongé donne une pointe plus
+     faible qu'un bassin ramassé. C'est pourquoi I<sub>c</sub> figure au dénominateur de
+     la formule de Ghorbel.</p>
+
+  <h3>Le rectangle équivalent</h3>
+  <p>C'est le rectangle qui aurait <strong>la même surface et le même indice de
+     compacité</strong> que le bassin. Il n'a pas d'existence physique : c'est une
+     longueur de référence, celle que l'on divise pour obtenir l'indice global de pente.</p>
+  <p class="formula">f = I<sub>c</sub>√S / 1,128&nbsp;&nbsp;·&nbsp;&nbsp;
+     L, l = f · [ 1 ± √(1 − (1,128/I<sub>c</sub>)²) ]</p>
+  <p>Contrôle immédiat : <strong>L × l doit redonner S</strong>. S'il ne le fait pas,
+     c'est que I<sub>c</sub> est passé sous 1,128 et que le rectangle a dégénéré en carré.</p>
+
+  <div class="calc" id="calcRect">
+    <h3>Rectangle équivalent, à l'échelle</h3>
+    <div class="data-grid">
+      <div class="field"><label for="qS">Surface S</label>
+        <div class="input-wrap"><input id="qS" type="text" inputmode="decimal" value="42"><span class="unit">km²</span></div></div>
+      <div class="field"><label for="qP">Périmètre P</label>
+        <div class="input-wrap"><input id="qP" type="text" inputmode="decimal" value="31"><span class="unit">km</span></div></div>
+    </div>
+    <div id="qFig"></div>
+    <p class="final-result" id="qOut"></p>
+  </div>
+
+  <h3>Le relief : la courbe hypsométrique</h3>
+  <p>On relève, pour une série d'altitudes, la part de la surface du bassin située
+     au-dessus. La courbe obtenue donne d'un coup d'œil le relief, et fournit les
+     altitudes caractéristiques.</p>
+  <table class="resultats"><thead><tr><th>Altitude</th><th>Définition</th><th>À quoi elle sert</th></tr></thead>
+    <tbody>
+      <tr><td>H 5 %</td><td class="motif">dépassée par 5 % de la surface</td><td class="motif">borne haute de l'indice global de pente</td></tr>
+      <tr><td>H 50 % — médiane</td><td class="motif">moitié de la surface au-dessus</td><td class="motif">Δh de Ghorbel, avec l'altitude au franchissement</td></tr>
+      <tr><td>H 95 %</td><td class="motif">dépassée par 95 % de la surface</td><td class="motif">borne basse de l'indice global de pente</td></tr>
+      <tr><td>H moyenne</td><td class="motif">moyenne pondérée par les surfaces</td><td class="motif">dénivelée moyenne de Giandotti, avec H min</td></tr>
+    </tbody></table>
+  <p class="method-note">Pourquoi 5 % et 95 % plutôt que H max et H min ? Parce qu'un
+     sommet isolé ou un point bas d'un seul pixel ne représentent presque aucune surface
+     et ne commandent aucun écoulement. Les quantiles écartent ces extrêmes ponctuels.</p>
+
+  <h3>Deux indices de pente qu'on ne peut pas confondre</h3>
+  <table class="resultats"><thead><tr><th></th><th>Indice global I<sub>g</sub></th><th>Pente équivalente I<sub>eq</sub></th></tr></thead>
+    <tbody>
+      <tr><td>Formule</td><td class="motif">(H 5 % − H 95 %) / L<sub>rectangle</sub></td><td class="motif">(L / Σ l<sub>i</sub>/√i<sub>i</sub>)²</td></tr>
+      <tr><td>Unité</td><td class="motif">m/km</td><td class="motif">% (m/m)</td></tr>
+      <tr><td>Ce qu'il décrit</td><td class="motif">le <strong>relief</strong> du bassin</td><td class="motif">le <strong>temps de parcours</strong> de l'écoulement</td></tr>
+      <tr><td>Construit sur</td><td class="motif">la courbe hypsométrique et le rectangle équivalent</td><td class="motif">le profil en long, bief par bief</td></tr>
+    </tbody></table>
+  <p>La pente équivalente est celle d'un chenal uniforme que l'eau mettrait le même temps
+     à parcourir. Comme la vitesse varie en √i, les biefs plats pèsent lourd dans la
+     somme : on a presque toujours <strong>I<sub>eq</sub> &lt; D/L</strong>, et l'écart se
+     creuse quand le profil est irrégulier.</p>
+  <div class="hint"><strong>I<sub>g</sub> ≈ I<sub>eq</sub> × 10 est un ordre de grandeur,
+     pas une conversion.</strong> Sur un petit bassin à profil régulier l'écart reste de
+     l'ordre de 10 % ; sur un bassin à long bief aval plat il dépasse 50 %. Les deux
+     indices alimentent des formules différentes — I<sub>g</sub> chez Fersi,
+     I<sub>eq</sub> pour le temps de concentration et la classe de pente de l'abaque C.</div>
+
+  <h3>La densité de drainage</h3>
+  <p class="formula">D<sub>d</sub> = Σ longueurs du réseau / S&nbsp;&nbsp;(km/km²)</p>
+  <p>Elle mesure la finesse du chevelu hydrographique : une densité élevée signale un
+     terrain peu perméable, un ruissellement rapide et concentré. Comme le périmètre,
+     <strong>elle dépend de l'échelle de la carte</strong> sur laquelle le réseau a été
+     relevé — un 1/25 000 montre des talwegs que le 1/200 000 ignore. La valeur ne vaut
+     rien sans son échelle.</p>
+
+  <h3>Les trois altitudes à ne jamais confondre</h3>
+  <table class="resultats"><thead><tr><th>Grandeur</th><th>Définition</th><th>Où elle sert</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Δh</strong></td><td class="motif">H médiane − altitude au franchissement</td><td class="motif">Ghorbel, zones I à III</td></tr>
+      <tr><td><strong>H<sub>moy</sub></strong></td><td class="motif">H moyenne − H min</td><td class="motif">Giandotti</td></tr>
+      <tr><td><strong>D</strong></td><td class="motif">altitude de tête − altitude de l'exutoire, le long du profil</td><td class="motif">Kirpich</td></tr>
+    </tbody></table>
+  <p class="method-note">Aucune des trois n'est le dénivelé total H max − H min. Employer
+     ce dernier à leur place majore le débit de 30 à 70 % chez Ghorbel, et raccourcit à
+     tort le temps de concentration chez Giandotti.</p>
+  <div class="actions"><a class="secondary" href="index.html#ch1">Exercices du chapitre</a></div>
+</section>
+
 <section id="ch3" class="card">
   <h2>3 · Averse de projet et temps de concentration</h2>
 
@@ -252,7 +363,7 @@
 
 <section class="card">
   <h2>Chapitres en préparation</h2>
-  <p class="en-preparation">Les chapitres 1, 2, 6, 7 et 8 sont en cours de rédaction.
+  <p class="en-preparation">Les chapitres 2, 6, 7 et 8 sont en cours de rédaction.
      Leur plan est visible depuis l'accueil.</p>
 </section>
 
@@ -274,6 +385,7 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
     ${c.number} · ${c.title}<small>${pret ? "disponible" : "en préparation"}</small></a></li>`;
 }).join("");
 </script>
+<script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 </body></html>
