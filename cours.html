@@ -1039,31 +1039,39 @@
              aria-label="Contrôle à l'entrée : la section de contrôle est à l'entrée de l'ouvrage, l'aval n'intervient pas">
           <text x="6" y="14" font-size="12" font-weight="800" fill="#075985">Contrôle à l'entrée</text>
           <text x="6" y="28" font-size="10" fill="#64748b">l'ouvrage n'avale pas plus</text>
-          <!-- remblai et chaussée -->
-          <polygon points="30,205 118,72 312,72 400,205" fill="#f1f5f9" stroke="#cbd5e1"/>
-          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
+          <!-- Remblai et chaussée. Les faces de talus sont COUPÉES par les murs de
+               tête : l'ouvrage débouche à l'air libre, il ne s'arrête pas dans le
+               remblai. Les têtes se posent là où l'intrados perce le talus —
+               x = 68 à l'amont, x = 370 à l'aval sur ce dessin. -->
           <line x1="0" y1="205" x2="430" y2="205" stroke="#a8a29e" stroke-width="1.5"/>
-          <!-- eau amont -->
-          <rect x="0" y="137" width="95" height="68" fill="#bae6fd" opacity=".75"/>
-          <line x1="0" y1="137" x2="95" y2="137" stroke="#0369a1" stroke-width="2"/>
-          <!-- ouvrage -->
-          <polygon points="95,183 335,193 335,159 95,149" fill="#fff" stroke="#475569" stroke-width="1.6"/>
+          <polygon points="68,205 68,147.9 118,72 312,72 370,160.5 370,205"
+                   fill="#f1f5f9" stroke="#cbd5e1"/>
+          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
+          <!-- eau amont, retenue contre la tête -->
+          <rect x="0" y="137" width="68" height="68" fill="#bae6fd" opacity=".75"/>
+          <line x1="0" y1="137" x2="68" y2="137" stroke="#0369a1" stroke-width="2"/>
+          <!-- ouvrage, de face de talus à face de talus -->
+          <polygon points="68,181.9 370,194.5 370,160.5 68,147.9" fill="#fff"
+                   stroke="#475569" stroke-width="1.6"/>
           <!-- ligne d'eau dans l'ouvrage : chute depuis l'entrée -->
-          <path d="M95,137 C102,152 112,168 130,172 L335,180" fill="none" stroke="#0369a1"
+          <path d="M68,137 C76,152 88,168 106,172 L370,181.5" fill="none" stroke="#0369a1"
                 stroke-width="2" stroke-dasharray="0"/>
-          <path d="M95,183 L335,193 L335,180 C240,176 140,172 130,172 C112,168 102,152 95,137 Z"
+          <path d="M68,181.9 L370,194.5 L370,181.5 C260,177 124,172 106,172 C88,168 76,152 68,137 Z"
                 fill="#bae6fd" opacity=".6"/>
+          <!-- murs de tête -->
+          <rect x="63.5" y="143" width="4.5" height="44" fill="#94a3b8"/>
+          <rect x="370" y="156" width="4.5" height="44" fill="#94a3b8"/>
           <!-- section de contrôle -->
-          <line x1="95" y1="129" x2="95" y2="191" stroke="#b45309" stroke-width="2.4"/>
-          <text x="99" y="125" font-size="10" fill="#b45309" font-weight="700">section de contrôle</text>
+          <line x1="68" y1="128" x2="68" y2="190" stroke="#b45309" stroke-width="2.4"/>
+          <text x="73" y="124" font-size="10" fill="#b45309" font-weight="700">section de contrôle</text>
           <!-- cotes -->
-          <line x1="58" y1="137" x2="58" y2="183" stroke="#0369a1" stroke-width="1"/>
-          <path d="M55,140 L58,134 L61,140 M55,180 L58,186 L61,180" fill="none" stroke="#0369a1"/>
-          <text x="52" y="163" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
-          <text x="140" y="146" font-size="10" fill="#334155">D</text>
-          <line x1="132" y1="152" x2="132" y2="185" stroke="#334155" stroke-width="0.8"/>
+          <line x1="52" y1="137" x2="52" y2="181.9" stroke="#0369a1" stroke-width="1"/>
+          <path d="M49,140 L52,134 L55,140 M49,179 L52,185 L55,179" fill="none" stroke="#0369a1"/>
+          <text x="46" y="163" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
+          <text x="140" y="147" font-size="10" fill="#334155">D</text>
+          <line x1="132" y1="152" x2="132" y2="184" stroke="#334155" stroke-width="0.8"/>
           <!-- aval sans influence -->
-          <text x="345" y="215" font-size="10" fill="#94a3b8">aval libre</text>
+          <text x="428" y="218" font-size="10" fill="#94a3b8" text-anchor="end">aval libre</text>
           <text x="6" y="232" font-size="10" fill="#334155">n'intervient pas : L · K · niveau aval</text>
           <text x="6" y="245" font-size="10" fill="#334155">intervient : forme de la tête, pente J</text>
         </svg>
@@ -1073,32 +1081,38 @@
              aria-label="Contrôle à la sortie : la charge amont se reconstruit depuis l'aval en remontant les pertes">
           <text x="6" y="14" font-size="12" font-weight="800" fill="#0f766e">Contrôle à la sortie</text>
           <text x="6" y="28" font-size="10" fill="#64748b">l'ouvrage n'évacue pas plus</text>
-          <polygon points="30,205 118,72 312,72 400,205" fill="#f1f5f9" stroke="#cbd5e1"/>
-          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
           <line x1="0" y1="205" x2="430" y2="205" stroke="#a8a29e" stroke-width="1.5"/>
-          <!-- ouvrage en charge -->
-          <polygon points="95,183 335,193 335,159 95,149" fill="#bae6fd" stroke="#475569" stroke-width="1.6"/>
+          <polygon points="68,205 68,147.9 118,72 312,72 370,160.5 370,205"
+                   fill="#f1f5f9" stroke="#cbd5e1"/>
+          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
+          <!-- ouvrage en charge, de face de talus à face de talus -->
+          <polygon points="68,181.9 370,194.5 370,160.5 68,147.9" fill="#bae6fd"
+                   stroke="#475569" stroke-width="1.6"/>
           <!-- eau amont et aval -->
-          <rect x="0" y="126" width="95" height="79" fill="#bae6fd" opacity=".75"/>
-          <line x1="0" y1="126" x2="95" y2="126" stroke="#0369a1" stroke-width="2"/>
-          <rect x="335" y="166" width="95" height="39" fill="#a5f3fc" opacity=".8"/>
-          <line x1="335" y1="166" x2="430" y2="166" stroke="#0891b2" stroke-width="2"/>
+          <rect x="0" y="126" width="68" height="79" fill="#bae6fd" opacity=".75"/>
+          <line x1="0" y1="126" x2="68" y2="126" stroke="#0369a1" stroke-width="2"/>
+          <rect x="374.5" y="166" width="55.5" height="39" fill="#a5f3fc" opacity=".8"/>
+          <line x1="374.5" y1="166" x2="430" y2="166" stroke="#0891b2" stroke-width="2"/>
+          <!-- murs de tête -->
+          <rect x="63.5" y="143" width="4.5" height="44" fill="#94a3b8"/>
+          <rect x="370" y="156" width="4.5" height="44" fill="#94a3b8"/>
           <!-- ligne d'énergie, de l'aval vers l'amont -->
-          <path d="M430,160 L335,160 L100,122 L0,118" fill="none" stroke="#b45309"
+          <path d="M430,160 L374.5,160 L72,122 L0,118" fill="none" stroke="#b45309"
                 stroke-width="1.8" stroke-dasharray="6 3"/>
-          <text x="196" y="112" font-size="10" fill="#b45309" font-weight="700">ligne d'énergie</text>
+          <text x="219" y="112" font-size="10" fill="#b45309" font-weight="700"
+                text-anchor="middle">ligne d'énergie</text>
           <!-- pertes -->
-          <line x1="335" y1="160" x2="335" y2="166" stroke="#b45309" stroke-width="3"/>
-          <text x="341" y="152" font-size="9.5" fill="#b45309">K<tspan font-size="7" dy="2">s</tspan><tspan dy="-2">·V²/2g</tspan></text>
-          <text x="196" y="145" font-size="9.5" fill="#b45309" text-anchor="middle">J<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">·L</tspan></text>
-          <line x1="100" y1="122" x2="100" y2="130" stroke="#b45309" stroke-width="3"/>
-          <text x="34" y="112" font-size="9.5" fill="#b45309">K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2">·V²/2g</tspan></text>
+          <line x1="374.5" y1="160" x2="374.5" y2="166" stroke="#b45309" stroke-width="3"/>
+          <text x="428" y="152" font-size="9.5" fill="#b45309" text-anchor="end">K<tspan font-size="7" dy="2">s</tspan><tspan dy="-2">·V²/2g</tspan></text>
+          <text x="219" y="145" font-size="9.5" fill="#b45309" text-anchor="middle">J<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">·L</tspan></text>
+          <line x1="72" y1="122" x2="72" y2="130" stroke="#b45309" stroke-width="3"/>
+          <text x="10" y="112" font-size="9.5" fill="#b45309">K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2">·V²/2g</tspan></text>
           <!-- cotes -->
-          <line x1="58" y1="126" x2="58" y2="183" stroke="#0369a1" stroke-width="1"/>
-          <path d="M55,129 L58,123 L61,129 M55,180 L58,186 L61,180" fill="none" stroke="#0369a1"/>
-          <text x="52" y="157" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
-          <line x1="372" y1="166" x2="372" y2="193" stroke="#0891b2" stroke-width="1"/>
-          <text x="378" y="184" font-size="11" fill="#0e7490" font-weight="800">TW</text>
+          <line x1="52" y1="126" x2="52" y2="181.9" stroke="#0369a1" stroke-width="1"/>
+          <path d="M49,129 L52,123 L55,129 M49,179 L52,185 L55,179" fill="none" stroke="#0369a1"/>
+          <text x="46" y="157" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
+          <line x1="400" y1="166" x2="400" y2="194.5" stroke="#0891b2" stroke-width="1"/>
+          <text x="406" y="184" font-size="11" fill="#0e7490" font-weight="800">TW</text>
           <text x="6" y="232" font-size="10" fill="#334155">interviennent : L · K · niveau aval · K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2"></tspan> · K<tspan font-size="7" dy="2">s</tspan><tspan dy="-2"></tspan></text>
           <text x="6" y="245" font-size="10" fill="#334155">la tête n'intervient que par K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2"></tspan></text>
         </svg>
@@ -1109,7 +1123,11 @@
       coule à surface libre sans que l'aval ni la longueur n'aient leur mot à dire. À
       droite, l'ouvrage est en charge : on part du niveau aval et on remonte les pertes
       jusqu'à l'amont. C'est le plus grand des deux HW qui commande — et un même ouvrage
-      passe de l'un à l'autre quand le débit, la longueur ou le niveau aval changent.</figcaption>
+      passe de l'un à l'autre quand le débit, la longueur ou le niveau aval changent.
+      <br><br><strong>Les têtes sont sur les faces de talus, pas sous la chaussée.</strong>
+      Un ouvrage qui s'arrêterait sous le remblai déboucherait dans le corps de
+      chaussée. C'est ce qui fixe sa longueur : elle se lit sur le profil en travers de
+      la route, pas sur la largeur roulable.</figcaption>
   </figure>
 
   <p>Les deux calculs sont <strong>indépendants</strong> et menés jusqu'au bout tous les
