@@ -348,7 +348,7 @@ function panneau(e) {
 
   const aligne = e.desalignement < 0.5;
   const surcout = e.Laligne - e.Ldroit;
-  const alignement = etape(0, "Aligner l'ouvrage sur l'écoulement", `
+  const alignement = etape(1, "Aligner l'ouvrage sur l'écoulement", `
     <p class="explanation">talweg à ${fr(e.talweg, 0)}° · ouvrage à ${fr(e.biais, 0)}° —
       ${aligne ? "<strong>alignés</strong> : l'eau entre et sort sans tourner"
         : `<strong>désalignés de ${fr(e.desalignement, 0)}°</strong> : l'eau tourne
@@ -367,12 +367,12 @@ function panneau(e) {
       se tranche en le chiffrant, pas par principe.</p>`);
 
   el("pcOut").innerHTML = alignement +
-    etape(1, "La voie donne l'emprise", `
+    etape(2, "La voie donne l'emprise", `
       <p class="explanation">plate-forme = ${fr(num("pcChaussee"), 2)} + 2 × ${fr(num("pcAccotement"), 2)}
         = <strong>${fr(pre.plateforme, 2)} m</strong><br>
         talus = 2 × ${fr(e.m, 1)} × ${fr(num("pcRemblai"), 2)} = ${fr(2 * e.m * num("pcRemblai"), 2)} m<br>
         emprise de pied à pied = <strong>${fr(pre.emprise, 2)} m</strong></p>`) +
-    etape(2, "L'ouvrage s'arrête plus haut que le pied", `
+    etape(3, "L'ouvrage s'arrête plus haut que le pied", `
       <p class="explanation">plate-forme à ${fr(pre.zPlateforme, 3)} · intrados à
         ${fr(pre.zRadierAmont + e.D, 3)} à l'entrée<br>
         couverture : ${fr(pre.couvertureAmont, 2)} m à l'entrée · ${fr(pre.couvertureAval, 2)} m à la sortie<br>
@@ -380,16 +380,16 @@ function panneau(e) {
         ${fr(pre.couvertureAval, 2)}) = ${fr(e.m * (pre.couvertureAmont + pre.couvertureAval), 2)} m
         — et non ${fr(2 * e.m * num("pcRemblai"), 2)} m</p>
       ${bloque}`) +
-    etape(3, "Le biais donne la longueur", `
+    etape(4, "Le biais donne la longueur", `
       <p class="explanation">L = (${fr(pre.plateforme, 2)} +
         ${fr(e.m * (pre.couvertureAmont + pre.couvertureAval), 2)}) / sin ${fr(beta, 0)}°
         + 2 × ${fr(EPAISSEUR_TETE, 2)} = <strong>${fr(pre.L, 2)} m</strong>
         <br>allongement dû au biais : ${fr((pre.allongement - 1) * 100, 1)} %</p>`) +
-    etape(4, "Le levé donne la pente", `
+    etape(5, "Le levé donne la pente", `
       <p class="explanation">J = (${fr(num("pcZam"), 3)} − ${fr(num("pcZav"), 3)}) / ${fr(pre.L, 2)}
         = ${fr(pre.chute, 3)} / ${fr(pre.L, 2)} = <strong>${fr(pre.J * 100, 3)} %</strong><br>
         radier : ${fr(pre.zRadierAmont, 3)} à l'entrée · ${fr(pre.zRadierAval, 3)} à la sortie</p>`) +
-    etape(5, "La section donne la pente critique", `
+    etape(6, "La section donne la pente critique", `
       <p class="explanation">y<sub>c</sub> = ${fr(e.yc, 3)} m · A<sub>c</sub> = ${fr(Ac, 3)} m²
         · R<sub>c</sub> = ${fr(Rc, 3)} m<br>
         I<sub>c</sub> = [ ${fr(e.q, 2)} / (${fr(e.K, 0)} × ${fr(Ac, 3)} × ${fr(Rc, 3)}<sup>2/3</sup>) ]²

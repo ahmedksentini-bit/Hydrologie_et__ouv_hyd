@@ -35,7 +35,8 @@ test("l'ouvrage est plus court que l'emprise, et la boucle converge", () => {
   proche(r.zRadierAval, 124.51, 1e-9, "radier de sortie");
   // La chute est celle du levé : c'est L qui absorbe la boucle, pas la chute.
   proche(r.zRadierAmont - r.zRadierAval, 0.14, 1e-9, "chute conservée");
-  assert.ok(r.passes <= 3, `convergence en ${r.passes} passes`);
+  // La « boucle » a une solution fermée : c_aval = c_amont + chute.
+  proche(r.couvertureAval - r.couvertureAmont, r.chute, 1e-12, "les deux couvertures");
   assert.ok(r.valide);
 });
 

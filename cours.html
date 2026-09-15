@@ -1542,10 +1542,18 @@
      du talweg ; on lit celles des deux points où l'ouvrage débouche — distants de L, donc du
      premier maillon — et la pente suit :</p>
   <p class="formula">J = ( Z<sub>TN entrée</sub> − Z<sub>TN sortie</sub> ) / L</p>
-  <p class="method-note">Le système <strong>boucle sur lui-même</strong> : la cote de sortie
-     vaut Z<sub>entrée</sub> − J·L, la couverture aval en dépend, et la couverture commande
-     L, qui commande J. On l'itère ; il converge en deux passes, parce que la couverture aval
-     ne change que de quelques centimètres.</p>
+  <p>Le système <strong>a l'air de boucler</strong> : la cote de sortie vaut
+     Z<sub>entrée</sub> − J·L, la couverture aval en dépend, et la couverture commande L, qui
+     commande J. Il n'en est rien. Puisque J·L <em>est</em> la chute, par définition, la
+     couverture aval vaut simplement la couverture amont plus la chute — et la somme des deux,
+     qui est tout ce dont L a besoin, est connue d'avance :</p>
+  <p class="formula">c<sub>aval</sub> = c<sub>amont</sub> + chute&nbsp;&nbsp;·&nbsp;&nbsp;
+     L = [ l<sub>plateforme</sub> + m·(2·c<sub>amont</sub> + chute) ] / sin(biais)
+     + 2·e<sub>tête</sub></p>
+  <p class="method-note">La boucle se résout donc en une ligne, sans approximations
+     successives. C'est le genre de vérification qui vaut d'être faite : un calcul itératif
+     qu'on n'a pas cherché à fermer se recopie ensuite d'année en année comme s'il était
+     inévitable.</p>
 
   <div class="sanity-check"><h3>Trois effets à contre-sens de l'intuition</h3>
     <p>La boucle ci-dessus n'est pas un raffinement d'école : elle renverse trois raisonnements
@@ -1616,34 +1624,30 @@
 
   <div class="calc" id="calcPrecalage">
     <h3>Le précalage, en plan</h3>
-    <p class="method-note" style="margin:0 0 12px">La route et ses talus, l'ouvrage en biais,
-       et les cotes de terrain naturel levées le long du talweg. Les deux cotes en gras sont
-       celles qui donnent la pente — les autres sont interpolées à pente de talweg constante
-       entre elles, ce qu'un vrai levé ne garantit pas.</p>
-    <div class="data-grid">
+    <p class="method-note" style="margin:0 0 10px">Trois curseurs, chacun posé juste au-dessus
+       de ce qu'il commande : on voit la cause et l'effet dans la même vue. Le reste des
+       données est replié — rien n'y change tant qu'on explore la géométrie.</p>
+
+    <details class="donnees-repliees">
+      <summary>Données du site et de l'ouvrage</summary>
+      <div class="data-grid">
       <div class="field"><label for="pcChaussee">Largeur de chaussée</label>
         <div class="input-wrap"><input id="pcChaussee" type="text" inputmode="decimal" value="7,00"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcAccotement">Accotement (chacun)</label>
         <div class="input-wrap"><input id="pcAccotement" type="text" inputmode="decimal" value="1,50"><span class="unit">m</span></div></div>
-      <div class="field"><label for="pcRemblai">Hauteur de remblai H — rehausser allonge</label>
-        <div class="input-wrap"><input id="pcRemblai" type="range" min="1" max="6" step="0.05" value="2.5"><span class="unit" id="pcRemblaiVal">2,50 m</span></div></div>
-      <div class="field"><label for="pcFruit">Fruit des talus</label>
-        <div class="input-wrap"><select id="pcFruit">
-          <option value="1">1/1</option><option value="1.5" selected>3/2</option>
-          <option value="2">2/1</option><option value="2.5">5/2</option></select></div></div>
-      <div class="field"><label for="pcTalweg">Direction du talweg — donnée par le terrain</label>
-        <div class="input-wrap"><input id="pcTalweg" type="range" min="40" max="140" step="1" value="70"><span class="unit" id="pcTalwegVal">70°</span></div></div>
-      <div class="field"><label for="pcBiais">Biais de l'ouvrage — ce qu'on choisit</label>
-        <div class="input-wrap"><input id="pcBiais" type="range" min="40" max="140" step="1" value="90"><span class="unit" id="pcBiaisVal">90°</span></div></div>
+        <div class="field"><label for="pcFruit">Fruit des talus</label>
+          <div class="input-wrap"><select id="pcFruit">
+            <option value="1">1/1</option><option value="1.5" selected>3/2</option>
+            <option value="2">2/1</option><option value="2.5">5/2</option></select></div></div>
       <div class="field"><label for="pcDecaissement">Décaissement du radier</label>
         <div class="input-wrap"><input id="pcDecaissement" type="text" inputmode="decimal" value="0,20"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcZam">Cote TN levée à l'entrée</label>
         <div class="input-wrap"><input id="pcZam" type="text" inputmode="decimal" value="124,850"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcZav">Cote TN levée à la sortie</label>
         <div class="input-wrap"><input id="pcZav" type="text" inputmode="decimal" value="124,710"><span class="unit">m</span></div></div>
-      <div class="field"><label for="pcForme">Forme</label>
-        <div class="input-wrap"><select id="pcForme">
-          <option value="dalot" selected>Dalot</option><option value="buse">Buse</option></select></div></div>
+        <div class="field"><label for="pcForme">Forme</label>
+          <div class="input-wrap"><select id="pcForme">
+            <option value="dalot" selected>Dalot</option><option value="buse">Buse</option></select></div></div>
       <div class="field"><label for="pcB">Largeur B d'une cellule</label>
         <div class="input-wrap"><input id="pcB" type="text" inputmode="decimal" value="2,00"><span class="unit">m</span></div></div>
       <div class="field"><label for="pcD">Hauteur D (ou Ø)</label>
@@ -1652,19 +1656,35 @@
         <div class="input-wrap"><input id="pcN" type="text" inputmode="numeric" value="1"></div></div>
       <div class="field"><label for="pcQ">Débit de projet Q</label>
         <div class="input-wrap"><input id="pcQ" type="text" inputmode="decimal" value="6,0"><span class="unit">m³/s</span></div></div>
-      <div class="field"><label for="pcK">Rugosité K</label>
-        <div class="input-wrap"><select id="pcK">
-          <option value="90">90 — béton très lisse</option>
-          <option value="70" selected>70 — béton courant</option>
-          <option value="60">60 — maçonnerie</option>
-          <option value="50">50 — béton dégradé, dépôts</option></select></div></div>
-    </div>
-    <div class="actions" style="margin:10px 0 2px">
-      <button type="button" class="secondary" id="pcAligner">Aligner l'ouvrage sur le talweg</button>
-      <button type="button" class="ghost" id="pcDroit">Le remettre droit (90°)</button>
+        <div class="field"><label for="pcK">Rugosité K</label>
+          <div class="input-wrap"><select id="pcK">
+            <option value="90">90 — béton très lisse</option>
+            <option value="70" selected>70 — béton courant</option>
+            <option value="60">60 — maçonnerie</option>
+            <option value="50">50 — béton dégradé, dépôts</option></select></div></div>
+      </div>
+    </details>
+
+    <h4>Aligner, ou ne pas aligner</h4>
+    <div class="curseurs">
+      <div class="field"><label for="pcTalweg">Direction du talweg <small>— donnée par le terrain</small></label>
+        <div class="input-wrap"><input id="pcTalweg" type="range" min="40" max="140" step="1" value="70"><span class="unit" id="pcTalwegVal">70°</span></div></div>
+      <div class="field"><label for="pcBiais">Biais de l'ouvrage <small>— ce qu'on choisit</small></label>
+        <div class="input-wrap"><input id="pcBiais" type="range" min="40" max="140" step="1" value="90"><span class="unit" id="pcBiaisVal">90°</span></div></div>
+      <div class="actions">
+        <button type="button" class="secondary" id="pcAligner">Aligner sur le talweg</button>
+        <button type="button" class="ghost" id="pcDroit">Remettre droit</button>
+      </div>
     </div>
     <div id="pcPlan"></div>
+
+    <h4>Rehausser la chaussée</h4>
+    <div class="curseurs">
+      <div class="field"><label for="pcRemblai">Hauteur de remblai H <small>— le fruit des talus ne change pas, donc rehausser allonge</small></label>
+        <div class="input-wrap"><input id="pcRemblai" type="range" min="1" max="6" step="0.05" value="2.5"><span class="unit" id="pcRemblaiVal">2,50 m</span></div></div>
+    </div>
     <div id="pcProfil"></div>
+
     <div id="pcOut"></div>
   </div>
 

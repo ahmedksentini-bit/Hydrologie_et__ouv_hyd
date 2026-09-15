@@ -110,6 +110,17 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .zoom-carte button:hover:not(:disabled){background:#f1f5f9;border-color:#94a3b8}
 .zoom-carte button:disabled{opacity:.35;cursor:default}
 .lien-zoom{padding:0;border:0;background:none;color:var(--blue);font-weight:700;text-decoration:underline;cursor:pointer}
+/* Curseurs d'une figure : posés JUSTE au-dessus de ce qu'ils commandent, pour
+   qu'on voie la cause et l'effet sans quitter des yeux le dessin. */
+.curseurs{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:6px 0 10px}
+.curseurs .field{flex:1 1 230px;min-width:0}
+.curseurs .field label small{font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0}
+.curseurs .actions{flex:0 0 auto;margin:0}
+.curseurs .actions button{padding:9px 13px;font-size:14px}
+/* Données qu'on ne touche pas en explorant : repliées, mais pas cachées. */
+.donnees-repliees{margin-bottom:6px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.donnees-repliees>summary{padding:11px 14px;color:var(--blue);font-weight:800;cursor:pointer}
+.donnees-repliees .data-grid{margin:0;padding:0 14px 14px}
 /* Zoomée, la carte se saisit. Le curseur des stations, plus spécifique, l'emporte. */
 .carte-zoomable.deplacable{cursor:grab}
 .carte-zoomable.deplacant{cursor:grabbing;user-select:none}

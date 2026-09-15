@@ -611,3 +611,43 @@ test("ch3 — la table a(T) de la station de référence", () => {
   const produit = j.periodes.map((T) => Math.round(k.aT[T] * T ** k.c));
   assert.deepEqual(produit, [218, 277, 318, 363, 413, 452], "a(T)·T^c cité dans l'explication");
 });
+
+test("ch7 — précalage et alignement recalculés", () => {
+  const b = banque("ch7");
+  const SITE = {
+    chaussee: 6, accotement: 1.5, hauteurRemblai: 3.0, fruitTalus: 1.5,
+    zTnEntree: 135.420, zTnSortie: 135.343, decaissement: 0.25, hauteurOuvrage: 1.5,
+  };
+  const droit = dim.precaler({ ...SITE, biaisDeg: 90 });
+  const aligne = dim.precaler({ ...SITE, biaisDeg: 60 });
+  const sec = o.sectionRectangulaire(2, 1.5), Q = 5, K = 70;
+  const Ic = o.penteCritique(sec, Q, K);
+
+  vaut(q(b, "ch7-e10", 0), droit.emprise, "emprise de pied à pied");
+  vaut(q(b, "ch7-e10", 1), droit.zRadierAmont, "radier d'entrée");
+  vaut(q(b, "ch7-e10", 2), droit.couvertureAmont, "couverture amont");
+  vaut(q(b, "ch7-e10", 3), droit.couvertureAmont + droit.couvertureAval, "somme des couvertures");
+  vaut(q(b, "ch7-e10", 4), droit.L, "longueur posé droit");
+  vaut(q(b, "ch7-e10", 5), aligne.L, "longueur aligné");
+  vaut(q(b, "ch7-e10", 6), aligne.L - droit.L, "surcoût de l'alignement");
+  vaut(q(b, "ch7-e10", 7), droit.J * 100, "pente posé droit");
+  vaut(q(b, "ch7-e10", 8), aligne.J * 100, "pente aligné");
+  vaut(q(b, "ch7-e10", 9), Ic * 100, "pente critique");
+
+  // Le cœur de l'exercice : une décision prise EN PLAN change le régime.
+  assert.equal(dim.regimeDePente(droit.J, Ic).regime, "torrentiel");
+  assert.equal(dim.regimeDePente(aligne.J, Ic).regime, "fluvial");
+  assert.equal(q(b, "ch7-e10", 10).reponse, 2, "l'option « torrentiel droit, fluvial aligné »");
+
+  // Et les deux écarts à la bascule restent hors de la bande des 5 %, sans quoi
+  // la question précédente n'aurait pas de réponse ferme.
+  assert.ok(Math.abs(droit.J / Ic - 1) > 0.05 && Math.abs(aligne.J / Ic - 1) > 0.05,
+    "les deux cas doivent trancher franchement");
+  // …mais assez près pour que la question sur K se pose : à K = 60 tout bascule.
+  const Ic60 = o.penteCritique(sec, Q, 60);
+  assert.equal(dim.regimeDePente(droit.J, Ic60).regime, "fluvial",
+    "à K = 60 l'ouvrage droit devient fluvial lui aussi");
+
+  const rehausse = dim.precaler({ ...SITE, biaisDeg: 60, hauteurRemblai: 4.0 });
+  vaut(q(b, "ch7-e10", 12), rehausse.L - aligne.L, "allongement dû au rehaussement");
+});

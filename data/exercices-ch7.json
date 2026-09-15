@@ -422,6 +422,126 @@
           "explication": "Rien dans le calcul ne produit une règle générale : c'est une comparaison de deux listes de candidats sur un site donné, avec une pondération donnée. Sous faible remblai, la buse perd davantage ; sur un petit débit avec un lit stable, elle gagne presque toujours sur le coût. La comparaison se refait, elle ne se retient pas."
         }
       ]
+    },
+    {
+      "id": "ch7-e10",
+      "titre": "Précalage et alignement : le biais décide du régime",
+      "difficulte": 3,
+      "enonce": "Une route en remblai franchit un talweg. Chaussée 6,00 m, accotements 1,50 m de chaque côté, hauteur de remblai 3,00 m à l'axe, talus 3/2 (m = 1,5), murs de tête de 0,30 m. Le talweg croise l'axe de la route à 60°. Le topographe lève, le long du talweg, Z = 135,420 m à l'entrée et Z = 135,343 m à la sortie ; le radier sera décaissé de 0,25 m sous le terrain naturel aux deux extrémités. L'ouvrage est un dalot de 2,00 × 1,50 m à une cellule, en béton (K = 70), pour Q = 5,00 m³/s. On compare deux implantations : l'ouvrage posé DROIT, perpendiculaire à la route, et l'ouvrage ALIGNÉ sur le talweg.",
+      "questions": [
+        {
+          "texte": "Emprise du remblai, de pied de talus à pied de talus.",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 18.0,
+          "tolerance": 0.05,
+          "explication": "Plate-forme = 6,00 + 2 × 1,50 = 9,00 m ; talus = 2 × 1,5 × 3,00 = 9,00 m ; emprise = 18,00 m. C'est ce que la route occupe au sol — ce n'est PAS la longueur de l'ouvrage."
+        },
+        {
+          "texte": "Cote du radier à l'entrée.",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 135.17,
+          "tolerance": 0.005,
+          "explication": "135,420 − 0,250 = 135,170 m. Le décaissement s'applique sous la cote levée, pas sous la plate-forme."
+        },
+        {
+          "texte": "Couverture au-dessus de l'intrados, à l'entrée.",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 1.712,
+          "tolerance": 0.02,
+          "explication": "La plate-forme est à (135,420 + 135,343)/2 + 3,000 = 138,382 m ; l'intrados à l'entrée est à 135,170 + 1,500 = 136,670 m. Couverture = 138,382 − 136,670 = 1,712 m. C'est elle qui commande la longueur, et non la hauteur de remblai : la tête se pose là où l'intrados perce le talus."
+        },
+        {
+          "texte": "Somme des deux couvertures, amont et aval.",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 3.5,
+          "tolerance": 0.02,
+          "explication": "Inutile d'itérer : la couverture aval vaut la couverture amont PLUS la chute, puisque J·L est la chute par définition. Somme = 2 × 1,712 + 0,077 = 3,500 m. La boucle apparente du précalage a une solution fermée."
+        },
+        {
+          "texte": "Longueur de l'ouvrage posé DROIT (biais 90°).",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 14.85,
+          "tolerance": 0.05,
+          "explication": "L = [9,00 + 1,5 × 3,500] / sin 90° + 2 × 0,30 = (9,00 + 5,25) + 0,60 = 14,85 m. Soit 3,15 m de MOINS que l'emprise : compter de pied à pied aurait allongé l'ouvrage de 21 %."
+        },
+        {
+          "texte": "Longueur de l'ouvrage ALIGNÉ sur le talweg (biais 60°).",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 17.054,
+          "tolerance": 0.05,
+          "explication": "Seul le diviseur change : L = (9,00 + 5,25) / sin 60° + 0,60 = 14,25 / 0,8660 + 0,60 = 17,054 m. Les couvertures, elles, ne dépendent pas du biais."
+        },
+        {
+          "texte": "Surcoût en longueur de l'alignement.",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 2.204,
+          "tolerance": 0.05,
+          "explication": "17,054 − 14,850 = 2,204 m, soit 15 % de béton en plus. C'est le prix à comparer à ce qu'on achète : deux coudes de 30° évités, à l'entrée et à la sortie."
+        },
+        {
+          "texte": "Pente de l'ouvrage posé droit.",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.519,
+          "tolerance": 0.01,
+          "explication": "J = 0,077 / 14,850 = 0,00519, soit 0,519 %. La chute est celle du levé ; c'est la longueur qui change d'une implantation à l'autre."
+        },
+        {
+          "texte": "Pente de l'ouvrage aligné.",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.451,
+          "tolerance": 0.01,
+          "explication": "J = 0,077 / 17,054 = 0,00451, soit 0,451 %. Même chute, ouvrage plus long : la pente baisse de 13 %."
+        },
+        {
+          "texte": "Pente critique de la section, à 5,00 m³/s et K = 70.",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 0.482,
+          "tolerance": 0.01,
+          "explication": "y_c = ∛(5,00² / (9,81 × 2,00²)) = 0,861 m ; A_c = 1,721 m² ; P_c = 2,00 + 2 × 0,861 = 3,721 m ; R_c = 0,463 m. I_c = [5,00 / (70 × 1,721 × 0,463^(2/3))]² = 0,00482, soit 0,482 %."
+        },
+        {
+          "texte": "Quel est le régime dans chacune des deux implantations ?",
+          "type": "choix",
+          "options": [
+            "Torrentiel dans les deux cas : la pente reste supérieure à 0,4 %",
+            "Fluvial dans les deux cas : la pente reste inférieure à 1 %",
+            "Torrentiel posé droit, fluvial aligné",
+            "Fluvial posé droit, torrentiel aligné"
+          ],
+          "reponse": 2,
+          "explication": "Droit : J = 0,519 % > I_c = 0,482 % → torrentiel (y_n = 0,838 m < y_c = 0,861 m, Fr = 1,04). Aligné : J = 0,451 % < I_c → fluvial (y_n = 0,881 m > y_c, Fr = 0,96). Une décision prise EN PLAN — suivre le talweg ou non — a changé le régime d'écoulement, par la seule chaîne longueur → pente. C'est tout l'objet du précalage : il ne vient pas après le calcul hydraulique, il le conditionne."
+        },
+        {
+          "texte": "Les deux pentes sont à 8 % et 6 % de la pente critique. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que les deux régimes annoncés sont fermes : l'écart dépasse la précision du calcul",
+            "Que le régime dépend d'un K choisi, et que la note de calcul doit le dire",
+            "Qu'il faut relever le radier pour s'éloigner de la bascule",
+            "Que le calcul est faux : on ne peut pas être si près de I_c"
+          ],
+          "reponse": 1,
+          "explication": "I_c varie en 1/K² : avec K = 60 au lieu de 70, elle passe de 0,482 % à 0,656 %, et les DEUX implantations deviennent fluviales. Un écart de 6 à 8 % à la bascule est plus petit que l'incertitude sur la rugosité d'un ouvrage qui vieillira. Le régime annoncé est alors une hypothèse — elle se déclare, elle ne se présente pas comme un résultat."
+        },
+        {
+          "texte": "On rehausse la chaussée d'un mètre, l'ouvrage restant aligné. De combien s'allonge-t-il ?",
+          "type": "nombre",
+          "unite": "m",
+          "reponse": 3.464,
+          "tolerance": 0.05,
+          "explication": "Le fruit des talus ne change pas : un mètre de remblai en plus, c'est un mètre de couverture en plus à CHAQUE extrémité, donc 2 × 1,5 = 3 m de talus à franchir, allongés par le biais. dL/dH = 2m / sin(biais) = 3 / 0,8660 = 3,464 m par mètre. L'ouvrage passe de 17,054 à 20,519 m — et la pente tombe à 0,375 %, plus loin encore sous la pente critique."
+        }
+      ]
     }
   ]
 }

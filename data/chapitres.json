@@ -141,10 +141,13 @@
         "revanche",
         "calage altimétrique",
         "multi-cellules",
-        "vérification au débit majorant"
+        "vérification au débit majorant",
+        "précalage",
+        "alignement sur l'écoulement",
+        "pente critique"
       ],
       "cours": true,
-      "exercices": 9
+      "exercices": 10
     },
     {
       "id": "ch8",

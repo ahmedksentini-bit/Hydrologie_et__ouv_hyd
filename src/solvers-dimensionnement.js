@@ -282,9 +282,19 @@ const sinBiais = (deg) => Math.sin((Math.min(Math.max(deg, 20), 160) * Math.PI) 
  *
  * La longueur dépend donc de la HAUTEUR de l'ouvrage : un ouvrage plus haut
  * laisse moins de couverture, perce le talus plus près de la chaussée, et se
- * raccourcit. Et comme la cote de sortie vaut Z_entrée − J·L, tandis que
- * J = chute / L, le système boucle sur lui-même. On l'itère ; il converge en
- * deux passes, la couverture aval ne changeant que de quelques centimètres.
+ * raccourcit.
+ *
+ * Le système a l'air de boucler — la cote de sortie vaut Z_entrée − J·L,
+ * la couverture aval en dépend, et la couverture commande L. Il n'en est rien :
+ * puisque J·L vaut la CHUTE par définition, la couverture aval vaut la
+ * couverture amont plus la chute, et la somme des deux est connue d'avance :
+ *
+ *   c_aval = c_amont + chute   →   L = [ l_plateforme + m·(2·c_amont + chute) ]
+ *                                       / sin(biais) + 2·e_tête
+ *
+ * La boucle se résout donc en une ligne. (Elle était itérée ici auparavant ;
+ * l'itération convergeait vers cette même valeur, mais faisait croire à une
+ * difficulté qui n'existe pas.)
  */
 export function precaler({
   chaussee, accotement = 0, hauteurRemblai, fruitTalus = 1.5, biaisDeg = 90,
@@ -298,27 +308,19 @@ export function precaler({
   const zRadierAmont = zTnEntree - decaissement;
   const chute = zTnEntree - zTnSortie;
 
-  let L = (emprise / sin) + 2 * epaisseurTete, J = 0, zRadierAval = zRadierAmont;
-  let cAmont = 0, cAval = 0, passes = 0;
-  for (; passes < 8; passes++) {
-    J = chute / L;
-    zRadierAval = zRadierAmont - J * L;
-    cAmont = zPlateforme - (zRadierAmont + hauteurOuvrage);
-    cAval = zPlateforme - (zRadierAval + hauteurOuvrage);
-    const Lsuivant = (plateforme + fruitTalus * (Math.max(cAmont, 0) + Math.max(cAval, 0))) / sin
-      + 2 * epaisseurTete;
-    if (Math.abs(Lsuivant - L) < 1e-6) { L = Lsuivant; break; }
-    L = Lsuivant;
-  }
-  J = chute / L;
-  zRadierAval = zRadierAmont - J * L;
+  const zRadierAval = zRadierAmont - chute;          // J·L vaut la chute, par définition
+  const cAmont = zPlateforme - (zRadierAmont + hauteurOuvrage);
+  const cAval = cAmont + chute;
+  const L = (plateforme + fruitTalus * (Math.max(cAmont, 0) + Math.max(cAval, 0))) / sin
+    + 2 * epaisseurTete;
+  const J = chute / L;
 
   const couvertureMin = Math.min(cAmont, cAval);
   return {
     plateforme, emprise, zPlateforme, zTnAxe,
     couvertureAmont: cAmont, couvertureAval: cAval, couvertureMin,
     L, Lentre: L - 2 * epaisseurTete, allongement: 1 / sin, chute, J,
-    zRadierAmont, zRadierAval, passes,
+    zRadierAmont, zRadierAval,
     valide: J > 0 && couvertureMin > 0,
     motif: couvertureMin <= 0
       ? "l'ouvrage ne passe pas sous ce remblai : il manque "
