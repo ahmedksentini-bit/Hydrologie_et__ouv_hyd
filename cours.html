@@ -1025,6 +1025,23 @@
      comme une panne, et la réaction naturelle — interpoler entre 10 et 50 ans — n'a aucune
      justification : les manuels n'en donnent pas la règle.</div>
 
+  <h3>Domaines de validité : quatre bornes, et jamais les mêmes</h3>
+  <p>Chaque méthode a été calée sur un échantillon de bassins, et n'a de sens que dans le
+     domaine de cet échantillon. Les bornes portent sur quatre choses — la <strong>surface</strong>,
+     la <strong>pluie annuelle</strong>, la <strong>période de retour</strong> et la
+     <strong>zone</strong> — et elles ne coïncident d'une méthode à l'autre pour aucune des
+     quatre. C'est le piège central du chapitre : on croit comparer sept estimations alors que
+     trois seulement sont dans leur domaine.</p>
+  <div id="gDomaines"></div>
+  <p class="method-note">Ce tableau n'est pas recopié : il est <strong>engendré</strong> par
+     les bornes que le calculateur applique. Si une borne change dans le code, elle change
+     ici — et un test vérifie que les deux disent la même chose.</p>
+  <div class="hint"><strong>Une valeur calculée hors domaine n'est pas une estimation, c'est
+     un chiffre.</strong> La formule ne proteste jamais : Kallel rend un nombre sur 8 km²,
+     Fersi en rend un sous 600 mm de pluie annuelle, Francou–Rodier en rend un sur 12 km².
+     Ces nombres n'ont pas moins de décimales que les autres — c'est bien le problème. Une
+     méthode écartée se dit, avec son motif ; elle n'entre pas dans la médiane.</div>
+
   <div class="calc" id="calcRegio">
     <h3>Toutes les méthodes sur un même bassin</h3>
     <div class="data-grid">

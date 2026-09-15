@@ -351,3 +351,87 @@ export function periodeRetour({ categorie, ouvrage, S, tjma = 0 }) {
   if (tjma > 650) return 50;
   return S >= 10 ? 50 : 30;
 }
+
+// ── Domaines de validité ───────────────────────────────────────────────────
+// Les bornes ne coïncident jamais d'une méthode à l'autre, et c'est le piège :
+// on croit comparer sept estimations alors que trois seulement sont dans leur
+// domaine. Elles sont déclarées ICI, en un seul endroit, pour que le tableau
+// du cours, la figure du chapitre 4 et l'exerciseur ne puissent pas diverger.
+//
+// Sources : les manuels d'origine, tels que repris dans l'aide-mémoire du
+// cours. Une borne inconnue s'écrit null, jamais Infinity déguisé en règle.
+
+export const DOMAINES = {
+  rationnelle: {
+    nom: "Rationnelle", surface: { max: 4 },
+    motifSurface: "au-delà, l'hypothèse de pluie uniforme sur tout le bassin tombe",
+    zone: false, periodes: null,
+  },
+  sogreah: {
+    nom: "SOGREAH", pluieAnnuelle: { max: 500 }, periodes: { min: 10, max: 100 },
+    motifPluie: "méthode calée sur les régions à pluie annuelle modérée",
+    motifPeriode: "P_T s'interpole entre P₁₀ et P₁₀₀ : hors de cet intervalle, on extrapole",
+    zone: false, condition: "P_T doit dépasser P₀, sinon il n'y a pas de ruissellement",
+  },
+  ghorbel: {
+    nom: "Ghorbel", zone: true, periodes: [2, 5, 10, 20, 50, 100],
+    note: "la zone V est peu testée : résultat indicatif",
+  },
+  kallel: {
+    nom: "Kallel", surface: { min: 100 }, zone: true, periodes: "analytique",
+    motifSurface: "calée sur les grands bassins",
+  },
+  fersi: {
+    nom: "Fersi", pluieAnnuelle: { max: 400 }, zone: true, periodes: [5, 10, 20, 50, 100],
+    motifPluie: "méthode calée sur les bassins du Sud",
+  },
+  frigui: {
+    nom: "Frigui", zone: true, periodes: [2, 5, 10, 50],
+    note: "ni 20, ni 30, ni 100 ans : la note DGPC ne tombe jamais dans cette table",
+  },
+  francou: {
+    nom: "Francou–Rodier", surface: { min: 100 }, zone: true, periodes: null,
+    enveloppe: true,
+    motifSurface: "enveloppe des crues observées : en dessous, l'extrapolation n'a pas de sens",
+  },
+};
+
+/**
+ * Une méthode est-elle dans son domaine ici ? Renvoie la liste des motifs de
+ * refus — vide si elle s'applique. Le pluriel compte : une méthode peut être
+ * hors domaine pour deux raisons à la fois, et ne le dire qu'à moitié induit
+ * en erreur sur ce qu'il faudrait changer.
+ */
+export function motifsHorsDomaine(id, { S, Pan, T, zone } = {}) {
+  const d = DOMAINES[id];
+  if (!d) return [`méthode inconnue : ${id}`];
+  const motifs = [];
+  if (d.zone && !zone) motifs.push("hors zone : aucune région retenue");
+  if (d.surface?.max != null && S != null && S >= d.surface.max)
+    motifs.push(`S ≥ ${d.surface.max} km² — ${d.motifSurface}`);
+  if (d.surface?.min != null && S != null && S < d.surface.min)
+    motifs.push(`S < ${d.surface.min} km² — ${d.motifSurface}`);
+  if (d.pluieAnnuelle?.max != null && Pan != null && Pan > d.pluieAnnuelle.max)
+    motifs.push(`pluie annuelle > ${d.pluieAnnuelle.max} mm — ${d.motifPluie}`);
+  if (Array.isArray(d.periodes) && T != null && !d.periodes.includes(T))
+    motifs.push(`T = ${T} ans hors table (calages : ${d.periodes.join(", ")} ans)`);
+  if (d.periodes && !Array.isArray(d.periodes) && d.periodes !== "analytique" && T != null) {
+    if (T < d.periodes.min || T > d.periodes.max)
+      motifs.push(`T = ${T} ans hors de ${d.periodes.min}–${d.periodes.max} ans — ${d.motifPeriode}`);
+  }
+  return motifs;
+}
+
+/** Résumé lisible d'un domaine, pour un tableau. */
+export function resumeDomaine(id) {
+  const d = DOMAINES[id];
+  const bouts = [];
+  if (d.surface?.max != null) bouts.push(`S < ${d.surface.max} km²`);
+  if (d.surface?.min != null) bouts.push(`S ≥ ${d.surface.min} km²`);
+  if (d.pluieAnnuelle?.max != null) bouts.push(`pluie annuelle ≤ ${d.pluieAnnuelle.max} mm`);
+  if (Array.isArray(d.periodes)) bouts.push(`T ∈ {${d.periodes.join(", ")}} ans`);
+  else if (d.periodes === "analytique") bouts.push("tout T (analytique)");
+  else if (d.periodes) bouts.push(`T de ${d.periodes.min} à ${d.periodes.max} ans`);
+  if (d.zone) bouts.push("zone à choisir");
+  return bouts.length ? bouts.join(" · ") : "aucune borne annoncée";
+}

@@ -46,6 +46,7 @@ maj();
 // pas DIT pourquoi. Une case vide se lit comme une panne, et pousse à
 // interpoler entre deux périodes tabulées — ce qu'aucun manuel n'autorise.
 import {
+  DOMAINES, resumeDomaine, motifsHorsDomaine,
   GHORBEL_R, GHORBEL_ZONES, FERSI_Y, FRIGUI, KALLEL, FRANCOU_K,
   rectangleEquivalent, sogreahPluie, sogreahDebit, sogreahRuisselle,
   ghorbelQmax123, ghorbelQmax45,
@@ -215,3 +216,19 @@ for (const id of ["gS", "gP", "gT", "gPan", "gDh", "gIg", "gP0", "gP10", "gP100"
                   "gZone", "gKallel", "gFrigui", "gFersi", "gK"])
   el(id).addEventListener(el(id).tagName === "SELECT" ? "change" : "input", majRegio);
 majRegio();
+
+// ── Le tableau des domaines, engendré par les bornes appliquées ────────────
+// Il n'est pas recopié : une borne modifiée dans DOMAINES se propage ici, et
+// un test confronte les deux. Un tableau de synthèse recopié à la main finit
+// toujours par contredire le calcul qu'il résume.
+
+el("gDomaines").innerHTML = `<table class="resultats">
+  <thead><tr><th>Méthode</th><th>Domaine annoncé</th><th>Ce qui arrive hors domaine</th></tr></thead>
+  <tbody>${Object.entries(DOMAINES).map(([id, d]) => `
+    <tr><td>${d.nom}</td>
+      <td class="motif">${resumeDomaine(id)}${d.condition ? `<small>${d.condition}</small>` : ""}</td>
+      <td class="motif">${d.enveloppe
+        ? "la valeur se calcule, mais elle ne signifie rien"
+        : "inapplicable — la méthode est écartée avec son motif"}${
+        d.note ? `<small>${d.note}</small>` : ""}</td></tr>`).join("")}
+  </tbody></table>`;

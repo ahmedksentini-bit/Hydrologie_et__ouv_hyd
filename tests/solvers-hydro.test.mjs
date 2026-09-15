@@ -287,3 +287,55 @@ test("SOGREAH — sous le seuil, aucun débit, et le motif est explicite", () =>
   // et le cas courant reste inchangé
   proche(h.sogreahDebit(2.35, 96.72, 20), 12.13, 0.01, "Kasserine, inchangé");
 });
+
+test("domaines de validité — les bornes déclarées sont celles qu'on applique", () => {
+  // Le tableau du cours est engendré par DOMAINES ; ce test vérifie que
+  // DOMAINES dit bien ce que la synthèse du chapitre 4 refuse. Les deux
+  // avaient toutes les raisons de diverger : l'une est un tableau, l'autre
+  // une suite de conditions écrites à des mois d'écart.
+  const attendu = {
+    rationnelle: { surface: { max: 4 } },
+    kallel: { surface: { min: 100 } },
+    francou: { surface: { min: 100 } },
+    sogreah: { pluieAnnuelle: { max: 500 } },
+    fersi: { pluieAnnuelle: { max: 400 } },
+  };
+  for (const [id, bornes] of Object.entries(attendu))
+    for (const [champ, valeurs] of Object.entries(bornes))
+      assert.deepEqual(h.DOMAINES[id][champ], valeurs, `${id}.${champ}`);
+  // Les périodes tabulées viennent des tables elles-mêmes.
+  assert.deepEqual(h.DOMAINES.ghorbel.periodes, Object.keys(h.GHORBEL_R.I).map(Number));
+  assert.deepEqual(h.DOMAINES.fersi.periodes, Object.keys(h.FERSI_Y.SudEst).map(Number));
+  assert.deepEqual(h.DOMAINES.frigui.periodes, Object.keys(h.FRIGUI.Nord.lambda).map(Number));
+  assert.equal(h.DOMAINES.kallel.periodes, "analytique");
+});
+
+test("hors domaine : les motifs se cumulent au lieu de se masquer", () => {
+  // Un petit bassin très arrosé, à une période que personne ne tabule : la
+  // plupart des méthodes sont hors domaine pour DEUX raisons. N'en dire
+  // qu'une induit en erreur sur ce qu'il faudrait changer.
+  const cas = { S: 8, Pan: 620, T: 30, zone: "II" };
+  assert.deepEqual(h.motifsHorsDomaine("rationnelle", cas).length, 1);
+  assert.equal(h.motifsHorsDomaine("kallel", cas).length, 1, "Kallel : la surface seule");
+  assert.equal(h.motifsHorsDomaine("fersi", cas).length, 2, "Fersi : la pluie ET la table");
+  assert.match(h.motifsHorsDomaine("fersi", cas)[0], /pluie annuelle > 400/);
+  assert.match(h.motifsHorsDomaine("fersi", cas)[1], /hors table/);
+  // Zone non choisie : le motif vient en premier, c'est le plus facile à corriger.
+  assert.match(h.motifsHorsDomaine("ghorbel", { ...cas, zone: null })[0], /hors zone/);
+  // À T = 30 ans — la note DGPC — seules trois méthodes répondent sur un
+  // grand bassin. C'est l'affirmation du cours, vérifiée ici.
+  const grand = { S: 120, Pan: 320, T: 30, zone: "II" };
+  const applicables = Object.keys(h.DOMAINES)
+    .filter((id) => h.motifsHorsDomaine(id, grand).length === 0);
+  assert.deepEqual(applicables, ["sogreah", "kallel", "francou"]);
+});
+
+test("le résumé de domaine reste lisible et complet", () => {
+  for (const id of Object.keys(h.DOMAINES)) {
+    const r = h.resumeDomaine(id);
+    assert.ok(r.length > 5, `${id} : résumé vide`);
+    assert.ok(!r.includes("undefined") && !r.includes("null"), `${id} : ${r}`);
+  }
+  assert.equal(h.resumeDomaine("rationnelle"), "S < 4 km²");
+  assert.equal(h.resumeDomaine("kallel"), "S ≥ 100 km² · tout T (analytique) · zone à choisir");
+});
