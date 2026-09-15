@@ -118,10 +118,14 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .echelle-pas{display:flex;flex-wrap:wrap;gap:4px 12px}
 .echelle-pas span{display:flex;align-items:center;gap:6px;font-size:12px;font-variant-numeric:tabular-nums;color:#334155}
 .echelle-pas i{width:16px;height:12px;border-radius:3px;display:inline-block}
-/* Une station se survole, se clique et se tabule. */
+/* Une station se survole, se clique et se tabule. La pastille grossit au
+   survol ; la cible invisible, plus large que la pastille, ne bouge pas. */
 .station{cursor:pointer}
-.station circle{transition:r .12s}
-.station:hover circle{r:9}
+.station circle:not(.cible){transition:r .12s}
+.station:hover circle:not(.cible),.station:focus-visible circle:not(.cible){r:9}
 .station:focus-visible{outline:none}
-.station:focus-visible circle{stroke:#0f172a;stroke-width:2.6}
+.station:focus-visible circle:not(.cible){stroke:#0f172a;stroke-width:2.6}
+/* Le calque de survol se dessine par-dessus tout et n'intercepte rien. */
+.survol-carte{pointer-events:none}
+.survol-carte text{font-family:Inter,-apple-system,sans-serif}
 #stFiche h4{color:#075985}

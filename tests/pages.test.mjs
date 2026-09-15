@@ -240,3 +240,30 @@ test("la projection des cartes respecte le vrai rapport des degrés", async () =
     assert.ok(p.zone.y0 >= 12 - 1e-9 && p.zone.y1 <= 400 - 28 + 1e-9, "débordement vertical");
   }
 });
+
+test("survol des cartes — calque dédié, et pas de <title> concurrent", () => {
+  for (const f of ["src/cours-ch3-montana.js", "src/cours-ch4-stations.js"]) {
+    const src = lire(f);
+    // chaque station porte de quoi remplir l'étiquette
+    assert.match(src, /data-nom="\$\{s\.nom\}"/, `${f} : data-nom`);
+    assert.match(src, /data-detail="\$\{detail\}"/, `${f} : data-detail`);
+    // une cible de survol plus large que la pastille
+    assert.match(src, /r="12" fill="transparent" class="cible"/, `${f} : cible de survol`);
+    // le calque est posé et câblé
+    assert.match(src, /calqueSurvol\("survol\w+"\)/, `${f} : calque`);
+    assert.match(src, /attacherSurvol\(/, `${f} : câblage`);
+    // le <title> natif ferait doublon avec l'étiquette dessinée
+    assert.ok(!/<title>/.test(src), `${f} : un <title> subsiste et doublerait l'étiquette`);
+    // le calque vient en DERNIER : en SVG l'ordre du document fait l'empilement
+    const iPoints = src.indexOf("clip-path=\"url(#clip");
+    const iCalque = src.indexOf("calqueSurvol(");
+    assert.ok(iCalque > iPoints, `${f} : le calque doit suivre les points`);
+  }
+});
+
+test("le style de survol n'atteint pas la cible invisible", () => {
+  const css = lire("site.css");
+  assert.match(css, /\.station:hover circle:not\(\.cible\)/, "la pastille grossit, pas la cible");
+  assert.ok(!/\.station:hover circle\{/.test(css), "règle non qualifiée : elle rétrécirait la cible");
+  assert.match(css, /\.survol-carte\{pointer-events:none\}/, "le calque n'intercepte rien");
+});

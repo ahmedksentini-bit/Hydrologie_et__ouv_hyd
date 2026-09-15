@@ -8,7 +8,8 @@
 // est une approximation, exacte à la seule période dont on a pris le a.
 import { montana } from "./solvers-hydro.js";
 import { RAMPE_SEQUENTIELLE, ABSENT, classerContinu, couleurDe } from "./echelle.js";
-import { chargerFrontieres, projection, fondDeCarte, graticule, FOND } from "./carte-fond.js";
+import { chargerFrontieres, projection, fondDeCarte, graticule, FOND,
+         calqueSurvol, attacherSurvol } from "./carte-fond.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
@@ -53,11 +54,14 @@ const valeurAffichee = (s) => {
   }
 };
 
+let zoneCarte = { x0: 0, y0: 0, x1: 0, y1: 0 };
+
 function carte(classes) {
   const FENETRE = { lon0: 7.6, lat0: 30.0, lon1: 11.8, lat1: 37.7 };
   const proj = projection(FENETRE, { largeurMax: 250, hauteurMax: 420,
                                      mg: 40, md: 12, mh: 12, mb: 28 });
   const { px, py, zone } = proj;
+  zoneCarte = zone;
   const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
   const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipMontana");
 
@@ -65,10 +69,13 @@ function carte(classes) {
     const x = px(s.lon), y = py(s.lat), actif = s.nom === choisie.nom;
     const aGauche = s.lon > 10.2;
     const v = valeurAffichee(s);
-    return `<g class="station${actif ? " actif" : ""}" data-nom="${s.nom}" tabindex="0"
-        role="button" aria-label="${s.nom}">
-      <title>${s.nom} — ${el("mGrandeur").value === "i" ? fr(v, 1) + " mm/h"
-        : el("mGrandeur").selectedOptions[0].textContent + " " + fr(v, 3)}</title>
+    const detail = el("mGrandeur").value === "i"
+      ? `${fr(v, 1)} mm/h à ${fr(num("mT_duree"), 0)} min et ${el("mT_periode").value} ans`
+      : `${el("mGrandeur").selectedOptions[0].textContent} = ${fr(v, 3)}`;
+    return `<g class="station${actif ? " actif" : ""}" data-nom="${s.nom}"
+        data-detail="${detail}" tabindex="0" role="button"
+        aria-label="${s.nom} — ${detail}">
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12" fill="transparent" class="cible"/>
       <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 7.5 : 5}"
         fill="${couleurDe(v, classes)}" stroke="${actif ? "#0f172a" : FOND.principal}"
         stroke-width="${actif ? 2.2 : 2}"/>
@@ -83,7 +90,8 @@ function carte(classes) {
       aria-label="Carte de la Tunisie et des stations de Montana dont la position est recoupée">
     <defs>${base.defs}</defs>${base.fond}
     ${graticule(px, py, zone, [8, 9, 10, 11], [31, 32, 33, 34, 35, 36, 37])}
-    ${base.reperes}<g clip-path="url(#clipMontana)">${pts}</g></svg>`;
+    ${base.reperes}<g clip-path="url(#clipMontana)">${pts}</g>
+    ${calqueSurvol("survolMontana")}</svg>`;
 }
 
 function legende(classes) {
@@ -186,6 +194,7 @@ function maj() {
   const classes = classerContinu(PLACEES.map(valeurAffichee));
   el("mCarte").innerHTML = carte(classes);
   el("mEchelle").innerHTML = legende(classes);
+  attacherSurvol(el("mCarte"), "survolMontana", zoneCarte);
   for (const g of el("mCarte").querySelectorAll(".station")) {
     const prendre = () => {
       choisie = JEU.stations.find((s) => s.nom === g.dataset.nom);

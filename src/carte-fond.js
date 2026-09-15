@@ -157,3 +157,56 @@ export function graticule(px, py, zone, pasLon, pasLat) {
         text-anchor="end">${lat}° N</text>`);
   return lignes.join("");
 }
+
+// ── Survol : le nom de la station, tout de suite ──────────────────────────
+// Le <title> natif d'SVG met près d'une seconde à paraître, ne se style pas et
+// ne suit pas le clavier. On dessine donc l'étiquette nous-mêmes, dans un
+// calque placé EN DERNIER : en SVG l'ordre du document fait l'ordre
+// d'empilement, et une étiquette écrite dans le groupe de la station passerait
+// sous les pastilles tracées après elle.
+
+/** Calque vide, à insérer en dernier dans le SVG. */
+export const calqueSurvol = (id) => `<g id="${id}" class="survol-carte" pointer-events="none"></g>`;
+
+/**
+ * Câble le survol et le focus clavier sur les `.station` d'un SVG.
+ * Chaque station porte son texte dans `data-nom` et `data-detail`.
+ */
+export function attacherSurvol(racine, idCalque, zone) {
+  const calque = racine.querySelector(`#${idCalque}`);
+  if (!calque) return;
+  const { x0, x1, y0, y1 } = zone;
+
+  const cacher = () => { calque.innerHTML = ""; };
+
+  const montrer = (g) => {
+    const c = g.querySelector("circle");
+    if (!c) return;
+    const cx = parseFloat(c.getAttribute("cx")), cy = parseFloat(c.getAttribute("cy"));
+    const nom = g.dataset.nom || "", detail = g.dataset.detail || "";
+    const taille = 10.5, petite = 9;
+    // Largeur estimée : on ne peut pas mesurer un texte avant de l'avoir posé.
+    const w = Math.max(nom.length * 0.60 * taille, detail.length * 0.56 * petite) + 14;
+    const h = detail ? 32 : 20;
+    const aGauche = cx + 12 + w > x1;                 // bascule près du bord droit
+    let bx = aGauche ? cx - 12 - w : cx + 12;
+    let by = cy - h / 2;
+    bx = Math.min(Math.max(bx, x0 + 2), x1 - w - 2);
+    by = Math.min(Math.max(by, y0 + 2), y1 - h - 2);
+
+    calque.innerHTML = `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}"
+        width="${w.toFixed(1)}" height="${h}" rx="5" fill="#0f172a" opacity=".92"/>
+      <text x="${(bx + 7).toFixed(1)}" y="${(by + 13.5).toFixed(1)}" font-size="${taille}"
+        fill="#fff" font-weight="700">${nom}</text>
+      ${detail ? `<text x="${(bx + 7).toFixed(1)}" y="${(by + 26).toFixed(1)}"
+        font-size="${petite}" fill="#bae6fd">${detail}</text>` : ""}`;
+  };
+
+  for (const g of racine.querySelectorAll(".station")) {
+    g.addEventListener("mouseenter", () => montrer(g));
+    g.addEventListener("focus", () => montrer(g));
+    g.addEventListener("mouseleave", cacher);
+    g.addEventListener("blur", cacher);
+  }
+  racine.addEventListener("mouseleave", cacher);
+}

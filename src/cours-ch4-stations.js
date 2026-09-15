@@ -9,7 +9,8 @@
 // Jamais d'arc-en-ciel : la couleur doit se lire comme un ordre.
 import { sogreahPluie, sogreahDebit, sogreahRuisselle, gumbel } from "./solvers-hydro.js";
 import { RAMPE_SEQUENTIELLE, ABSENT, classer, couleurDe } from "./echelle.js";
-import { chargerFrontieres, projection, fondDeCarte, graticule, FOND } from "./carte-fond.js";
+import { chargerFrontieres, projection, fondDeCarte, graticule, FOND,
+         calqueSurvol, attacherSurvol } from "./carte-fond.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
@@ -27,11 +28,14 @@ const classes = (grandeur) =>
     libelle: c.valeurs.length === 1 ? String(c.min) : `${c.min}–${c.max}` }));
 
 
+let zoneCarte = { x0: 0, y0: 0, x1: 0, y1: 0 };
+
 function carte(grandeur, cls) {
   const FENETRE = { lon0: 7.7, lat0: 32.4, lon1: 11.7, lat1: 36.1 };
   const proj = projection(FENETRE, { largeurMax: 420, hauteurMax: 340,
                                      mg: 40, md: 12, mh: 12, mb: 28 });
   const { px, py, zone } = proj;
+  zoneCarte = zone;
   const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
   const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipSogreah");
 
@@ -43,9 +47,12 @@ function carte(grandeur, cls) {
     const actif = s.nom === choisie.nom;
     const aGauche = s.lon > 10.4;
     const v = s[grandeur];
-    return `<g class="station${actif ? " actif" : ""}" data-i="${i}" tabindex="0"
-        role="button" aria-label="${s.nom}, ${grandeur} ${v === null ? "non lu" : v + " mm"}">
-      <title>${s.nom} — ${grandeur} ${v === null ? "non lu" : v + " mm"}</title>
+    const court = JEU.grandeurs.find((g) => g.id === grandeur).court;
+    const detail = v === null ? `${court} non lu sur la planche` : `${court} = ${v} mm`;
+    return `<g class="station${actif ? " actif" : ""}" data-i="${i}" data-nom="${s.nom}"
+        data-detail="${detail}" tabindex="0" role="button"
+        aria-label="${s.nom} — ${detail}">
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="12" fill="transparent" class="cible"/>
       <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${actif ? 8 : 5.5}"
         fill="${couleurDe(v, cls)}" stroke="${actif ? "#0f172a" : FOND.principal}"
         stroke-width="${actif ? 2.4 : 2}"/>
@@ -60,7 +67,8 @@ function carte(grandeur, cls) {
       aria-label="Carte de la Tunisie et des localités où les cartes SOGREAH ont été lues">
     <defs>${base.defs}</defs>${base.fond}
     ${graticule(px, py, zone, [8, 9, 10, 11], [33, 34, 35, 36])}
-    ${base.reperes}<g clip-path="url(#clipSogreah)">${points}</g></svg>`;
+    ${base.reperes}<g clip-path="url(#clipSogreah)">${points}</g>
+    ${calqueSurvol("survolSogreah")}</svg>`;
 }
 
 function legende(grandeur, cls) {
@@ -121,6 +129,7 @@ function maj() {
   const cls = classes(grandeur);
   el("stCarte").innerHTML = carte(grandeur, cls);
   el("stEchelle").innerHTML = legende(grandeur, cls);
+  attacherSurvol(el("stCarte"), "survolSogreah", zoneCarte);
   for (const g of el("stCarte").querySelectorAll(".station")) {
     const choisir = () => { choisie = JEU.stations[+g.dataset.i]; maj(); };
     g.addEventListener("click", choisir);
