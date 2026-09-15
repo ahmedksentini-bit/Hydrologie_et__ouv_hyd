@@ -9,22 +9,34 @@
       "questions": [
         {
           "texte": "Intensité pour une averse de 30 min de période de retour 10 ans ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 36.92, "tolerance": 0.4,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 36.92,
+          "tolerance": 0.4,
           "explication": "30^(−0,633) = 0,11003 ; 10^0,178 = 1,5066 ; i = 211 × 0,11003 × 1,5066 = 36,92 mm/h."
         },
         {
           "texte": "Même durée, période de retour 100 ans ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 55.62, "tolerance": 0.6,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 55.62,
+          "tolerance": 0.6,
           "explication": "Seul le terme de fréquence change : 100^0,178 = 2,2699 ; i = 211 × 0,11003 × 2,2699 = 55,62 mm/h."
         },
         {
           "texte": "Rapport entre les deux intensités précédentes ?",
-          "type": "nombre", "unite": "", "reponse": 1.507, "tolerance": 0.02,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1.507,
+          "tolerance": 0.02,
           "explication": "i(T=100)/i(T=10) = (100/10)^c = 10^0,178 = 1,507. Le rapport ne dépend ni de la durée ni de a : décupler la période de retour ne majore l'intensité que de 51 %, parce que c est petit."
         },
         {
           "texte": "À période de retour fixée, rapport entre l'intensité à 30 min et celle à 60 min ?",
-          "type": "nombre", "unite": "", "reponse": 1.551, "tolerance": 0.02,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1.551,
+          "tolerance": 0.02,
           "explication": "i(30)/i(60) = (60/30)^b = 2^0,633 = 1,551. L'intensité est bien plus sensible à la durée qu'à la période de retour : b vaut ici 3,6 fois c. C'est pourquoi le choix de la formule de temps de concentration pèse plus lourd que celui de T."
         }
       ]
@@ -37,12 +49,18 @@
       "questions": [
         {
           "texte": "Débit obtenu en retenant Kirpich ?",
-          "type": "nombre", "unite": "m³/s", "reponse": 13.83, "tolerance": 0.3,
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 13.83,
+          "tolerance": 0.3,
           "explication": "i = 211 × 32,90^(−0,633) × 30^0,178 = 42,35 mm/h ; Q = 0,278 × 0,50 × 42,35 × 2,35 = 13,83 m³/s."
         },
         {
           "texte": "Débit obtenu en retenant Giandotti ?",
-          "type": "nombre", "unite": "m³/s", "reponse": 6.59, "tolerance": 0.2,
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 6.59,
+          "tolerance": 0.2,
           "explication": "i = 211 × 106,21^(−0,633) × 30^0,178 = 20,17 mm/h ; Q = 6,59 m³/s. Le rapport au précédent est (106,21/32,90)^0,633 = 2,10 : le choix de la formule divise le débit par deux."
         },
         {
@@ -58,7 +76,10 @@
         },
         {
           "texte": "Un opérateur reporte la valeur de Passini, calculée en heures (1,104), dans une case attendant des minutes. Quel rapport obtient-il entre l'intensité fausse et l'intensité correcte ?",
-          "type": "nombre", "unite": "", "reponse": 13.35, "tolerance": 0.3,
+          "type": "nombre",
+          "unite": "",
+          "reponse": 13.35,
+          "tolerance": 0.3,
           "explication": "L'intensité ne dépendant de la durée que par t^(−b), le rapport vaut exactement (66,24/1,104)^0,633 = 60^0,633 = 13,35. Le terme de fréquence, commun aux deux calculs, disparaît du rapport : l'erreur se calcule de tête."
         }
       ]
@@ -71,17 +92,26 @@
       "questions": [
         {
           "texte": "Lame d'eau d'une averse décennale de 30 min ?",
-          "type": "nombre", "unite": "mm", "reponse": 18.5, "tolerance": 0.5,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 18.5,
+          "tolerance": 0.5,
           "explication": "i = 36,92 mm/h pendant 0,5 h : lame = 18,5 mm, soit 25 % de la pluie journalière décennale. Pour une averse d'une demi-heure, cette proportion est banale."
         },
         {
           "texte": "Lame d'eau d'une averse décennale de 2 h ?",
-          "type": "nombre", "unite": "mm", "reponse": 30.7, "tolerance": 0.8,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 30.7,
+          "tolerance": 0.8,
           "explication": "i = 15,35 mm/h pendant 2 h : lame = 30,7 mm, soit 41 % de P10. La lame croît avec la durée alors que l'intensité décroît — les deux lectures sont cohérentes, et c'est la lame qu'il faut comparer à une pluie journalière."
         },
         {
           "texte": "Un calcul donne i = 565 mm/h pour un temps de concentration de 33 min. Quelle lame cela représente-t-il ?",
-          "type": "nombre", "unite": "mm", "reponse": 310, "tolerance": 10,
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 310,
+          "tolerance": 10,
           "explication": "565 × (33/60) = 310 mm en une demi-heure, soit plus de quatre fois la pluie journalière décennale du site. Physiquement impossible : le calcul est faux, et l'erreur est presque toujours l'unité de durée des coefficients."
         },
         {
@@ -105,17 +135,26 @@
       "questions": [
         {
           "texte": "Intensité que donnerait la formule à 3 min ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 158.59, "tolerance": 2,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 158.59,
+          "tolerance": 2,
           "explication": "i = 211 × 3^(−0,633) × 10^0,178 = 158,59 mm/h. La formule accepte n'importe quelle durée : rien dans le calcul ne signale qu'on est sorti du domaine de calage."
         },
         {
           "texte": "Intensité à la borne de 5 min ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 114.77, "tolerance": 1.5,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 114.77,
+          "tolerance": 1.5,
           "explication": "i = 211 × 5^(−0,633) × 10^0,178 = 114,77 mm/h, soit 28 % de moins. C'est cette valeur qu'il faut retenir : on n'extrapole pas une courbe sous sa durée de calage."
         },
         {
           "texte": "Débit correspondant, en retenant la borne ?",
-          "type": "nombre", "unite": "m³/s", "reponse": 16.27, "tolerance": 0.4,
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 16.27,
+          "tolerance": 0.4,
           "explication": "Q = 0,278 × 0,60 × 114,77 × 0,85 = 16,27 m³/s, contre 22,48 m³/s si l'on avait extrapolé à 3 min."
         },
         {
@@ -139,12 +178,18 @@
       "questions": [
         {
           "texte": "Intensité par la forme en puissance (la bonne ici) ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 36.92, "tolerance": 0.4,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 36.92,
+          "tolerance": 0.4,
           "explication": "i = 211 × 30^(−0,633) × 10^0,178 = 36,92 mm/h."
         },
         {
           "texte": "Intensité obtenue en appliquant le même triplet à la forme de Talbot ?",
-          "type": "nombre", "unite": "mm/h", "reponse": 24.41, "tolerance": 0.4,
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 24.41,
+          "tolerance": 0.4,
           "explication": "i = 211 / (30 + 0,178)^0,633 = 211 / 8,6437 = 24,41 mm/h. L'écart tient entièrement au terme de fréquence, absent de la forme de Talbot : le rapport vaut 10^0,178 = 1,51."
         },
         {
@@ -157,6 +202,100 @@
           ],
           "reponse": 1,
           "explication": "24 mm/h et 37 mm/h sont tous deux des intensités crédibles pour une averse d'une demi-heure : ni l'ordre de grandeur, ni la lame d'eau ne les séparent. Les deux formes sont légitimes — c'est leur confusion qui ne l'est pas. Des coefficients ne se transportent jamais sans la forme à laquelle ils appartiennent, ni sans leur unité de durée et leur plage de calage."
+        }
+      ]
+    },
+    {
+      "id": "ch3-e6",
+      "titre": "« Le » a d'une station n'existe pas",
+      "difficulte": 2,
+      "enonce": "Table de calage de la station de référence : b = 0,633, c = 0,178, et un a par période de retour — a(2) = 193, a(5) = 208, a(10) = 211, a(20) = 213, a(50) = 206, a(100) = 199.",
+      "questions": [
+        {
+          "texte": "La suite a(T) monte jusqu'à 213 à vingt ans puis redescend à 199. Que se passerait-il si l'intensité s'écrivait i = a(T)·t^(−b) sans le terme T^c ?",
+          "type": "choix",
+          "options": [
+            "Rien : c'est la forme usuelle",
+            "L'intensité décroîtrait au-delà de vingt ans, ce qui est impossible pour une IDF"
+          ],
+          "reponse": 1,
+          "explication": "Avec b fixe, i serait proportionnelle à a(T) : elle culminerait à vingt ans et baisserait ensuite. Sur les quarante-cinq stations de la table, AUCUNE n'a un a(T) croissant de bout en bout — la forme sans T^c est donc exclue partout, pas seulement ici."
+        },
+        {
+          "texte": "Quelle quantité porte alors la croissance de l'intensité avec la période de retour ?",
+          "type": "choix",
+          "options": [
+            "a(T) seul",
+            "Le produit a(T)·T^c",
+            "L'exposant b"
+          ],
+          "reponse": 1,
+          "explication": "218, 277, 318, 363, 413, 452 : le produit croît sur les quarante-cinq stations. Le a tabulé n'est qu'une correction résiduelle appliquée par-dessus la loi en T^c, et c'est leur produit qui est la vraie grandeur de calage. Le modèle complet s'écrit i = a(T)·t^(−b)·T^c."
+        },
+        {
+          "texte": "À T = 30 ans, quelle valeur de a obtient-on en interpolant linéairement en ln T entre les colonnes 20 et 50 ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 209.9,
+          "tolerance": 1.0,
+          "explication": "u = ln(30/20)/ln(50/20) = 0,4055/0,9163 = 0,4425, d'où a = 213 + 0,4425 × (206 − 213) = 209,9. Le calculateur du chapitre emploie 211 : l'écart est de 0,5 %, négligeable."
+        },
+        {
+          "texte": "De combien surestime-t-on l'intensité centennale en gardant a = 211 au lieu de a(100) = 199 ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 6.0,
+          "tolerance": 0.6,
+          "explication": "(211 − 199)/199 = 6,0 %, et comme a intervient en facteur, l'intensité est surestimée d'autant. Employer un seul a avec T^c reste utilisable — mais l'approximation n'est EXACTE qu'à la période dont on a pris le a. Ici c'est le décennal, et l'erreur croît en s'en éloignant."
+        },
+        {
+          "texte": "Que faut-il donc reporter dans une note de calcul ?",
+          "type": "choix",
+          "options": [
+            "Les trois nombres a, b, c",
+            "Le code de la station et la période de retour — trois nombres recopiés ne disent ni d'où ils viennent ni à quel T ils valent"
+          ],
+          "reponse": 1,
+          "explication": "C'est la raison pour laquelle on rattache une STATION, pas un triplet. « a = 211 » ne dit pas que c'est le a du décennal, ni de quelle table il sort. Une note qui porte le code de station et la période de retour se vérifie ; une note qui porte trois décimales, non."
+        }
+      ]
+    },
+    {
+      "id": "ch3-e7",
+      "titre": "Une donnée bonne sur une colonne, douteuse sur une autre",
+      "difficulte": 2,
+      "enonce": "Les quarante-cinq stations portent toutes b, c et la table a(T). Trente d'entre elles ont des coordonnées WGS84 issues d'une base hydrométrique ; les quinze autres n'ont que des relevés en grades, transcrits depuis les fiches de station.",
+      "questions": [
+        {
+          "texte": "Convertis en degrés, ces relevés en grades s'écartent des positions connues de jusqu'à trois degrés, soit trois cents kilomètres. Que faire de ces quinze stations ?",
+          "type": "choix",
+          "options": [
+            "Les écarter entièrement : la donnée n'est pas fiable",
+            "Les garder, mais ne pas les placer : leurs paramètres sont bons, c'est leur position qui ne l'est pas",
+            "Les placer quand même, l'ordre de grandeur suffit"
+          ],
+          "reponse": 1,
+          "explication": "Une table de données n'est pas fiable ou non fiable en bloc : elle l'est colonne par colonne. Les b, c et a(T) viennent du calage hydrologique et ne dépendent en rien de la transcription des coordonnées. Les écarter ferait perdre un tiers du jeu pour un défaut qui ne les touche pas ; les placer inventerait une position."
+        },
+        {
+          "texte": "Pourquoi ne pas reprendre les coordonnées d'une autre source, par exemple la table des localités du chapitre 4 ?",
+          "type": "choix",
+          "options": [
+            "C'est la bonne solution",
+            "Parce qu'on mélangerait deux sources sur une même carte sans que le lecteur puisse le savoir"
+          ],
+          "reponse": 1,
+          "explication": "La station de Kasserine et la localité de Kasserine ne sont pas le même point : un poste pluviométrique porte un code et une position propres. Emprunter la coordonnée de la localité donnerait une carte d'apparence complète dont une partie des points serait d'une autre nature — et rien ne le signalerait."
+        },
+        {
+          "texte": "Trois degrés d'écart sur une latitude, cela ressemble à quoi ?",
+          "type": "choix",
+          "options": [
+            "Une imprécision de mesure",
+            "Une erreur de transcription : un chiffre lu de travers, pas un relevé imprécis"
+          ],
+          "reponse": 1,
+          "explication": "Une imprécision de mesure sur un poste se compte en centaines de mètres. Trois degrés, c'est la distance de Tunis à Tozeur. L'ordre de grandeur de l'écart dit la nature du défaut : ici une lecture de fiche, pas un appareil. C'est aussi pourquoi un écart énorme est plus facile à détecter — et moins dangereux — qu'un écart de quelques kilomètres."
         }
       ]
     }

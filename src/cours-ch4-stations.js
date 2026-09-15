@@ -8,36 +8,22 @@
 // le plus clair au-dessus du plancher de contraste 2:1 sur le fond de carte.
 // Jamais d'arc-en-ciel : la couleur doit se lire comme un ordre.
 import { sogreahPluie, sogreahDebit, sogreahRuisselle, gumbel } from "./solvers-hydro.js";
+import { RAMPE_SEQUENTIELLE, ABSENT, classer, couleurDe } from "./echelle.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
 const JEU = await fetch("data/stations-sogreah.json").then((r) => r.json());
-const RAMPE = ["#4dbdf7", "#0d96d4", "#0575b4", "#075985", "#082f49"];
+const RAMPE = RAMPE_SEQUENTIELLE;
 
 let choisie = JEU.stations.find((s) => s.nom === "Kasserine");
 
 /** Classes de couleur : une par valeur distincte, le couple le plus serré fusionnant au-delà de cinq. */
-function classes(grandeur) {
-  let valeurs = [...new Set(JEU.stations.map((s) => s[grandeur]).filter((v) => v !== null))]
-    .sort((a, b) => a - b);
-  const groupes = valeurs.map((v) => [v]);
-  while (groupes.length > RAMPE.length) {
-    let i = 0, ecart = Infinity;
-    for (let k = 1; k < groupes.length; k++) {
-      const d = groupes[k][0] - groupes[k - 1][groupes[k - 1].length - 1];
-      if (d < ecart) { ecart = d; i = k; }
-    }
-    groupes[i - 1] = groupes[i - 1].concat(groupes[i]);
-    groupes.splice(i, 1);
-  }
-  return groupes.map((g, i) => ({ valeurs: g, couleur: RAMPE[i],
-    libelle: g.length === 1 ? String(g[0]) : `${g[0]}–${g[g.length - 1]}` }));
-}
+const classes = (grandeur) =>
+  classer(JEU.stations.map((s) => s[grandeur])).map((c) => ({ ...c,
+    libelle: c.valeurs.length === 1 ? String(c.min) : `${c.min}–${c.max}` }));
 
-const couleurDe = (v, cls) =>
-  v === null ? "#cbd5e1" : (cls.find((c) => c.valeurs.includes(v)) || cls[0]).couleur;
 
 function carte(grandeur, cls) {
   const W = 430, H = 380, MG = 40, MD = 14, MH = 14, MB = 30;
@@ -105,7 +91,7 @@ function legende(grandeur, cls) {
     <div class="echelle-pas">${cls.map((c) =>
       `<span><i style="background:${c.couleur}"></i>${c.libelle}</span>`).join("")}
       ${JEU.stations.some((s) => s[grandeur] === null)
-        ? '<span><i style="background:#cbd5e1"></i>non lu</span>' : ""}</div>
+        ? `<span><i style="background:${ABSENT}"></i>non lu</span>` : ""}</div>
   </div>`;
 }
 

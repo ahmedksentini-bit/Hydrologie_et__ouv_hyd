@@ -595,3 +595,19 @@ test("ch4 — le seuil de ruissellement de Tozeur", () => {
   assert.deepEqual([t.P0, t.P10, t.P100], [P0, P10, P100], "lecture de Tozeur");
   assert.equal(t.seuilAuDessusDeP10, true);
 });
+
+test("ch3 — la table a(T) de la station de référence", () => {
+  const b = banque("ch3");
+  const j = JSON.parse(readFileSync(new URL("../data/stations-montana.json", import.meta.url)));
+  const k = j.stations.find((s) => s.nom === "Kasserine");
+  // l'énoncé cite la table : elle doit être celle du fichier
+  for (const [T, a] of Object.entries({ 2: 193, 5: 208, 10: 211, 20: 213, 50: 206, 100: 199 }))
+    assert.equal(k.aT[T], a, `a(${T})`);
+  // a(30) interpolé en ln T
+  const u = (Math.log(30) - Math.log(20)) / (Math.log(50) - Math.log(20));
+  vaut(q(b, "ch3-e6", 2), k.aT["20"] + u * (k.aT["50"] - k.aT["20"]), "a(30) interpolé");
+  vaut(q(b, "ch3-e6", 3), (k.aT["10"] - k.aT["100"]) / k.aT["100"] * 100, "surestimation à 100 ans");
+  // et le produit annoncé dans la question 1
+  const produit = j.periodes.map((T) => Math.round(k.aT[T] * T ** k.c));
+  assert.deepEqual(produit, [218, 277, 318, 363, 413, 452], "a(T)·T^c cité dans l'explication");
+});

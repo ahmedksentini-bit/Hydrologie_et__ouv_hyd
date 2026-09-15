@@ -518,6 +518,80 @@
     <p class="final-result" id="iOut"></p>
   </div>
 
+
+  <h3>« Le » a d'une station n'existe pas</h3>
+  <p>Jusqu'ici, a, b et c ont été traités comme trois constantes de station. C'est une
+     simplification, et elle mérite d'être levée : les tables de calage donnent un
+     <strong>a par période de retour</strong>. Pour la station de référence de ce cours :</p>
+  <table class="resultats abaque"><thead><tr><th>T (ans)</th><th>2</th><th>5</th>
+    <th>10</th><th>20</th><th>50</th><th>100</th></tr></thead>
+    <tbody>
+      <tr><td>a(T)</td><td class="q">193</td><td class="q">208</td><td class="q">211</td>
+        <td class="q retenue">213</td><td class="q">206</td><td class="q">199</td></tr>
+      <tr><td>a(T)·T<sup>c</sup></td>
+        <td class="motif" style="text-align:right">218</td>
+        <td class="motif" style="text-align:right">277</td>
+        <td class="motif" style="text-align:right">318</td>
+        <td class="motif" style="text-align:right">363</td>
+        <td class="motif" style="text-align:right">413</td>
+        <td class="motif" style="text-align:right">452</td></tr>
+    </tbody></table>
+  <div class="sanity-check"><h3>a(T) n'est croissant sur aucune station</h3>
+    <p>La première ligne monte jusque vers dix ou vingt ans, puis <strong>redescend</strong>.
+       Sur les quarante-cinq stations de la table, <strong>aucune</strong> n'a un a(T)
+       croissant de bout en bout. Pris seul, ce coefficient ferait donc décroître
+       l'intensité au-delà du vicennal — ce qui est impossible.</p>
+    <p>La seconde ligne, elle, croît sur <strong>les quarante-cinq</strong>. C'est le produit
+       a(T)·T<sup>c</sup> qui porte la période de retour, et le a tabulé n'est qu'une
+       correction résiduelle par-dessus la loi en T<sup>c</sup>. Le modèle complet s'écrit
+       donc</p>
+    <p class="formula">i = a(T) · t<sup>−b</sup> · T<sup>c</sup></p>
+    <p>Employer un <em>seul</em> a avec T<sup>c</sup>, comme le fait le calculateur ci-dessus,
+       reste une approximation parfaitement utilisable — mais elle n'est <strong>exacte qu'à
+       la période de retour dont on a pris le a</strong>. Le 211 du calculateur est le a du
+       décennal ; à trente ans, l'interpolation entre les colonnes 20 et 50 donne 210, soit
+       un demi pour cent d'écart. À cent ans, elle donnerait 199, et l'écart passe à 6 %.</p>
+  </div>
+  <div class="hint"><strong>C'est aussi la raison pour laquelle on rattache une station, pas
+     un triplet.</strong> Enregistrer « a = 211 » dans une note de calcul ne dit pas à quelle
+     période ce a a été pris, ni de quelle table il vient. Le code de la station et la période
+     de retour le disent ; trois nombres recopiés, non.</div>
+
+  <div class="calc" id="calcMontana">
+    <h3>Les stations et leurs paramètres</h3>
+    <p class="method-note" style="margin:0 0 12px">Quarante-cinq stations. Cliquer un point —
+       ou choisir dans la liste — donne b, c, la table complète de a(T) et la famille de
+       courbes IDF qui en résulte.</p>
+    <div class="data-grid">
+      <div class="field"><label for="mStation">Station</label>
+        <div class="input-wrap"><select id="mStation"></select></div></div>
+      <div class="field"><label for="mGrandeur">Grandeur en couleur</label>
+        <div class="input-wrap"><select id="mGrandeur">
+          <option value="i" selected>Intensité à la durée et à la période choisies</option>
+          <option value="b">Exposant de durée b</option>
+          <option value="c">Exposant de période de retour c</option></select></div></div>
+      <div class="field"><label for="mT_duree">Durée</label>
+        <div class="input-wrap"><input id="mT_duree" type="text" inputmode="decimal" value="30"><span class="unit">min</span></div></div>
+      <div class="field"><label for="mT_periode">Période de retour</label>
+        <div class="input-wrap"><select id="mT_periode">
+          <option>2</option><option>5</option><option selected>10</option>
+          <option>20</option><option>30</option><option>50</option><option>100</option>
+        </select><span class="unit">ans</span></div></div>
+    </div>
+    <div class="duo">
+      <div><div id="mCarte"></div><div id="mEchelle"></div></div>
+      <div id="mFiche"></div>
+    </div>
+  </div>
+
+  <div class="hint"><strong>Trente stations sur quarante-cinq sont placées.</strong> Les
+     quinze autres n'ont pas de coordonnées recoupées : leurs fiches portent des relevés en
+     grades dont la conversion ne retombe pas sur les positions connues — l'écart atteint
+     trois degrés, soit trois cents kilomètres. Leurs <em>paramètres</em> restent parfaitement
+     utilisables et la liste les propose toutes ; c'est leur <em>position</em> qui ne l'est
+     pas. Un jeu de données peut être bon sur une colonne et douteux sur une autre, et il
+     vaut mieux le dire colonne par colonne que d'écarter le tout ou de tout accepter.</div>
+
   <h3>Les quatre temps de concentration</h3>
   <table class="resultats"><thead><tr><th>Formule</th><th>Expression</th><th>Unité du résultat</th></tr></thead>
     <tbody>
@@ -1792,6 +1866,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch1.js"></script>
 <script type="module" src="src/cours-ch2.js"></script>
 <script type="module" src="src/cours-ch3.js"></script>
+<script type="module" src="src/cours-ch3-montana.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch4-stations.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
