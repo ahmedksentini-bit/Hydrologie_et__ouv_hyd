@@ -11,7 +11,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch4", "ch5"]) {
+for (const ch of ["ch1", "ch2", "ch4", "ch5"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -72,6 +72,28 @@ test("ch1 — les trois dénivelées de BV1", () => {
   vaut(q(b, "ch1-e5", 0), 739 - 693, "Δh de Ghorbel");
   vaut(q(b, "ch1-e5", 1), 744 - 690, "Hmoy de Giandotti");
   vaut(q(b, "ch1-e5", 2), 789 - 693, "D de Kirpich");
+});
+
+const SERIE_CH2 = [28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26];
+
+test("ch2 — ajustement de Gumbel recalculé", () => {
+  const b = banque("ch2");
+  const a = h.ajustementGumbel(SERIE_CH2);
+  vaut(q(b, "ch2-e1", 0), a.moyenne, "moyenne");
+  vaut(q(b, "ch2-e1", 1), a.ecartType, "écart-type");
+  vaut(q(b, "ch2-e1", 2), a.gradex, "gradex");
+  vaut(q(b, "ch2-e1", 3), a.mode, "mode");
+  vaut(q(b, "ch2-e2", 0), h.quantileGumbel(a, 10), "P10");
+  vaut(q(b, "ch2-e2", 1), h.quantileGumbel(a, 100), "P100");
+  vaut(q(b, "ch2-e2", 2), h.periodeRetourDe(a, 110), "période du maximum observé");
+});
+
+test("ch2 — positions de tracage et abattement recalculés", () => {
+  const b = banque("ch2");
+  vaut(q(b, "ch2-e3", 0), 1 / (1 - h.positionTracage(1, 20)), "Weibull");
+  vaut(q(b, "ch2-e3", 1), 1 / (1 - h.positionTracage(1, 20, "hazen")), "Hazen");
+  vaut(q(b, "ch2-e5", 0), h.coefficientAbattement(320, 42), "abattement 42 km²");
+  vaut(q(b, "ch2-e5", 1), h.coefficientAbattement(300, 2.35), "abattement 2,35 km²");
 });
 
 test("ch4 — morphométrie de BV1 recalculée", () => {

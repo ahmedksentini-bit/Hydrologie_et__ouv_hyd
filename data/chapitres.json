@@ -34,7 +34,8 @@
         "pente équivalente Ieq",
         "densité de drainage"
       ],
-      "exercices": 7
+      "exercices": 7,
+      "cours": true
     },
     {
       "id": "ch2",
@@ -50,7 +51,9 @@
         "période de retour",
         "cartes P0 / P10 / P100",
         "abattement spatial"
-      ]
+      ],
+      "exercices": 5,
+      "cours": true
     },
     {
       "id": "ch3",
@@ -65,7 +68,8 @@
         "tc : quatre formules",
         "choix du tc retenu",
         "contrôle de la lame d'eau"
-      ]
+      ],
+      "cours": true
     },
     {
       "id": "ch4",
@@ -85,7 +89,8 @@
         "domaines de validité",
         "dispersion et débit retenu"
       ],
-      "exercices": 8
+      "exercices": 8,
+      "cours": true
     },
     {
       "id": "ch5",
@@ -101,7 +106,8 @@
         "T = 30 / 50 / 100 ans",
         "risque et durée de vie"
       ],
-      "exercices": 5
+      "exercices": 5,
+      "cours": true
     },
     {
       "id": "ch6",
@@ -117,7 +123,8 @@
         "niveau aval",
         "pertes d'entrée Ke",
         "ressaut en sortie"
-      ]
+      ],
+      "cours": false
     },
     {
       "id": "ch7",
@@ -133,7 +140,8 @@
         "calage altimétrique",
         "multi-cellules",
         "vérification au débit majorant"
-      ]
+      ],
+      "cours": false
     },
     {
       "id": "ch8",
@@ -149,7 +157,8 @@
         "fossés",
         "descentes d'eau",
         "assainissement de la plateforme"
-      ]
+      ],
+      "cours": false
     }
   ]
 }

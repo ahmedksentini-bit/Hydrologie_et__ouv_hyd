@@ -57,7 +57,9 @@ function accueil() {
 
 function carteChapitre(ch) {
   const n = exercicesDisponibles(ch);
-  const etat = n > 0 ? `${n} exercice${n > 1 ? "s" : ""} →` : "cours en préparation";
+  const etat = n > 0 ? `${n} exercice${n > 1 ? "s" : ""} →`
+             : ch.cours ? "cours disponible →"
+             : "en préparation";
   return `<button class="chapter" data-chapitre="${esc(ch.id)}">
     <span class="num">${ch.number}</span>
     <h3>${esc(ch.title)}</h3>
@@ -87,6 +89,10 @@ async function ouvrirChapitre(id) {
       <h2>Exercices</h2>
       ${rendreListe(banque, null)}
     </div>`;
+  if (!ch.cours) {
+    const lien = app.querySelector('a.primary[href^="cours.html"]');
+    if (lien) { lien.classList.replace("primary", "ghost"); lien.textContent = "Cours en préparation"; }
+  }
   document.getElementById("retour").addEventListener("click", () => {
     location.hash = "";
     accueil();

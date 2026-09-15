@@ -174,6 +174,58 @@ export const rationnelle = (C, iMmH, S) => 0.278 * C * iMmH * S;
 /** Variable réduite de Gumbel. */
 export const gumbel = (T) => -Math.log(-Math.log(1 - 1 / T));
 
+// ── Ajustement statistique des pluies (loi de Gumbel) ──────────────────────
+
+/**
+ * Ajustement d'une série de maxima annuels par la loi de Gumbel, méthode des
+ * moments : gradex a = σ√6/π, mode u = μ − 0,5772·a.
+ * `serie` est la liste des maxima annuels, dans n'importe quel ordre.
+ * L'écart-type est celui de l'ÉCHANTILLON (dénominateur n − 1).
+ */
+export function ajustementGumbel(serie) {
+  const x = (serie || []).filter((v) => Number.isFinite(v));
+  const n = x.length;
+  if (n < 2) return null;
+  const moyenne = x.reduce((a, v) => a + v, 0) / n;
+  const ecartType = Math.sqrt(x.reduce((a, v) => a + (v - moyenne) ** 2, 0) / (n - 1));
+  const gradex = (ecartType * Math.sqrt(6)) / Math.PI;
+  return { n, moyenne, ecartType, gradex, mode: moyenne - 0.5772 * gradex };
+}
+
+/** Quantile de période de retour T : x_T = u + a · y_T. */
+export const quantileGumbel = (ajust, T) =>
+  ajust && T > 1 ? ajust.mode + ajust.gradex * gumbel(T) : 0;
+
+/** Période de retour d'une valeur observée, d'après l'ajustement. */
+export function periodeRetourDe(ajust, x) {
+  if (!ajust || !(ajust.gradex > 0)) return 0;
+  const y = (x - ajust.mode) / ajust.gradex;
+  const F = Math.exp(-Math.exp(-y));
+  return F >= 1 ? Infinity : 1 / (1 - F);
+}
+
+/**
+ * Position de tracage d'une valeur de rang `rang` (1 = la plus forte) dans une
+ * série de n valeurs : fréquence au non-dépassement.
+ *   Weibull (défaut) : F = 1 − rang/(n+1)   ·   Hazen : F = 1 − (rang − 0,5)/n
+ * Les points empiriques ainsi placés servent à juger l'ajustement à l'œil.
+ */
+export const positionTracage = (rang, n, methode = "weibull") =>
+  methode === "hazen" ? 1 - (rang - 0.5) / n : 1 - rang / (n + 1);
+
+/** Variable réduite correspondant à une fréquence au non-dépassement. */
+export const variableReduite = (F) => -Math.log(-Math.log(F));
+
+/**
+ * Coefficient d'abattement spatial du bulletin FAO n° 54 (équation 1.9) :
+ *   A = 1 − [(161 − 0,042·P_an)/1000] · log₁₀(S)
+ * Il ramène une pluie PONCTUELLE à sa moyenne sur le bassin. Le jeu tunisien ne
+ * l'applique pas : l'effet de surface y est porté par S^0,75 chez SOGREAH et par
+ * S dans la méthode rationnelle. Ne pas cumuler les deux.
+ */
+export const coefficientAbattement = (Pan, S) =>
+  S > 0 ? 1 - ((161 - 0.042 * Pan) / 1000) * Math.log10(S) : 1;
+
 /** SOGREAH — pluie de projet interpolée en variable de Gumbel entre P10 et P100. */
 export function sogreahPluie(T, P10, P100) {
   if (T <= 10) return P10;

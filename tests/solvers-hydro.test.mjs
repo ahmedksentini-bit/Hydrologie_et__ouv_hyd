@@ -71,6 +71,38 @@ test("méthode rationnelle — BV1", () => {
   proche(h.rationnelle(0.5, 42.35, 2.35), 13.83, 0.01, "Q");
 });
 
+const SERIE = [28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26];
+
+test("ajustement de Gumbel par les moments", () => {
+  const a = h.ajustementGumbel(SERIE);
+  assert.equal(a.n, 20);
+  proche(a.moyenne, 46.30, 0.01, "moyenne");
+  proche(a.ecartType, 23.7666, 0.001, "écart-type d'échantillon");
+  proche(a.gradex, 18.5308, 0.001, "gradex");
+  proche(a.mode, 35.6040, 0.001, "mode");
+  proche(h.quantileGumbel(a, 10), 77.31, 0.02, "P10");
+  proche(h.quantileGumbel(a, 100), 120.85, 0.02, "P100");
+  // aller-retour : la période de retour du quantile redonne la période
+  proche(h.periodeRetourDe(a, h.quantileGumbel(a, 50)), 50, 1e-6, "aller-retour");
+  proche(h.periodeRetourDe(a, 110), 55.9, 0.1, "période du maximum observé");
+  assert.equal(h.ajustementGumbel([42]), null, "série trop courte");
+});
+
+test("positions de tracage et variable réduite", () => {
+  proche(h.positionTracage(1, 20), 20 / 21, 1e-9, "Weibull, rang 1");
+  proche(1 / (1 - h.positionTracage(1, 20)), 21, 1e-9, "période empirique du maximum");
+  proche(h.positionTracage(1, 20, "hazen"), 1 - 0.5 / 20, 1e-9, "Hazen, rang 1");
+  // la variable réduite est la réciproque de la fréquence
+  proche(h.variableReduite(1 - 1 / 10), h.gumbel(10), 1e-9, "réciprocité");
+});
+
+test("abattement spatial du bulletin FAO n° 54", () => {
+  proche(h.coefficientAbattement(320, 42), 0.7605, 1e-3, "42 km²");
+  proche(h.coefficientAbattement(300, 2.35), 0.9449, 1e-3, "2,35 km²");
+  proche(h.coefficientAbattement(180, 265), 0.6282, 1e-3, "265 km²");
+  proche(h.coefficientAbattement(320, 1), 1, 1e-9, "1 km² : pas d'abattement");
+});
+
 test("SOGREAH — interpolation de Gumbel et débit", () => {
   proche(h.gumbel(30), 3.3843, 5e-4, "Y30");
   proche(h.gumbel(50), 3.9019, 5e-4, "Y50");

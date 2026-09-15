@@ -138,6 +138,94 @@
   <div class="actions"><a class="secondary" href="index.html#ch1">Exercices du chapitre</a></div>
 </section>
 
+<section id="ch2" class="card">
+  <h2>2 · Les pluies</h2>
+
+  <h3>Mesurer : deux appareils, deux usages</h3>
+  <table class="resultats"><thead><tr><th>Appareil</th><th>Ce qu'il donne</th><th>Ce qu'on en tire</th></tr></thead>
+    <tbody>
+      <tr><td>Pluviomètre</td><td class="motif">le cumul entre deux relevés, en général journalier</td><td class="motif">pluies journalières, séries longues, cartes P<sub>10</sub> et P<sub>100</sub></td></tr>
+      <tr><td>Pluviographe</td><td class="motif">l'enregistrement continu de la hauteur au cours du temps</td><td class="motif">intensités sur de courtes durées, courbes IDF (chapitre 3)</td></tr>
+    </tbody></table>
+  <p class="method-note">Les pluviomètres sont nombreux et leurs séries anciennes ; les
+     pluviographes sont rares et leurs séries courtes. D'où la division du travail : la
+     statistique des pluies journalières s'appuie sur les premiers, les courbes
+     intensité–durée–fréquence sur les seconds.</p>
+
+  <h3>La série des maxima annuels</h3>
+  <p>Pour caractériser les pluies rares, on ne travaille pas sur toutes les pluies
+     observées mais sur <strong>le plus fort événement de chaque année</strong> : une
+     valeur par an, autant de valeurs que d'années d'observation. Cette construction
+     garantit l'indépendance des valeurs — deux maxima d'années différentes ne
+     proviennent pas de la même averse.</p>
+  <div class="hint">Une série de maxima annuels ne se complète pas avec les « secondes
+     plus fortes valeurs » d'années pluvieuses : on mélangerait alors des événements
+     dépendants, et l'ajustement en serait faussé. Une année manquante reste manquante,
+     et la longueur effective de la série se dit dans la note.</div>
+
+  <h3>Ajuster : la loi de Gumbel</h3>
+  <p>Les maxima annuels suivent bien, en climat méditerranéen et semi-aride, la loi de
+     Gumbel. Sa fonction de répartition s'écrit</p>
+  <p class="formula">F(x) = exp[ −exp( −(x − u)/a ) ]&nbsp;&nbsp;·&nbsp;&nbsp;
+     y = (x − u)/a&nbsp;&nbsp;·&nbsp;&nbsp;x = u + a · y</p>
+  <p>où <strong>u</strong> est le mode et <strong>a</strong> le gradex, qui mesure
+     l'étalement de la distribution. La variable réduite <strong>y</strong> est la
+     grandeur dans laquelle la loi devient une droite — c'est tout l'intérêt du papier
+     de Gumbel.</p>
+  <p>Par la méthode des moments, à partir de la moyenne μ et de l'écart-type σ de la
+     série :</p>
+  <p class="formula">a = σ·√6/π = 0,7797·σ&nbsp;&nbsp;·&nbsp;&nbsp;u = μ − 0,5772·a</p>
+  <p>La période de retour se relie à la fréquence au non-dépassement par
+     F = 1 − 1/T, d'où la variable réduite déjà rencontrée :</p>
+  <p class="formula">y<sub>T</sub> = −ln[ −ln(1 − 1/T) ]</p>
+
+  <div class="calc" id="calcGumbel">
+    <h3>Ajuster une série</h3>
+    <div class="field"><label for="gSerie">Maxima journaliers annuels, séparés par des espaces ou des virgules (mm)</label>
+      <div class="input-wrap"><input id="gSerie" type="text"
+        value="28 62 35 19 47 88 31 24 55 41 73 22 36 110 44 29 51 38 67 26"></div></div>
+    <div id="gFig"></div>
+    <div id="gTable"></div>
+    <p class="final-result" id="gOut"></p>
+  </div>
+
+  <h3>Juger l'ajustement</h3>
+  <p>On place les valeurs observées sur le papier de Gumbel pour voir si elles
+     s'alignent. La valeur de rang <em>i</em> (1 pour la plus forte) parmi <em>n</em> se
+     voit attribuer une fréquence empirique, dite position de tracage :</p>
+  <p class="formula">F = 1 − i/(n+1)&nbsp;&nbsp;(Weibull)&nbsp;&nbsp;·&nbsp;&nbsp;
+     F = 1 − (i − 0,5)/n&nbsp;&nbsp;(Hazen)</p>
+  <p>Le maximum d'une série de 20 ans se place ainsi à T = 21 ans selon Weibull.
+     <strong>Il ne se place jamais à T = 20 ans</strong> : la plus forte valeur observée
+     n'a pas une période de retour égale à la durée d'observation.</p>
+  <div class="hint">Une série de n années ne renseigne honnêtement que jusqu'à des
+     périodes de retour de l'ordre de n. Lire un quantile centennal sur vingt ans
+     d'observation est une <strong>extrapolation</strong> : elle se fait, mais elle
+     s'écrit — et c'est le gradex, pas la moyenne, qui en commande le résultat.</div>
+
+  <h3>Des points aux cartes</h3>
+  <p>Chaque poste ajusté fournit ses quantiles ; l'interpolation entre postes donne les
+     cartes de pluie journalière régionales, dont P<sub>10</sub> et P<sub>100</sub>
+     utilisées par la méthode SOGREAH (chapitre 4), ainsi que la carte du seuil de
+     ruissellement P<sub>0</sub>. Une lecture de carte est donc une valeur ajustée, puis
+     interpolée : deux sources d'incertitude qui se cumulent, et une raison de plus de
+     reporter les coordonnées du point lu.</p>
+
+  <h3>Pluie ponctuelle et pluie de bassin : l'abattement</h3>
+  <p>La pluie lue en un point n'est pas la pluie moyenne tombée sur le bassin : une
+     averse intense couvre rarement plusieurs dizaines de kilomètres carrés avec la même
+     intensité. Le rapport entre les deux est le <strong>coefficient d'abattement</strong>,
+     d'autant plus faible que le bassin est grand. Le bulletin FAO n° 54 en donne une
+     forme explicite :</p>
+  <p class="formula">A = 1 − [ (161 − 0,042·P<sub>an</sub>) / 1000 ] · log<sub>10</sub>(S)</p>
+  <div class="hint"><strong>Le jeu tunisien n'applique pas de coefficient d'abattement
+     explicite</strong> : l'effet de surface y est déjà porté par S<sup>0,75</sup> chez
+     SOGREAH et par S dans la méthode rationnelle. Appliquer en plus un abattement
+     reviendrait à compter deux fois la même correction. La notion reste à connaître —
+     elle explique pourquoi le débit spécifique décroît quand la surface augmente.</div>
+  <div class="actions"><a class="secondary" href="index.html#ch2">Exercices du chapitre</a></div>
+</section>
+
 <section id="ch3" class="card">
   <h2>3 · Averse de projet et temps de concentration</h2>
 
@@ -363,7 +451,7 @@
 
 <section class="card">
   <h2>Chapitres en préparation</h2>
-  <p class="en-preparation">Les chapitres 2, 6, 7 et 8 sont en cours de rédaction.
+  <p class="en-preparation">Les chapitres 6, 7 et 8 sont en cours de rédaction.
      Leur plan est visible depuis l'accueil.</p>
 </section>
 
@@ -386,6 +474,7 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
 }).join("");
 </script>
 <script type="module" src="src/cours-ch1.js"></script>
+<script type="module" src="src/cours-ch2.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 </body></html>

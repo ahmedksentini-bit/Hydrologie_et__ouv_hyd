@@ -1,0 +1,173 @@
+{
+  "chapitre": "ch2",
+  "exercices": [
+    {
+      "id": "ch2-e1",
+      "titre": "Ajuster une série de maxima annuels",
+      "difficulte": 2,
+      "enonce": "Un poste pluviométrique fournit 20 années de maxima journaliers (mm) : 28, 62, 35, 19, 47, 88, 31, 24, 55, 41, 73, 22, 36, 110, 44, 29, 51, 38, 67, 26. Ajustement par la loi de Gumbel, méthode des moments : a = σ·√6/π et u = μ − 0,5772·a. L'écart-type est celui de l'échantillon (dénominateur n − 1).",
+      "questions": [
+        {
+          "texte": "Moyenne de la série ?",
+          "type": "nombre", "unite": "mm", "reponse": 46.3, "tolerance": 0.2,
+          "explication": "Somme = 926 mm sur 20 années : μ = 46,30 mm."
+        },
+        {
+          "texte": "Écart-type d'échantillon ?",
+          "type": "nombre", "unite": "mm", "reponse": 23.77, "tolerance": 0.3,
+          "explication": "σ = 23,77 mm. Utiliser le dénominateur n au lieu de n − 1 donnerait 23,17 mm, soit un gradex sous-estimé de 2,5 % — et autant sur tous les quantiles."
+        },
+        {
+          "texte": "Gradex a ?",
+          "type": "nombre", "unite": "mm", "reponse": 18.53, "tolerance": 0.2,
+          "explication": "a = σ·√6/π = 0,7797 × 23,77 = 18,53 mm. Le gradex mesure l'étalement de la distribution : c'est lui, et non la moyenne, qui commande les quantiles rares."
+        },
+        {
+          "texte": "Mode u ?",
+          "type": "nombre", "unite": "mm", "reponse": 35.6, "tolerance": 0.3,
+          "explication": "u = μ − 0,5772·a = 46,30 − 0,5772 × 18,53 = 35,60 mm. La constante 0,5772 est celle d'Euler–Mascheroni : c'est l'écart entre la moyenne et le mode d'une loi de Gumbel réduite."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e2",
+      "titre": "Des paramètres aux quantiles",
+      "difficulte": 2,
+      "enonce": "Même poste : gradex a = 18,53 mm, mode u = 35,60 mm. Rappels : x_T = u + a·y_T avec y_T = −ln[−ln(1 − 1/T)].",
+      "questions": [
+        {
+          "texte": "Pluie journalière décennale P10 ?",
+          "type": "nombre", "unite": "mm", "reponse": 77.31, "tolerance": 0.6,
+          "explication": "y10 = 2,2504 ; P10 = 35,60 + 18,53 × 2,2504 = 77,31 mm."
+        },
+        {
+          "texte": "Pluie journalière centennale P100 ?",
+          "type": "nombre", "unite": "mm", "reponse": 120.85, "tolerance": 0.8,
+          "explication": "y100 = 4,6001 ; P100 = 35,60 + 18,53 × 4,6001 = 120,85 mm. Noter que P100/P10 = 1,56 : c'est le gradex qui fixe ce rapport, pas la moyenne."
+        },
+        {
+          "texte": "Quelle période de retour l'ajustement attribue-t-il au maximum observé de 110 mm ?",
+          "type": "nombre", "unite": "ans", "reponse": 55.9, "tolerance": 3,
+          "explication": "y = (110 − 35,60)/18,53 = 4,0147 ; F = exp(−exp(−4,0147)) = 0,98212 ; T = 1/(1 − F) = 55,9 ans. Un événement rare, observé en 20 ans : c'est possible, et c'est même ce qui rend la série intéressante."
+        },
+        {
+          "texte": "Les cartes régionales donnent P10 = 75 mm et P100 = 120 mm pour ce secteur. Que conclure ?",
+          "type": "choix",
+          "options": [
+            "Les cartes sont fausses : le poste donne la vérité locale",
+            "L'ajustement et les cartes se confirment mutuellement à 3 % près, ce qui valide les deux",
+            "Il faut faire la moyenne des deux jeux de valeurs"
+          ],
+          "reponse": 1,
+          "explication": "77,3 contre 75 et 120,9 contre 120 : l'écart est de l'ordre de 3 %, très inférieur à l'incertitude de chacun. Les cartes viennent d'ajustements du même type, interpolés entre postes — leur accord avec un ajustement local est la meilleure vérification disponible."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e3",
+      "titre": "Où se place la plus forte valeur observée ?",
+      "difficulte": 2,
+      "enonce": "Toujours la série de 20 ans, dont le maximum est 110 mm. Positions de tracage : Weibull F = 1 − i/(n+1), Hazen F = 1 − (i − 0,5)/n, avec i le rang par valeurs décroissantes.",
+      "questions": [
+        {
+          "texte": "Période de retour empirique du maximum, selon Weibull ?",
+          "type": "nombre", "unite": "ans", "reponse": 21, "tolerance": 0.2,
+          "explication": "F = 1 − 1/21 = 0,9524 ; T = 1/(1 − F) = 21 ans. La formule de Weibull place la plus forte valeur à n + 1, jamais à n."
+        },
+        {
+          "texte": "Et selon Hazen ?",
+          "type": "nombre", "unite": "ans", "reponse": 40, "tolerance": 0.5,
+          "explication": "F = 1 − 0,5/20 = 0,975 ; T = 40 ans. Les deux conventions diffèrent d'un facteur 2 sur le point extrême : la position de tracage retenue doit donc être écrite, sans quoi le graphique n'est pas reproductible."
+        },
+        {
+          "texte": "Pourquoi le maximum d'une série de 20 ans ne se place-t-il pas à T = 20 ans ?",
+          "type": "choix",
+          "options": [
+            "Par convention arbitraire, sans justification",
+            "Parce qu'une valeur observée n'est pas exactement le quantile de sa position : il reste une probabilité non nulle qu'elle soit dépassée dans la période observée",
+            "Parce que la première année d'observation ne compte pas"
+          ],
+          "reponse": 1,
+          "explication": "Placer le maximum à T = n reviendrait à lui attribuer une fréquence de non-dépassement de 1 − 1/n et à supposer qu'aucune valeur plus forte n'existe. Les positions de tracage corrigent ce biais — c'est pourquoi elles mettent n + 1, ou n/0,5, au dénominateur."
+        },
+        {
+          "texte": "Avec 20 ans d'observation, que penser d'un quantile centennal lu sur l'ajustement ?",
+          "type": "choix",
+          "options": [
+            "Il est aussi fiable que le quantile décennal",
+            "C'est une extrapolation : elle se fait, mais elle s'écrit, et c'est le gradex qui en commande le résultat",
+            "Il est interdit de l'utiliser"
+          ],
+          "reponse": 1,
+          "explication": "Une série de n années renseigne honnêtement jusqu'à des périodes de l'ordre de n. Au-delà, on prolonge la droite de Gumbel : le résultat dépend entièrement de la pente, donc du gradex, qui est estimé sur les mêmes 20 valeurs. L'extrapolation est courante et admise — ce qui ne l'est pas, c'est de la taire."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e4",
+      "titre": "Construire la série : ce qu'on a le droit d'y mettre",
+      "difficulte": 1,
+      "enonce": "Questions de méthode sur la constitution d'une série de maxima annuels.",
+      "questions": [
+        {
+          "texte": "Pourquoi retenir un seul événement par année plutôt que toutes les fortes pluies observées ?",
+          "type": "choix",
+          "options": [
+            "Pour alléger les calculs",
+            "Pour garantir l'indépendance des valeurs : deux maxima d'années différentes ne viennent pas de la même averse",
+            "Parce que les autres valeurs sont moins fiables"
+          ],
+          "reponse": 1,
+          "explication": "L'ajustement statistique suppose des valeurs indépendantes. Deux fortes pluies séparées de trois jours relèvent souvent de la même situation météorologique : les compter séparément reviendrait à compter deux fois le même événement."
+        },
+        {
+          "texte": "Une année de la série est incomplète : les relevés manquent de juin à septembre. Que faire ?",
+          "type": "choix",
+          "options": [
+            "Retenir le maximum des mois disponibles",
+            "Écarter l'année et le dire : la longueur effective de la série diminue d'autant",
+            "Remplacer par la moyenne des autres années"
+          ],
+          "reponse": 1,
+          "explication": "Le maximum des mois disponibles n'est pas le maximum annuel si la lacune couvre la saison des fortes pluies — il biaiserait la série vers le bas. Écarter l'année est la seule option défendable, et la longueur effective se dit dans la note : elle commande jusqu'où l'ajustement est honnête."
+        },
+        {
+          "texte": "Quel appareil fournit les données des courbes intensité–durée–fréquence du chapitre 3 ?",
+          "type": "choix",
+          "options": ["Le pluviomètre", "Le pluviographe", "Les deux indifféremment"],
+          "reponse": 1,
+          "explication": "Seul le pluviographe enregistre la hauteur en continu, donc les intensités sur des durées courtes. Le pluviomètre ne donne que des cumuls entre deux relevés, en général journaliers : il alimente la statistique des pluies journalières et les cartes, pas les courbes IDF."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e5",
+      "titre": "Pluie ponctuelle et pluie de bassin",
+      "difficulte": 3,
+      "enonce": "Une averse intense couvre rarement plusieurs dizaines de km² avec la même intensité : la pluie moyenne sur le bassin est inférieure à la pluie ponctuelle. Le bulletin FAO n° 54 en donne la forme A = 1 − [(161 − 0,042·P_an)/1000]·log₁₀(S). Bassin de 42 km², pluie annuelle 320 mm.",
+      "questions": [
+        {
+          "texte": "Coefficient d'abattement ?",
+          "type": "nombre", "unite": "", "reponse": 0.76, "tolerance": 0.02,
+          "explication": "(161 − 0,042 × 320)/1000 = 0,14756 ; log₁₀(42) = 1,6232 ; A = 1 − 0,14756 × 1,6232 = 0,7605. La pluie moyenne sur le bassin vaut 76 % de la pluie ponctuelle."
+        },
+        {
+          "texte": "Sur un bassin de 2,35 km² (pluie annuelle 300 mm), le coefficient vaudrait :",
+          "type": "nombre", "unite": "", "reponse": 0.945, "tolerance": 0.02,
+          "explication": "log₁₀(2,35) = 0,3711 ; A = 1 − 0,14840 × 0,3711 = 0,9449. Sur quelques km², l'abattement est négligeable : une averse couvre facilement toute cette surface. C'est pour cela que la méthode rationnelle, réservée aux petits bassins, s'en passe."
+        },
+        {
+          "texte": "Faut-il appliquer ce coefficient aux pluies P10 et P100 lues sur les cartes avant de les porter dans la formule de SOGREAH ?",
+          "type": "choix",
+          "options": [
+            "Oui, toujours : la pluie de bassin est la bonne grandeur",
+            "Non : l'effet de surface est déjà porté par S^0,75 dans la formule, l'appliquer en plus compterait deux fois la même correction",
+            "Seulement au-delà de 100 km²"
+          ],
+          "reponse": 1,
+          "explication": "Chaque référentiel traite l'effet de surface à sa manière et une seule fois. Le jeu tunisien le porte dans l'exposant S^0,75 de SOGREAH et dans le S de la rationnelle ; le bulletin FAO n° 54 le porte dans un coefficient explicite. Mélanger les deux revient à abattre deux fois — et la notion reste à connaître, car c'est elle qui explique pourquoi le débit spécifique décroît quand la surface augmente."
+        }
+      ]
+    }
+  ]
+}
