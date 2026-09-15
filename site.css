@@ -110,6 +110,10 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .zoom-carte button:hover:not(:disabled){background:#f1f5f9;border-color:#94a3b8}
 .zoom-carte button:disabled{opacity:.35;cursor:default}
 .lien-zoom{padding:0;border:0;background:none;color:var(--blue);font-weight:700;text-decoration:underline;cursor:pointer}
+/* Zoomée, la carte se saisit. Le curseur des stations, plus spécifique, l'emporte. */
+.carte-zoomable.deplacable{cursor:grab}
+.carte-zoomable.deplacant{cursor:grabbing;user-select:none}
+.carte-zoomable.deplacant .survol-carte{display:none}
 
 /* Sous-titre de méthode : plus discret qu'un h3, mais structurant. */
 .card h4{margin:20px 0 8px;font-size:15px;color:#075985;letter-spacing:.01em}

@@ -321,3 +321,28 @@ test("carte de Montana — zoom géographique et emprise qui couvre le semis", (
     assert.ok(s.lat > lat0 && s.lat < lat1, `${s.nom} hors de l'emprise en latitude`);
   }
 });
+
+test("déplacement de la carte — le clic reste possible", () => {
+  const src = lire("src/cours-ch3-montana.js");
+  // Capturer le pointeur dès l'appui ferait porter le `click` final par
+  // l'enveloppe : ni station cliquable, ni bouton de zoom utilisable.
+  const bloc = (nom) => {
+    const debut = src.indexOf(`addEventListener("${nom}"`);
+    assert.ok(debut > 0, `gestionnaire ${nom} présent`);
+    return src.slice(debut, src.indexOf("});", debut));
+  };
+  assert.ok(!bloc("pointerdown").includes("setPointerCapture"),
+    "l'appui ne capture pas le pointeur — sinon le clic final change de cible");
+  assert.ok(bloc("pointermove").includes("setPointerCapture"),
+    "la capture a lieu une fois le seuil de glissement franchi");
+  assert.match(src, /e\.target\.closest\(["'`]\.zoom-carte/,
+    "un appui sur les boutons de zoom n'ouvre pas un glissement");
+  assert.match(src, /e\.pointerType === "touch"/,
+    "le tactile est écarté : il confisquerait le défilement de la page");
+  // Le garde-fou de second rideau, si la capture n'a pas eu lieu.
+  assert.match(src, /if \(!consommerGlissement\(\)\) choisir/,
+    "un glissement qui finit sur une station ne la sélectionne pas");
+  // Le centre est borné, pas la fenêtre : sinon on pousse dans le vide.
+  assert.match(src, /function bornerCentre/, "le centre est borné");
+  assert.match(src, /bornerCentre\(\{[\s\S]{0,200}?\}\);/, "le glissement passe par bornerCentre");
+});

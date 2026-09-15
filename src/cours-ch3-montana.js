@@ -75,22 +75,38 @@ const BARYCENTRE = {
   lat: PLACEES.reduce((a, s) => a + s.lat, 0) / PLACEES.length,
 };
 let zoom = 1;
-let centre = null;                       // dernière station PLACÉE choisie
+let centre = null;                       // {lon, lat} — centre de la fenêtre
+let centreNom = null;                    // nom de la station, si le centre en est une
+let echelleCarte = 1, kCarte = 1, largeurSvg = 1;   // pour convertir des pixels en degrés
+
+const etendue = () => {
+  const f = Math.pow(2, zoom - 1);
+  return { dLon: (FENETRE_PLEINE.lon1 - FENETRE_PLEINE.lon0) / f,
+           dLat: (FENETRE_PLEINE.lat1 - FENETRE_PLEINE.lat0) / f };
+};
 
 /**
- * Fenêtre affichée. Le zoom se fait autour de la station choisie — elle reste
- * donc toujours en vue — et la fenêtre est calée dans l'emprise du pays : on
- * ne dérive jamais sur du vide.
+ * Le centre est borné de sorte que la fenêtre reste dans l'emprise du pays.
+ * On borne le CENTRE et non la fenêtre : borner la fenêtre laisserait le
+ * centre dériver au loin pendant qu'on pousse contre un bord, et il faudrait
+ * ensuite glisser d'autant à vide pour repartir en sens inverse.
  */
+function bornerCentre(c) {
+  const { lon0, lat0, lon1, lat1 } = FENETRE_PLEINE;
+  const { dLon, dLat } = etendue();
+  return {
+    lon: Math.min(Math.max(c.lon, lon0 + dLon / 2), lon1 - dLon / 2),
+    lat: Math.min(Math.max(c.lat, lat0 + dLat / 2), lat1 - dLat / 2),
+  };
+}
+
+/** Fenêtre affichée, du centre courant et du niveau de zoom. */
 function fenetreCourante() {
   if (zoom <= 1) return FENETRE_PLEINE;
-  const { lon0, lat0, lon1, lat1 } = FENETRE_PLEINE;
-  const f = Math.pow(2, zoom - 1);
-  const dLon = (lon1 - lon0) / f, dLat = (lat1 - lat0) / f;
-  const c = centre || BARYCENTRE;
-  const cale = (v, d, min, max) => Math.min(Math.max(v - d / 2, min), max - d);
-  const a = cale(c.lon, dLon, lon0, lon1), b = cale(c.lat, dLat, lat0, lat1);
-  return { lon0: a, lat0: b, lon1: a + dLon, lat1: b + dLat };
+  const { dLon, dLat } = etendue();
+  const c = bornerCentre(centre || BARYCENTRE);
+  return { lon0: c.lon - dLon / 2, lat0: c.lat - dLat / 2,
+           lon1: c.lon + dLon / 2, lat1: c.lat + dLat / 2 };
 }
 
 const dansFenetre = (s, f) =>
@@ -113,7 +129,10 @@ function carte(classes) {
                                      mg: 40, md: 12, mh: 12, mb: 28 });
   const { px, py, zone } = proj;
   zoneCarte = zone;
+  echelleCarte = proj.echelle;
+  kCarte = Math.cos((((FENETRE.lat0 + FENETRE.lat1) / 2) * Math.PI) / 180);
   const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
+  largeurSvg = W;
   const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipMontana");
 
   // Hors fenêtre, on ne dessine pas : le masque suffirait à cacher le point
@@ -248,7 +267,10 @@ function fiche() {
 /** Choisir une station recentre le zoom sur elle, si elle est placée. */
 function choisir(nom) {
   choisie = JEU.stations.find((s) => s.nom === nom);
-  if (choisie.position === "wgs84") centre = choisie;
+  if (choisie.position === "wgs84") {
+    centre = { lon: choisie.lon, lat: choisie.lat };
+    centreNom = choisie.nom;
+  }
   el("mStation").value = choisie.nom;
   maj();
 }
@@ -264,14 +286,19 @@ function etatZoom() {
   const n = PLACEES.filter((s) => dansFenetre(s, f)).length;
   el("mZoomPlus").disabled = zoom >= ZOOM_MAX;
   el("mZoomMoins").disabled = zoom <= 1;
+  const ou = centreNom ? `autour de ${centreNom}`
+    : centre ? `centrée sur ${fr(centre.lon, 2)}° E · ${fr(centre.lat, 2)}° N`
+    : "sur la zone dense";
   el("mZoomEtat").innerHTML = zoom <= 1
     ? `Vue d'ensemble — les ${PLACEES.length} stations placées.`
-    : `Zoom ×${Math.pow(2, zoom - 1)} autour de ${centre ? centre.nom : "la zone dense"} —
+    : `Zoom ×${Math.pow(2, zoom - 1)} ${ou} —
        ${n} station${n > 1 ? "s" : ""} sur ${PLACEES.length} dans la fenêtre.`;
   el("mZoomReset").hidden = zoom <= 1;
+  el("mCarte").parentElement.classList.toggle("deplacable", zoom > 1);
 }
 
-function maj() {
+/** La carte seule — c'est tout ce qui change pendant un glissement. */
+function majCarte() {
   // L'échelle de couleur reste calée sur les TRENTE stations, pas sur les
   // seules visibles : une pastille doit garder la même couleur d'un zoom à
   // l'autre, sinon on croit lire une variation là où on n'a changé que le cadre.
@@ -281,11 +308,17 @@ function maj() {
   etatZoom();
   attacherSurvol(el("mCarte"), "survolMontana", zoneCarte);
   for (const g of el("mCarte").querySelectorAll(".station")) {
-    g.addEventListener("click", () => choisir(g.dataset.nom));
+    // Un glissement se termine par un `click` : sans cette garde, lâcher le
+    // bouton au-dessus d'une station la sélectionnerait à chaque déplacement.
+    g.addEventListener("click", () => { if (!consommerGlissement()) choisir(g.dataset.nom); });
     g.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choisir(g.dataset.nom); }
     });
   }
+}
+
+function maj() {
+  majCarte();
   fiche();
 }
 
@@ -298,8 +331,63 @@ el("mT_duree").addEventListener("input", maj);
 el("mZoomPlus").addEventListener("click", () => reglerZoom(zoom + 1));
 el("mZoomMoins").addEventListener("click", () => reglerZoom(zoom - 1));
 el("mZoomReset").addEventListener("click", () => reglerZoom(1));
+
+// ── Déplacement à la souris ───────────────────────────────────────────────
+// Zoomée, la carte se saisit au bouton gauche. Le tactile est laissé de côté
+// à dessein : capter le glissement vertical y confisquerait le défilement de
+// la page, ce qui coûterait plus qu'il ne rapporte sur une page de cours. Les
+// boutons et la liste des stations restent le chemin tactile.
+let glisse = null, aGlisse = false;
+const consommerGlissement = () => { const g = aGlisse; aGlisse = false; return g; };
+const enveloppe = el("mCarte").parentElement;
+
+enveloppe.addEventListener("pointerdown", (e) => {
+  aGlisse = false;
+  if (zoom <= 1 || e.button !== 0 || e.pointerType === "touch") return;
+  if (e.target.closest(".zoom-carte")) return;    // les boutons gardent leur clic
+  const svg = el("mCarte").querySelector("svg");
+  if (!svg) return;
+  // Le SVG est en largeur 100 % : une unité du viewBox ne vaut pas un pixel
+  // d'écran. Sans ce rapport, la carte se déplacerait plus vite que la souris.
+  const rapport = svg.getBoundingClientRect().width / largeurSvg;
+  glisse = { x: e.clientX, y: e.clientY, id: e.pointerId, enCours: false,
+             depart: bornerCentre(centre || BARYCENTRE),
+             parDegre: echelleCarte * rapport };
+});
+
+enveloppe.addEventListener("pointermove", (e) => {
+  if (!glisse || e.pointerId !== glisse.id) return;
+  const dx = e.clientX - glisse.x, dy = e.clientY - glisse.y;
+  if (!glisse.enCours) {
+    if (Math.hypot(dx, dy) < 4) return;           // un clic n'est pas un glissement
+    glisse.enCours = true;
+    // On ne capture le pointeur qu'ICI. Capturer dès l'appui ferait porter le
+    // `click` final par l'enveloppe : plus aucune station ne serait cliquable,
+    // ni aucun bouton de zoom utilisable une fois la carte agrandie.
+    enveloppe.setPointerCapture(e.pointerId);
+    enveloppe.classList.add("deplacant");
+  }
+  e.preventDefault();
+  aGlisse = true;
+  centre = bornerCentre({
+    lon: glisse.depart.lon - dx / (glisse.parDegre * kCarte),
+    lat: glisse.depart.lat + dy / glisse.parDegre,
+  });
+  centreNom = null;
+  majCarte();
+});
+
+const finGlissement = (e) => {
+  if (!glisse || e.pointerId !== glisse.id) return;
+  if (enveloppe.hasPointerCapture(e.pointerId)) enveloppe.releasePointerCapture(e.pointerId);
+  enveloppe.classList.remove("deplacant");
+  glisse = null;               // la fiche ne dépend pas de la fenêtre : rien à refaire
+};
+enveloppe.addEventListener("pointerup", finGlissement);
+enveloppe.addEventListener("pointercancel", finGlissement);
+
 // Au clavier : une station a le focus, « + » et « − » agissent sans viser un bouton.
-el("mCarte").parentElement.addEventListener("keydown", (e) => {
+enveloppe.addEventListener("keydown", (e) => {
   if (e.key === "+" || e.key === "=") { e.preventDefault(); reglerZoom(zoom + 1); }
   if (e.key === "-" || e.key === "_") { e.preventDefault(); reglerZoom(zoom - 1); }
 });
