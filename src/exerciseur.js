@@ -37,6 +37,10 @@ const SELECTS = [
      ["CapBonMeliane", "Cap-Bon & Meliane"], ["CentreSud", "Centre & Sud"]], "CentreSud"],
   ["francou", "Région Francou–Rodier",
     [["", "non retenue"], ...Object.entries(h.FRANCOU_K).map(([k, v]) => [k, v.label])], "CentreDorsale"],
+  // Zones IV et V : la base est ln (publication de Ghorbel). Le sélecteur ne rouvre pas
+  // la question — il sert à montrer en séance ce que coûte l'autre lecture.
+  ["ghorbelLog", "Base du logarithme, zones IV et V <small>(démonstration)</small>",
+    [["ln", "ln — formule de Ghorbel"], ["log10", "log₁₀ — lecture fautive"]], "ln"],
 ];
 
 const el = (id) => document.getElementById(id);
@@ -127,13 +131,19 @@ function calculer() {
       rows.push(ligne("Ghorbel", 0, "ko",
         `hors table : T calés ${Object.keys(h.GHORBEL_R[zg]).join(", ")} ans`));
     else {
-      const qmax = (zg === "IV" || zg === "V")
-        ? h.ghorbelQmax45(S)
+      const base = el("ghorbelLog").value;
+      const grande = zg === "IV" || zg === "V";
+      const qmax = grande
+        ? h.ghorbelQmax45(S, base)
         : h.ghorbelQmax123(S, Pan / 1000, dh, L, Ic);
       const q = qmax * R;
       rows.push(ligne(`Ghorbel <small>zone ${zg}</small>`, q, q > 0 ? "ok" : "ko", "Qmax négatif : vérifier P, Δh, L, Ic"));
       if (q > 0) retenus.push(q);
       if (zg === "V") alerte.push("Ghorbel zone V : peu testée, résultat indicatif.");
+      if (grande && base === "log10")
+        alerte.push("<strong>Démonstration, pas un calcul de projet.</strong> Ghorbel écrit "
+          + "85·ln(S) ; lire log₁₀ divise Q<sub>max</sub> par ln(10) ≈ 2,30 — ici "
+          + `${f2(h.ghorbelQmax45(S, "ln") * R)} m³/s deviennent ${f2(qmax * R)} m³/s.`);
     }
   }
 

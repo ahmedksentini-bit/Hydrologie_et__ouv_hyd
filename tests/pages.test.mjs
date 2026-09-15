@@ -281,3 +281,18 @@ test("le tableau d'ajustement porte un encadrement PAR LOI", () => {
   assert.ok(!/intervalle \$\{fr\(niveau \* 100, 0\)\} %<\/td>/.test(src),
     "la ligne d'intervalle unique a été remplacée par un encadrement par loi");
 });
+
+test("le sélecteur de base du logarithme démontre sans piéger", () => {
+  const src = lire("src/exerciseur.js");
+  const entree = src.match(/\["ghorbelLog",[\s\S]*?\],\n/);
+  assert.ok(entree, "le sélecteur de base est présent — il sert la démonstration en séance");
+  // La question est tranchée : ln par défaut, et l'option fautive est nommée comme telle.
+  assert.match(entree[0], /\], "ln"\],/, "le défaut du sélecteur est ln");
+  assert.match(entree[0], /\[\["ln",/, "ln est la première option");
+  assert.match(entree[0], /log₁₀ — lecture fautive/, "log₁₀ est étiquetée comme fautive");
+  // Choisir log₁₀ doit dire à l'écran que le résultat n'est pas un calcul de projet.
+  assert.match(src, /base === "log10"[\s\S]{0,400}?Démonstration, pas un calcul de projet/,
+    "l'avertissement accompagne le choix de log₁₀");
+  // …et seulement dans les zones où la formule logarithmique s'applique.
+  assert.match(src, /grande && base === "log10"/, "l'avertissement est limité aux zones IV et V");
+});
