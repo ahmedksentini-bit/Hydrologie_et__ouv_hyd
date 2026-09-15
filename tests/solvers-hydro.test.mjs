@@ -339,3 +339,13 @@ test("le résumé de domaine reste lisible et complet", () => {
   assert.equal(h.resumeDomaine("rationnelle"), "S < 4 km²");
   assert.equal(h.resumeDomaine("kallel"), "S ≥ 100 km² · tout T (analytique) · zone à choisir");
 });
+
+test("les motifs hors domaine restent du texte brut", () => {
+  // Ils peuvent finir dans un message sans mise en forme ; seule `condition`
+  // est rendue en HTML par le tableau du cours.
+  for (const id of Object.keys(h.DOMAINES)) {
+    for (const m of h.motifsHorsDomaine(id, { S: 8, Pan: 620, T: 30, zone: null }))
+      assert.ok(!/<[a-z]/i.test(m), `${id} : balisage dans un motif — « ${m} »`);
+    assert.ok(!/<[a-z]/i.test(h.resumeDomaine(id)), `${id} : balisage dans le résumé`);
+  }
+});

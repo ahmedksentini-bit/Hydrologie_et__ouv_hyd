@@ -360,6 +360,10 @@ export function periodeRetour({ categorie, ouvrage, S, tjma = 0 }) {
 //
 // Sources : les manuels d'origine, tels que repris dans l'aide-mémoire du
 // cours. Une borne inconnue s'écrit null, jamais Infinity déguisé en règle.
+//
+// Les motifs sont du TEXTE : ils peuvent finir dans un message brut. Seule
+// `condition` est rendue en HTML par le tableau du cours, et elle seule porte
+// du balisage.
 
 export const DOMAINES = {
   rationnelle: {
@@ -370,8 +374,8 @@ export const DOMAINES = {
   sogreah: {
     nom: "SOGREAH", pluieAnnuelle: { max: 500 }, periodes: { min: 10, max: 100 },
     motifPluie: "méthode calée sur les régions à pluie annuelle modérée",
-    motifPeriode: "P_T s'interpole entre P₁₀ et P₁₀₀ : hors de cet intervalle, on extrapole",
-    zone: false, condition: "P_T doit dépasser P₀, sinon il n'y a pas de ruissellement",
+    motifPeriode: "P_T s'interpole entre P10 et P100 : hors de cet intervalle, on extrapole",
+    zone: false, condition: "P<sub>T</sub> doit dépasser P<sub>0</sub>, sinon il n'y a pas de ruissellement",
   },
   ghorbel: {
     nom: "Ghorbel", zone: true, periodes: [2, 5, 10, 20, 50, 100],
