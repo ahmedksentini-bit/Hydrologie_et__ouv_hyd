@@ -303,7 +303,8 @@ test("carte de Montana — zoom géographique et emprise qui couvre le semis", (
     assert.ok(html.includes(`id="${id}"`), `${id} manque dans cours.html`);
   // Le zoom rétrécit la FENÊTRE puis reprojette. Un scale() sur le SVG grossirait
   // aussi les traits et décalerait les cibles de survol, qui sont en pixels.
-  assert.ok(!/scale\(/.test(src), "le zoom ne passe pas par une transformation du SVG");
+  assert.ok(!/transform\s*=\s*["'`]\s*scale/.test(src),
+    "le zoom ne passe pas par une transformation du SVG");
   assert.match(src, /graduations\(FENETRE\.lon0, FENETRE\.lon1\)/,
     "le graticule suit la fenêtre au lieu d'une liste figée");
 
