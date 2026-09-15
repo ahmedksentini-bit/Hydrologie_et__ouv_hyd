@@ -746,7 +746,7 @@
   <h4>Ghorbel</h4>
   <p class="formula">zones I à III : Q<sub>max</sub> = S<sup>0,8</sup> ·
      [ 1,075·√(P·Δh/L) / I<sub>c</sub> − 0,232 ]&nbsp;&nbsp;·&nbsp;&nbsp;
-     zones IV et V : Q<sub>max</sub> = 85 · log(S)<br>
+     zones IV et V : Q<sub>max</sub> = 85 · ln(S)<br>
      puis Q<sub>T</sub> = R<sub>T</sub> · Q<sub>max</sub></p>
   <p>P est la pluie annuelle <strong>en mètres</strong> (pluie en mm divisée par 1000),
      Δh en mètres, L la longueur du rectangle équivalent en km, I<sub>c</sub> l'indice de
@@ -770,10 +770,21 @@
      franchissement</em>. Le dénivelé total vaut couramment le double, et comme Δh entre
      sous une racine puis que le terme est amputé d'une constante, la confusion gonfle le
      débit de 30 à 70 % — sans que rien, dans le résultat, ne le signale.</div>
-  <div class="hint"><strong>Zones IV et V : quelle base de logarithme ?</strong> La formule
-     s'écrit 85·log(S) sans que la publication lève l'ambiguïté entre logarithme népérien
-     et décimal. L'écart est un facteur ln(10) ≈ 2,30 — pas une nuance. Tant que la source
-     d'origine n'est pas tranchée, le choix se déclare dans la note de calcul.</div>
+  <div class="hint"><strong>Zones IV et V : le logarithme est népérien.</strong> La formule
+     se recopie souvent sous la forme 85·log(S), notation qui n'oblige à rien — et entre
+     ln et log₁₀ l'écart est un facteur ln(10) ≈ 2,30, pas une nuance. C'est
+     <strong>ln</strong> qu'il faut lire, conformément à la publication de Ghorbel. L'ordre
+     de grandeur le confirme : avec ln, la zone IV et Kallel Centre-Sahel — deux
+     régionalisations indépendantes sur un territoire commun — se croisent vers 360 km² et
+     restent dans un rapport de 0,55 à 1,5 entre 100 et 2000 km² ; avec log₁₀, Ghorbel
+     passerait systématiquement <em>sous</em> Kallel, d'un facteur 1,5 à 4 toujours dans le
+     même sens, ce qu'on n'attend pas de deux calages indépendants.</div>
+  <p class="method-note">Ces deux zones ne retiennent <strong>que la surface</strong>, et
+     sous un logarithme : de 100 à 2000 km², vingt fois plus de bassin ne multiplie
+     Q<sub>max</sub> que par 1,65. La formule est presque plate, là où Kallel croît en √S.
+     Sur un grand bassin du Sahel ou du Sud les deux méthodes divergent donc <em>par
+     construction</em>, pas par désaccord sur les données — c'est le croisement vers
+     360 km² qu'il faut avoir en tête avant de les comparer.</p>
 
   <h4>Kallel</h4>
   <p class="formula">Q<sub>T</sub> = q<sub>0</sub> · S<sup>α</sup> · T<sup>0,41</sup></p>

@@ -261,12 +261,13 @@ export const ghorbelQmax123 = (S, Pm, dh, L, Ic) =>
   L > 0 && Ic > 0 ? Math.pow(S, 0.8) * ((1.075 * Math.sqrt((Pm * dh) / L)) / Ic - 0.232) : 0;
 
 /**
- * Ghorbel zones IV et V — seule la surface intervient.
- * La base du logarithme doit être celle de la publication d'origine :
- * entre `ln` et `log10` l'écart est un facteur ln(10) ≈ 2,30.
+ * Ghorbel zones IV et V — seule la surface intervient, sous un logarithme NÉPÉRIEN
+ * (publication d'origine). La notation « log(S) » qu'on rencontre souvent n'oblige à rien :
+ * entre `ln` et `log10` l'écart est un facteur ln(10) ≈ 2,30. Le paramètre `base` n'existe
+ * que pour chiffrer cette erreur — tout appel de production le laisse à sa valeur.
  */
-export const ghorbelQmax45 = (S, base = "log10") =>
-  S > 0 ? 85 * (base === "ln" ? Math.log(S) : Math.log10(S)) : 0;
+export const ghorbelQmax45 = (S, base = "ln") =>
+  S > 0 ? 85 * (base === "log10" ? Math.log10(S) : Math.log(S)) : 0;
 
 /** Kallel : Q = q0 · S^α · T^0,41. */
 export function kallel(region, S, T) {

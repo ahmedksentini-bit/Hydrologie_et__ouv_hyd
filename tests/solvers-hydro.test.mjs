@@ -123,10 +123,41 @@ test("Ghorbel — zones I à III puis IV et V", () => {
   // Δh = Hmax − Hmin au lieu de Hméd − Zfranchissement : +71 %
   const faux = h.ghorbelQmax123(42, 0.320, 410, 12.5, Ic);
   proche(faux / qmax - 1, 0.714, 2e-3, "surestimation due à Δh");
-  // base du logarithme en zones IV et V : facteur ln(10)
+  // zones IV et V : le logarithme est NÉPÉRIEN, et c'est la valeur par défaut
+  proche(h.ghorbelQmax45(265), 474.28, 0.01, "Qmax défaut");
+  assert.equal(h.ghorbelQmax45(265), h.ghorbelQmax45(265, "ln"), "le défaut est ln");
   proche(h.ghorbelQmax45(265, "log10"), 205.98, 0.01, "Qmax log10");
-  proche(h.ghorbelQmax45(265, "ln"), 474.28, 0.01, "Qmax ln");
-  proche(h.ghorbelQmax45(265, "ln") / h.ghorbelQmax45(265, "log10"), Math.LN10, 1e-9, "rapport");
+  proche(h.ghorbelQmax45(265) / h.ghorbelQmax45(265, "log10"), Math.LN10, 1e-9, "facteur ln(10)");
+});
+
+test("Ghorbel IV/V — ln recoupe Kallel, log10 non", () => {
+  // Deux régionalisations indépendantes couvrant le Sahel : leurs ordres de grandeur
+  // doivent s'encadrer. Avec ln elles se croisent ; avec log10 Ghorbel resterait
+  // systématiquement sous Kallel, d'un facteur qui atteint 4.
+  const R = h.GHORBEL_R.IV[100];
+  const rapport = (S, base) =>
+    (R * h.ghorbelQmax45(S, base)) / h.kallel("CentreSahel", S, 100);
+  const bornes = (base) => {
+    const v = [];
+    for (let S = 100; S <= 2000; S += 1) v.push(rapport(S, base));
+    return [Math.min(...v), Math.max(...v)];
+  };
+  const [minLn, maxLn] = bornes("ln");
+  assert.ok(minLn < 1 && maxLn > 1, `ln encadre Kallel (${minLn} … ${maxLn})`);
+  proche(minLn, 0.549, 1e-3, "borne basse ln");
+  proche(maxLn, 1.487, 1e-3, "borne haute ln");
+  const [, maxLog] = bornes("log10");
+  assert.ok(maxLog < 1, `log10 reste sous Kallel partout (max ${maxLog})`);
+  proche(1 / maxLog, 1.55, 0.01, "écart minimal de log10 à Kallel");
+
+  // croisement des deux méthodes, cité dans le cours
+  let a = 100, b = 2000;
+  const g = (S) => rapport(S, "ln") - 1;
+  for (let i = 0; i < 200; i++) { const m = (a + b) / 2; if (g(a) * g(m) <= 0) b = m; else a = m; }
+  proche((a + b) / 2, 362, 1, "croisement vers 360 km²");
+
+  // la formule est presque plate : ×20 sur S ne fait que ×1,65 sur Qmax
+  proche(h.ghorbelQmax45(2000) / h.ghorbelQmax45(100), 1.651, 1e-3, "aplatissement");
 });
 
 test("Kallel — BV3", () => {

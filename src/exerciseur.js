@@ -37,8 +37,6 @@ const SELECTS = [
      ["CapBonMeliane", "Cap-Bon & Meliane"], ["CentreSud", "Centre & Sud"]], "CentreSud"],
   ["francou", "Région Francou–Rodier",
     [["", "non retenue"], ...Object.entries(h.FRANCOU_K).map(([k, v]) => [k, v.label])], "CentreDorsale"],
-  ["ghorbelLog", "Base du logarithme (zones IV et V)",
-    [["log10", "log₁₀"], ["ln", "népérien"]], "log10"],
 ];
 
 const el = (id) => document.getElementById(id);
@@ -130,7 +128,7 @@ function calculer() {
         `hors table : T calés ${Object.keys(h.GHORBEL_R[zg]).join(", ")} ans`));
     else {
       const qmax = (zg === "IV" || zg === "V")
-        ? h.ghorbelQmax45(S, el("ghorbelLog").value)
+        ? h.ghorbelQmax45(S)
         : h.ghorbelQmax123(S, Pan / 1000, dh, L, Ic);
       const q = qmax * R;
       rows.push(ligne(`Ghorbel <small>zone ${zg}</small>`, q, q > 0 ? "ok" : "ko", "Qmax négatif : vérifier P, Δh, L, Ic"));

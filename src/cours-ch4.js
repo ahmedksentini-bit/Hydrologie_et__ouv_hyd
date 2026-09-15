@@ -92,7 +92,7 @@ function methodes(d) {
     const Qmax = grande ? ghorbelQmax45(S) : ghorbelQmax123(S, Pan / 1000, dh, L, Ic);
     out.push({ nom: `Ghorbel ${zone}`, Q: R * Qmax,
       detail: grande
-        ? `Q_max = 85·log₁₀(${fr(S, 1)}) = ${fr(Qmax, 2)} · R = ${fr(R, 2)}`
+        ? `Q_max = 85·ln(${fr(S, 1)}) = ${fr(Qmax, 2)} · R = ${fr(R, 2)}`
         : `Q_max = ${fr(Qmax, 2)} avec P = ${fr(Pan / 1000, 3)} m, Δh = ${fr(dh, 0)} m, L = ${fr(L, 2)} km, Ic = ${fr(Ic, 3)} · R = ${fr(R, 2)}` });
   }
 
