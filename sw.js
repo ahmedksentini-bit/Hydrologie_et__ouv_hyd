@@ -1,15 +1,27 @@
-// Service worker : coquille de l'application en cache, réseau d'abord pour les
-// données afin qu'une mise à jour du cours arrive sans vider le cache à la main.
-const VERSION = "hyd-v1";
+// Service worker.
+//
+// Stratégie RÉSEAU D'ABORD pour tout ce qui vient du site, cache en secours.
+// La version précédente servait la coquille depuis le cache en priorité : une
+// page mise à jour n'atteignait jamais un visiteur déjà venu, qui gardait la
+// première version du cours indéfiniment. Sur un site en cours de rédaction,
+// c'est le pire des compromis — le cache ne doit servir que hors connexion.
+const VERSION = "hyd-v2";
 const COQUILLE = [
   "./", "./index.html", "./cours.html", "./exerciseur.html",
   "./styles.css", "./enhancements.css", "./site.css",
-  "./src/app.js", "./src/exerciseur.js", "./src/solvers-hydro.js",
+  "./src/app.js", "./src/exerciseur.js", "./src/exercices.js",
+  "./src/solvers-hydro.js", "./src/solvers-ouvrages.js",
+  "./src/cours-ch1.js", "./src/cours-ch2.js", "./src/cours-ch3.js",
+  "./src/cours-ch4.js", "./src/cours-ch5.js",
   "./assets/icon.svg", "./manifest.webmanifest",
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(COQUILLE)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(VERSION)
+      .then((c) => Promise.allSettled(COQUILLE.map((u) => c.add(u))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (e) => {
@@ -21,18 +33,18 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const { request } = e;
   if (request.method !== "GET") return;
-  const url = new URL(request.url);
-  if (url.origin !== location.origin) return;
+  if (new URL(request.url).origin !== location.origin) return;
 
-  // Données et documents : réseau d'abord, cache en secours hors connexion.
-  if (url.pathname.includes("/data/") || url.pathname.includes("/docs/")) {
-    e.respondWith(
-      fetch(request)
-        .then((r) => { const copie = r.clone(); caches.open(VERSION).then((c) => c.put(request, copie)); return r; })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  e.respondWith(caches.match(request).then((c) => c || fetch(request)));
+  e.respondWith(
+    fetch(request)
+      .then((reponse) => {
+        // On ne met en cache que les réponses réellement servies.
+        if (reponse && reponse.ok) {
+          const copie = reponse.clone();
+          caches.open(VERSION).then((c) => c.put(request, copie));
+        }
+        return reponse;
+      })
+      .catch(() => caches.match(request).then((c) => c || caches.match("./index.html")))
+  );
 });
