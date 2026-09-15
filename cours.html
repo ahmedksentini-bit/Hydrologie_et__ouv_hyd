@@ -543,21 +543,174 @@
      effets se combinent dans (P<sub>T</sub> − P<sub>0</sub>).</p>
 
   <h3>Les régionalisations tunisiennes</h3>
-  <table class="resultats"><thead><tr><th>Méthode</th><th>Forme</th><th>Domaine</th></tr></thead>
+  <p>Six méthodes, six familles de coefficients calés sur des jeux de bassins différents.
+     Aucune n'est « la bonne » : chacune résume une région et une époque d'observation.
+     Leur intérêt est d'être <em>indépendantes</em> — c'est leur dispersion qui informe,
+     pas leur moyenne.</p>
+
+  <h4>SOGREAH</h4>
+  <p class="formula">Q<sub>T</sub> = S<sup>0,75</sup> · (P<sub>T</sub> − P<sub>0</sub>) / 12
+     &nbsp;·&nbsp; S en km², P en mm</p>
+  <p>P<sub>0</sub> est le seuil de ruissellement lu sur carte ; P<sub>T</sub> s'obtient par
+     interpolation <strong>en variable de Gumbel</strong> entre P<sub>10</sub> et
+     P<sub>100</sub>, et non linéairement en T :</p>
+  <p class="formula">P<sub>T</sub> = P<sub>10</sub> + (y<sub>T</sub> − 2,25)/(4,60 − 2,25) ·
+     (P<sub>100</sub> − P<sub>10</sub>)</p>
+  <p class="method-note">2,25 et 4,60 sont les variables réduites de Gumbel à 10 et 100 ans.
+     Interpoler linéairement en T donnerait au cinquantennal une pluie nettement trop
+     faible : entre 10 et 100 ans, T double cinq fois quand y ne progresse que de moitié.
+     L'exposant 0,75 sur la surface porte à lui seul l'effet d'abattement — c'est pourquoi
+     on n'en applique pas un second (chapitre 2).</p>
+
+  <h4>Ghorbel</h4>
+  <p class="formula">zones I à III : Q<sub>max</sub> = S<sup>0,8</sup> ·
+     [ 1,075·√(P·Δh/L) / I<sub>c</sub> − 0,232 ]&nbsp;&nbsp;·&nbsp;&nbsp;
+     zones IV et V : Q<sub>max</sub> = 85 · log(S)<br>
+     puis Q<sub>T</sub> = R<sub>T</sub> · Q<sub>max</sub></p>
+  <p>P est la pluie annuelle <strong>en mètres</strong> (pluie en mm divisée par 1000),
+     Δh en mètres, L la longueur du rectangle équivalent en km, I<sub>c</sub> l'indice de
+     compacité. Les rapports de fréquence R<sub>T</sub> :</p>
+  <table class="resultats"><thead><tr><th>Zone</th><th>Domaine</th>
+    <th>2</th><th>5</th><th>10</th><th>20</th><th>50</th><th>100</th></tr></thead>
     <tbody>
-      <tr><td>Ghorbel I–III</td><td class="motif">Q<sub>max</sub> = S<sup>0,8</sup>[1,075·√(P·Δh/L)/I<sub>c</sub> − 0,232], puis Q<sub>T</sub> = R<sub>T</sub>·Q<sub>max</sub></td><td class="motif">T tabulés 2, 5, 10, 20, 50, 100</td></tr>
-      <tr><td>Ghorbel IV–V</td><td class="motif">Q<sub>max</sub> = 85 · log(S)</td><td class="motif">zone V peu testée</td></tr>
-      <tr><td>Kallel</td><td class="motif">Q = q<sub>0</sub> · S<sup>α</sup> · T<sup>0,41</sup></td><td class="motif">S ≥ 100 km², tout T</td></tr>
-      <tr><td>Fersi</td><td class="motif">H<sub>e</sub> → Q<sub>x moy</sub> → Q<sub>xT</sub> = y<sub>T</sub>·[S·I<sub>g</sub>/270]<sup>−0,423</sup>·Q<sub>x moy</sub></td><td class="motif">pluie ≤ 400 mm, secteurs Sud</td></tr>
-      <tr><td>Frigui</td><td class="motif">Q = λ<sub>p</sub> · A<sub>m</sub>/(S+1)<sup>n</sup> · S</td><td class="motif">λ calé 2, 5, 10, 50 ans</td></tr>
-      <tr><td>Francou–Rodier</td><td class="motif">Q = 10<sup>6</sup> · (S/10<sup>8</sup>)<sup>1−K/10</sup></td><td class="motif">enveloppe, S ≥ 100 km²</td></tr>
+      <tr><td>I</td><td class="motif">Extrême nord</td><td class="q">0,86</td><td class="q">1,39</td><td class="q">1,79</td><td class="q">2,19</td><td class="q">2,72</td><td class="q">3,12</td></tr>
+      <tr><td>II</td><td class="motif">Rive droite Mejerda, Cap-Bon, Zeroud amont</td><td class="q">0,70</td><td class="q">1,33</td><td class="q">1,98</td><td class="q">2,84</td><td class="q">4,40</td><td class="q">6,04</td></tr>
+      <tr><td>III</td><td class="motif">Meliane, Merguellil, nord Zeroud</td><td class="q">0,59</td><td class="q">1,45</td><td class="q">2,34</td><td class="q">3,52</td><td class="q">5,68</td><td class="q">7,93</td></tr>
+      <tr><td>IV</td><td class="motif">Sahel</td><td class="q">0,50</td><td class="q">1,60</td><td class="q">2,50</td><td class="q">3,50</td><td class="q">5,10</td><td class="q">6,20</td></tr>
+      <tr><td>V</td><td class="motif">Sud</td><td class="q">0,30</td><td class="q">1,00</td><td class="q">2,20</td><td class="q">3,70</td><td class="q">6,70</td><td class="q">9,20</td></tr>
+    </tbody></table>
+  <p class="method-note">Le rapport à 2 ans est <strong>inférieur à 1</strong> dans les cinq
+     zones : Q<sub>max</sub> n'est pas la crue biennale mais une grandeur de référence de
+     l'ajustement. Et l'amplitude entre zones croît avec T — du simple au triple au
+     centennal entre le nord et le sud. La zone n'est donc pas un réglage fin : elle
+     commande le résultat.</p>
+  <div class="hint"><strong>Δh de Ghorbel ≠ H<sub>max</sub> − H<sub>min</sub>.</strong>
+     Δh est l'écart entre l'altitude <em>médiane</em> du bassin et l'altitude <em>au
+     franchissement</em>. Le dénivelé total vaut couramment le double, et comme Δh entre
+     sous une racine puis que le terme est amputé d'une constante, la confusion gonfle le
+     débit de 30 à 70 % — sans que rien, dans le résultat, ne le signale.</div>
+  <div class="hint"><strong>Zones IV et V : quelle base de logarithme ?</strong> La formule
+     s'écrit 85·log(S) sans que la publication lève l'ambiguïté entre logarithme népérien
+     et décimal. L'écart est un facteur ln(10) ≈ 2,30 — pas une nuance. Tant que la source
+     d'origine n'est pas tranchée, le choix se déclare dans la note de calcul.</div>
+
+  <h4>Kallel</h4>
+  <p class="formula">Q<sub>T</sub> = q<sub>0</sub> · S<sup>α</sup> · T<sup>0,41</sup></p>
+  <table class="resultats"><thead><tr><th>Région</th><th>q<sub>0</sub></th><th>α</th></tr></thead>
+    <tbody>
+      <tr><td>Nord et Cap-Bon</td><td class="q">5,50</td><td class="q">0,50</td></tr>
+      <tr><td>Noyau de la dorsale</td><td class="q">2,60</td><td class="q">0,80</td></tr>
+      <tr><td>Centre et Sahel</td><td class="q">14,3 si T ≤ 20 ans · 24,7 au-delà</td><td class="q">0,50</td></tr>
+      <tr><td>Sud-Est et Sud-Ouest</td><td class="q">12,35</td><td class="q">0,50</td></tr>
+    </tbody></table>
+  <p class="method-note">Seule méthode <strong>analytique en T</strong> : elle répond à
+     n'importe quelle période de retour, y compris les 30 ans de la note DGPC que les
+     tables ne couvrent pas. Attention au saut du Centre-Sahel : entre 20 et 21 ans le
+     débit est multiplié par 1,73 sans transition. Ce n'est pas une erreur de calage, c'est
+     un raccord entre deux échantillons — mais il faut le savoir avant de comparer un
+     trentennal à un vicennal.</p>
+
+  <h4>Fersi</h4>
+  <p class="formula">H<sub>e</sub> = 0,01639 · P<sub>an</sub> · √I<sub>g</sub>
+     &nbsp;·&nbsp; Q<sub>x moy</sub> = 0,266 · H<sub>e</sub> · √S · log(S′)
+     &nbsp;·&nbsp; Q<sub>xT</sub> = y<sub>T</sub> · [S·I<sub>g</sub>/270]<sup>−0,423</sup> · Q<sub>x moy</sub></p>
+  <p>P<sub>an</sub> est la pluie annuelle en mm, I<sub>g</sub> l'indice global de pente en
+     m/km. Le terme logarithmique est décalé sur les petits bassins pour rester défini :
+     log(S+2) sous 1 km², log(S+1) entre 1 et 2 km², log(S) au-delà. Coefficients de
+     fréquence y<sub>T</sub> :</p>
+  <table class="resultats"><thead><tr><th>Secteur</th><th>5</th><th>10</th><th>20</th><th>50</th><th>100</th></tr></thead>
+    <tbody>
+      <tr><td>Sud-Est</td><td class="q">1,280</td><td class="q">2,220</td><td class="q">3,820</td><td class="q">6,590</td><td class="q">10,200</td></tr>
+      <tr><td>Sud-Ouest</td><td class="q">1,145</td><td class="q">2,068</td><td class="q">3,507</td><td class="q">6,808</td><td class="q">10,337</td></tr>
+    </tbody></table>
+  <p class="method-note">Pas de colonne à 2 ans : la méthode n'est pas calée sous 5 ans.
+     Domaine annoncé : pluie annuelle ≤ 400 mm, secteurs du Sud.</p>
+
+  <h4>Frigui</h4>
+  <p class="formula">Q<sub>T</sub> = λ<sub>T</sub> · A<sub>m</sub> / (S+1)<sup>n</sup> · S</p>
+  <table class="resultats"><thead><tr><th>Région</th><th>A<sub>m</sub></th><th>n</th>
+    <th>λ₂</th><th>λ₅</th><th>λ₁₀</th><th>λ₅₀</th></tr></thead>
+    <tbody>
+      <tr><td>Nord</td><td class="q">26,2</td><td class="q">0,47</td><td class="q">0,20</td><td class="q">0,34</td><td class="q">0,45</td><td class="q">0,80</td></tr>
+      <tr><td>Medjerda</td><td class="q">53,5</td><td class="q">0,53</td><td class="q">0,15</td><td class="q">0,27</td><td class="q">0,38</td><td class="q">0,78</td></tr>
+      <tr><td>Cap-Bon et Meliane</td><td class="q">38,4</td><td class="q">0,44</td><td class="q">0,10</td><td class="q">0,22</td><td class="q">0,35</td><td class="q">0,77</td></tr>
+      <tr><td>Centre et Sud</td><td class="q">76,7</td><td class="q">0,44</td><td class="q">0,08</td><td class="q">0,21</td><td class="q">0,33</td><td class="q">0,74</td></tr>
     </tbody></table>
 
-  <div class="hint"><strong>Δh de Ghorbel ≠ H<sub>max</sub> − H<sub>min</sub>.</strong>
-     Δh est l'écart entre l'altitude médiane du bassin et l'altitude au franchissement.
-     Le dénivelé total vaut couramment le double, et comme Δh entre sous une racine puis
-     que le terme est amputé d'une constante, la confusion gonfle le débit de 30 à 70 % —
-     sans que rien, dans le résultat, ne le signale.</div>
+  <h4>Francou–Rodier</h4>
+  <p class="formula">Q = 10<sup>6</sup> · (S / 10<sup>8</sup>)<sup>1 − K/10</sup></p>
+  <p>Ce n'est pas une méthode de calcul de débit de projet mais une <strong>enveloppe de
+     crues observées</strong> : elle dit ce qui a été vu, pas ce qui a une probabilité
+     donnée. La période de retour est portée implicitement par le K régional :</p>
+  <table class="resultats"><thead><tr><th>K</th><th>Ce qu'il enveloppe</th></tr></thead>
+    <tbody>
+      <tr><td class="q">3,8</td><td class="motif">Nord / Medjerda, ordre du centennal</td></tr>
+      <tr><td class="q">4,0</td><td class="motif">Nord / Ichkeul, centennale</td></tr>
+      <tr><td class="q">4,3</td><td class="motif">Sud et Centre-Sud, ordre du cinquantennal</td></tr>
+      <tr><td class="q">4,5</td><td class="motif">Nord, épisode catastrophique (indicatif)</td></tr>
+      <tr><td class="q">4,8</td><td class="motif">Centre dorsale, 50 à 100 ans</td></tr>
+      <tr><td class="q">5,0</td><td class="motif">Sud et Centre-Sud, 100 à 200 ans</td></tr>
+      <tr><td class="q">5,6</td><td class="motif">Zéroud / Sidi Saad, valeur forte</td></tr>
+    </tbody></table>
+  <p class="method-note">Un dixième sur K change le débit de 20 à 30 % : l'exposant vaut
+     1 − K/10, et la surface est portée à cette puissance. C'est une enveloppe à lire comme
+     une borne supérieure de vraisemblance, jamais comme un débit de projet.</p>
+
+  <h3>La couverture en période de retour : le tableau à garder sous les yeux</h3>
+  <table class="resultats"><thead><tr><th>Méthode</th>
+    <th>2</th><th>5</th><th>10</th><th>20</th><th>30</th><th>50</th><th>100</th></tr></thead>
+    <tbody>
+      <tr><td>SOGREAH</td><td class="motif">—</td><td class="motif">—</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td></tr>
+      <tr><td>Ghorbel</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="motif">—</td><td class="q">✓</td><td class="q">✓</td></tr>
+      <tr><td>Kallel</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td></tr>
+      <tr><td>Fersi</td><td class="motif">—</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="motif">—</td><td class="q">✓</td><td class="q">✓</td></tr>
+      <tr><td>Frigui</td><td class="q">✓</td><td class="q">✓</td><td class="q">✓</td><td class="motif">—</td><td class="motif">—</td><td class="q">✓</td><td class="motif">—</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>C'est le piège le plus coûteux du chapitre.</strong> La note
+     DGPC impose T = 30, 50 ou 100 ans. À 30 ans, seuls SOGREAH et Kallel répondent — et à
+     100 ans Frigui se tait. Une méthode qui ne sort pas parce que sa table ne couvre pas
+     la période demandée doit le <strong>dire</strong>. Une cellule vide sans motif se lit
+     comme une panne, et la réaction naturelle — interpoler entre 10 et 50 ans — n'a aucune
+     justification : les manuels n'en donnent pas la règle.</div>
+
+  <div class="calc" id="calcRegio">
+    <h3>Toutes les méthodes sur un même bassin</h3>
+    <div class="data-grid">
+      <div class="field"><label for="gS">Surface S</label>
+        <div class="input-wrap"><input id="gS" type="text" inputmode="decimal" value="120"><span class="unit">km²</span></div></div>
+      <div class="field"><label for="gP">Périmètre P</label>
+        <div class="input-wrap"><input id="gP" type="text" inputmode="decimal" value="58"><span class="unit">km</span></div></div>
+      <div class="field"><label for="gT">Période de retour T</label>
+        <div class="input-wrap"><select id="gT">
+          <option>2</option><option>5</option><option>10</option><option>20</option>
+          <option selected>30</option><option>50</option><option>100</option></select></div></div>
+      <div class="field"><label for="gPan">Pluie annuelle</label>
+        <div class="input-wrap"><input id="gPan" type="text" inputmode="decimal" value="320"><span class="unit">mm</span></div></div>
+      <div class="field"><label for="gDh">Δh (H médiane − franchissement)</label>
+        <div class="input-wrap"><input id="gDh" type="text" inputmode="decimal" value="180"><span class="unit">m</span></div></div>
+      <div class="field"><label for="gIg">Indice global I<sub>g</sub></label>
+        <div class="input-wrap"><input id="gIg" type="text" inputmode="decimal" value="9"><span class="unit">m/km</span></div></div>
+      <div class="field"><label for="gP0">Seuil P<sub>0</sub> (carte)</label>
+        <div class="input-wrap"><input id="gP0" type="text" inputmode="decimal" value="28"><span class="unit">mm</span></div></div>
+      <div class="field"><label for="gP10">P<sub>10</sub> (carte)</label>
+        <div class="input-wrap"><input id="gP10" type="text" inputmode="decimal" value="72"><span class="unit">mm</span></div></div>
+      <div class="field"><label for="gP100">P<sub>100</sub> (carte)</label>
+        <div class="input-wrap"><input id="gP100" type="text" inputmode="decimal" value="118"><span class="unit">mm</span></div></div>
+      <div class="field"><label for="gZone">Zone Ghorbel</label>
+        <div class="input-wrap"><select id="gZone"></select></div></div>
+      <div class="field"><label for="gKallel">Région Kallel</label>
+        <div class="input-wrap"><select id="gKallel"></select></div></div>
+      <div class="field"><label for="gFrigui">Région Frigui</label>
+        <div class="input-wrap"><select id="gFrigui"></select></div></div>
+      <div class="field"><label for="gFersi">Secteur Fersi</label>
+        <div class="input-wrap"><select id="gFersi"></select></div></div>
+      <div class="field"><label for="gK">K de Francou–Rodier</label>
+        <div class="input-wrap"><select id="gK"></select></div></div>
+    </div>
+    <div id="gRegioTable"></div>
+    <div id="gRegioFig"></div>
+    <p class="final-result" id="gRegioOut"></p>
+  </div>
 
   <h3>Synthèse et débit retenu</h3>
   <p>N'entrent dans la synthèse que les méthodes <strong>réellement applicables</strong> :

@@ -188,3 +188,49 @@ test("période de retour — note circulaire DGPC N°1054/2019, §4", () => {
   assert.equal(h.periodeRetour({ categorie: "autoroute", ouvrage: "dalot", S: 3, tjma: 9000 }), 100);
   assert.equal(h.periodeRetour({ categorie: "classee", ouvrage: "submersible", S: 150, tjma: 300 }), 100);
 });
+
+// La couverture en période de retour est affichée comme un tableau dans le
+// cours : elle doit rester celle des tables du moteur, sans dérive silencieuse.
+test("couverture en période de retour des régionalisations", () => {
+  const T_DGPC = [30, 50, 100];
+  // Ghorbel : 2, 5, 10, 20, 50, 100 dans les cinq zones — jamais 30
+  for (const zone of Object.keys(h.GHORBEL_ZONES)) {
+    assert.deepEqual(Object.keys(h.GHORBEL_R[zone]).map(Number).sort((a, b) => a - b),
+      [2, 5, 10, 20, 50, 100], `Ghorbel ${zone}`);
+    assert.equal(h.GHORBEL_R[zone][30], undefined, `Ghorbel ${zone} ne couvre pas 30 ans`);
+  }
+  // Fersi : pas de 2 ans, pas de 30 ans
+  for (const sec of Object.keys(h.FERSI_Y)) {
+    assert.deepEqual(Object.keys(h.FERSI_Y[sec]).map(Number).sort((a, b) => a - b),
+      [5, 10, 20, 50, 100], `Fersi ${sec}`);
+    assert.equal(h.FERSI_Y[sec][2], undefined, `Fersi ${sec} ne couvre pas 2 ans`);
+  }
+  // Frigui : 2, 5, 10 et 50 seulement — ni 20, ni 30, ni 100
+  for (const reg of Object.keys(h.FRIGUI)) {
+    assert.deepEqual(Object.keys(h.FRIGUI[reg].lambda).map(Number).sort((a, b) => a - b),
+      [2, 5, 10, 50], `Frigui ${reg}`);
+    for (const T of [20, 30, 100])
+      assert.equal(h.frigui(reg, 100, T), null, `Frigui ${reg} refuse ${T} ans`);
+  }
+  // Kallel est analytique : elle répond à toutes les périodes de la note DGPC
+  for (const T of T_DGPC)
+    for (const reg of Object.keys(h.KALLEL))
+      assert.ok(h.kallel(reg, 150, T) > 0, `Kallel ${reg} à ${T} ans`);
+  // et le saut du Centre-Sahel au-delà de 20 ans est bien un saut
+  const avant = h.kallel("CentreSahel", 150, 20), apres = h.kallel("CentreSahel", 150, 21);
+  assert.ok(apres / avant > 1.6, `saut du Centre-Sahel : ×${(apres / avant).toFixed(2)}`);
+});
+
+test("SOGREAH interpole en variable de Gumbel, pas en T", () => {
+  const P10 = 72, P100 = 118;
+  assert.equal(h.sogreahPluie(10, P10, P100), P10, "à 10 ans, P10");
+  assert.equal(h.sogreahPluie(100, P10, P100), P100, "à 100 ans, P100");
+  const P50 = h.sogreahPluie(50, P10, P100);
+  // interpolation linéaire en T donnerait bien moins : (50−10)/(100−10) = 44 %
+  const lineaire = P10 + ((50 - 10) / (100 - 10)) * (P100 - P10);
+  assert.ok(P50 > lineaire + 3,
+    `en y : ${P50.toFixed(1)} mm, en T : ${lineaire.toFixed(1)} mm — l'écart doit être net`);
+  // et la position en y se retrouve
+  const attendu = P10 + ((h.gumbel(50) - 2.25) / (4.6 - 2.25)) * (P100 - P10);
+  assert.ok(Math.abs(P50 - attendu) < 1e-9, "position en variable réduite");
+});
