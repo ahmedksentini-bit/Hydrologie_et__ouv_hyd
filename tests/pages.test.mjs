@@ -29,8 +29,14 @@ test("les figures du cours ne visent que des identifiants existants", () => {
   assert.ok(scripts.length >= 7, "un script de figure par chapitre rédigé");
   for (const f of scripts) {
     const src = lire(join("src", f));
+    // Un script peut viser un identifiant qu'il CRÉE lui-même — un calque
+    // interne à son SVG, par exemple, qui ne peut pas vivre dans la page. La
+    // règle reste utile : une faute de frappe ne se trouve ni dans la page ni
+    // dans le script, et tombe toujours.
+    const siens = new Set([...src.matchAll(/\bid="([^"$]+)"/g)].map((m) => m[1]));
     for (const [, id] of src.matchAll(/\bel\("([^"]+)"\)/g))
-      assert.ok(ids.has(id), `${f} appelle el("${id}") — absent de cours.html`);
+      assert.ok(ids.has(id) || siens.has(id),
+        `${f} appelle el("${id}") — absent de cours.html et non créé par le script`);
     // chaque script doit être chargé par la page
     assert.ok(lire("cours.html").includes(`src/${f}`), `${f} n'est pas chargé par cours.html`);
   }

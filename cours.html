@@ -722,6 +722,54 @@
      pas. Un jeu de données peut être bon sur une colonne et douteux sur une autre, et il
      vaut mieux le dire colonne par colonne que d'écarter le tout ou de tout accepter.</div>
 
+  <h3>Le temps de concentration, avant sa formule</h3>
+  <p>Une averse tombe d'un coup sur tout le bassin. L'eau du point le plus proche de
+     l'exutoire y arrive tout de suite ; celle des crêtes met des heures. Tant que la
+     dernière goutte n'est pas arrivée, <strong>une partie du bassin ne contribue pas
+     encore</strong> et le débit continue de monter. Quand elle arrive, tout le bassin
+     contribue en même temps : le débit est maximal, et il ne montera plus.</p>
+  <p class="formula">t<sub>c</sub> = temps mis par la goutte hydrauliquement la plus
+     éloignée pour atteindre l'exutoire</p>
+  <p>C'est de là que vient la règle du chapitre : <strong>l'averse de projet dure
+     t<sub>c</sub></strong>. Plus courte, elle ne mobilise jamais tout le bassin ; plus
+     longue, elle n'ajoute plus de débit, seulement du volume — et l'intensité, elle,
+     diminue quand la durée augmente.</p>
+
+  <div class="calc" id="calcConcentration">
+    <h3>Le cheminement, sur le bassin du chapitre 1</h3>
+    <p class="method-note" style="margin:0 0 10px">Le vrai réseau du bassin de
+       démonstration. Chaque goutte descend jusqu'à l'exutoire à deux vitesses : celle du
+       ruissellement sur le versant, puis celle de l'écoulement dans le talweg. La teinte du
+       fond donne le temps de parcours ; les mailles s'allument quand leur eau est arrivée.</p>
+    <div class="curseurs">
+      <div class="field"><label for="tcVitesses">Vitesses retenues <small>— versant / réseau</small></label>
+        <div class="input-wrap"><select id="tcVitesses">
+          <option value="0.2/1.0">0,20 et 1,00 m/s — versants rugueux</option>
+          <option value="0.3/1.2" selected>0,30 et 1,20 m/s — cas courant</option>
+          <option value="0.4/1.5">0,40 et 1,50 m/s — versants nus, lit net</option>
+          <option value="0.5/2.0">0,50 et 2,00 m/s — bassin raide</option></select></div></div>
+      <div class="field"><label for="tcDuree">Durée de l'averse <small>— <span id="tcDureeVal">—</span></small></label>
+        <div class="input-wrap"><input id="tcDuree" type="range" min="0.25" max="1.6" step="0.05" value="1"></div></div>
+      <div class="field"><label for="tcTemps">Temps écoulé <small>— <span id="tcHeure">0 min</span></small></label>
+        <div class="input-wrap"><input id="tcTemps" type="range" min="0" max="300" step="0.5" value="0"></div></div>
+      <div class="actions"><button type="button" class="primary" id="tcPlay">Lecture</button></div>
+    </div>
+    <p class="method-note" style="margin:0 0 8px"><strong><span id="tcPart">0 %</span> du
+       bassin contribue</strong> — <span id="tcRestant">—</span></p>
+    <div class="duo">
+      <div id="tcCarte"></div>
+      <div id="tcDebit"></div>
+    </div>
+    <p class="final-result"><strong>t<sub>c</sub> = <span id="tcTc">—</span></strong> sur ce
+      bassin, avec ces deux vitesses.
+      <small><br>Changez-les : t<sub>c</sub> passe de 100 à 217 min selon le couple retenu.
+      Les quatre formules empiriques ci-dessous donnent, sur le même bassin, de 92 à
+      221 min. Les deux routes mènent au même ordre de grandeur — et au même aveu :
+      t<sub>c</sub> n'est pas une grandeur mesurée, c'est une grandeur choisie.</small></p>
+    <p class="diagram-note">La même séquence en GIF, tirée de cette figure :
+       <a href="assets/temps-de-concentration.gif" download>le cheminement et le débit</a>.</p>
+  </div>
+
   <h3>Les quatre temps de concentration</h3>
   <table class="resultats"><thead><tr><th>Formule</th><th>Expression</th><th>Unité du résultat</th></tr></thead>
     <tbody>
@@ -2293,6 +2341,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch2-chronique.js"></script>
 <script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch3-pluvio.js"></script>
+<script type="module" src="src/cours-ch3-concentration.js"></script>
 <script type="module" src="src/cours-ch3-montana.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch4-stations.js"></script>

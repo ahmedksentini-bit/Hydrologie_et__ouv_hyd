@@ -7,12 +7,17 @@ from PIL import Image
 dossier = Path(sys.argv[1])
 racine = Path(__file__).resolve().parent.parent
 
+# Un appelant peut donner ses propres couples « préfixe:sortie.gif » ; sinon on
+# assemble les deux planches du pluviomètre et du pluviographe.
+couples = [tuple(a.split(":", 1)) for a in sys.argv[2:]] or \
+          [("metre", "pluviometre.gif"), ("graphe", "pluviographe.gif")]
+
 # Les images de l'orage sont tenues plus longtemps : c'est le moment à voir.
 def duree(nom):
     k = int(nom.stem.split("-")[1])
     return 220 if 14 <= k <= 24 else 110
 
-for prefixe, sortie in (("metre", "pluviometre.gif"), ("graphe", "pluviographe.gif")):
+for prefixe, sortie in couples:
     fichiers = sorted(dossier.glob(f"{prefixe}-*.png"))
     if not fichiers:
         sys.exit(f"aucune image {prefixe}-*.png dans {dossier}")
@@ -20,7 +25,7 @@ for prefixe, sortie in (("metre", "pluviometre.gif"), ("graphe", "pluviographe.g
     for f in fichiers:
         im = Image.open(f).convert("RGB")
         im = im.resize((im.width // 2, im.height // 2), Image.LANCZOS)   # retour à 1×
-        images.append(im.convert("P", palette=Image.ADAPTIVE, colors=96))
+        images.append(im.convert("P", palette=Image.ADAPTIVE, colors=64))
     chemin = racine / "assets" / sortie
     # Les images identiques sont fusionnées par l'encodeur — le pluviomètre n'a
     # rien à montrer avant six heures — mais leurs DURÉES s'additionnent : les
