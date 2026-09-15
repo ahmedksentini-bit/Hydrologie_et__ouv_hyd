@@ -267,3 +267,17 @@ test("le style de survol n'atteint pas la cible invisible", () => {
   assert.ok(!/\.station:hover circle\{/.test(css), "règle non qualifiée : elle rétrécirait la cible");
   assert.match(css, /\.survol-carte\{pointer-events:none\}/, "le calque n'intercepte rien");
 });
+
+test("le tableau d'ajustement porte un encadrement PAR LOI", () => {
+  const src = lire("src/cours-ch2.js");
+  // une bande par loi, sans quoi seule la loi encadrée réagirait au niveau
+  assert.match(src, /const bandes = new Map\(ajustements\.map/, "une bande par loi");
+  assert.match(src, /borneHaute/, "mode borne haute");
+  // le sélecteur existe dans la page, et la borne haute est le défaut
+  const html = lire("cours.html");
+  assert.match(html, /id="gValeur"/, "sélecteur de valeur affichée");
+  assert.match(html, /value="haute" selected/, "la borne haute est le défaut");
+  // l'ancienne ligne d'intervalle unique ne doit pas réapparaître
+  assert.ok(!/intervalle \$\{fr\(niveau \* 100, 0\)\} %<\/td>/.test(src),
+    "la ligne d'intervalle unique a été remplacée par un encadrement par loi");
+});

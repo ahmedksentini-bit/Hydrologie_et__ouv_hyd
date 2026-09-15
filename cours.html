@@ -285,6 +285,24 @@
      quantile</strong>, plus bas : une série dont un test passe de justesse impose ainsi un
      intervalle plus large. Le doute sur les hypothèses se propage jusqu'au quantile, ce qui
      est exactement l'effet recherché.</p>
+  <h3>La valeur de projet est la borne haute, pas la valeur centrale</h3>
+  <p>Un ajustement rend une valeur centrale : la meilleure estimation du quantile. Ce n'est
+     pas elle qu'on retient pour dimensionner. On retient <strong>la borne haute de son
+     intervalle</strong> au niveau que la série a dicté — c'est-à-dire la valeur au-dessus de
+     laquelle il devient improbable, au niveau exigé, que le vrai quantile se trouve.</p>
+  <p class="formula">valeur de projet = borne haute de l'intervalle au niveau retenu</p>
+  <p>La conséquence est celle qu'on attend : <strong>la valeur centrale ne bouge pas avec le
+     niveau de confiance</strong> — elle ne dépend que de la loi et de la série — tandis que
+     la borne haute, elle, monte quand le niveau monte. Sur la série du calculateur, le
+     centennal de Gumbel vaut 120,8 mm de valeur centrale, quel que soit le niveau ; sa borne
+     haute passe de 138 mm à 57,87 % à 164 mm à 95 %.</p>
+  <div class="hint"><strong>Un tableau qui n'afficherait que les valeurs centrales ne
+     réagirait pas au niveau</strong>, et donnerait l'impression que celui-ci ne sert à rien.
+     C'est pourquoi chaque case porte la borne haute en chiffre principal et la centrale en
+     dessous, en gris : on voit d'un coup d'œil ce que le niveau ajoute, loi par loi. Et
+     l'encadrement se calcule <em>pour chaque loi</em>, pas seulement pour celle qu'on a
+     choisi de tracer.</div>
+
   <div class="sanity-check"><h3>Ce que la propagation change, en millimètres</h3>
     <p>Deux séries de longueur voisine, ajustées par la même loi de Gumbel. La première —
        celle du calculateur — conserve ses trois hypothèses dès <strong>57,87 %</strong> :
@@ -425,6 +443,10 @@
           <option value="tests" selected>dicté par les tests de la série</option>
           <option value="0.95">95 %</option><option value="0.90">90 %</option>
           <option value="0.80">80 %</option></select></div></div>
+      <div class="field"><label for="gValeur">Valeur portée par le tableau</label>
+        <div class="input-wrap"><select id="gValeur">
+          <option value="haute" selected>Borne haute de l'intervalle — valeur de projet</option>
+          <option value="centrale">Valeur centrale de la loi</option></select></div></div>
       <div class="field"><label for="gPosition">Position de tracage</label>
         <div class="input-wrap"><select id="gPosition">
           <option value="weibull">Weibull — i/(n+1)</option>

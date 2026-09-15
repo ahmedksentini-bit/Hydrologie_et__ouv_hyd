@@ -282,3 +282,41 @@ test("la propagation du doute élargit réellement l'intervalle", () => {
   assert.ok(b95.haut - b95.bas < a95.haut - a95.bas,
     "à 95 % pour les deux, la série suspecte paraît même plus sûre — c'est l'effacement qu'on évite");
 });
+
+test("borne haute — elle dépend du niveau, la valeur centrale non", () => {
+  const T = [2, 5, 10, 20, 50, 100];
+  for (const loi of s.LOIS) {
+    const base = s.ajuster(loi.id, SERIE);
+    const b80 = s.bandeBootstrap(SERIE, loi.id, T, { niveau: 0.80 });
+    const b95 = s.bandeBootstrap(SERIE, loi.id, T, { niveau: 0.95 });
+    for (let i = 0; i < T.length; i++) {
+      // la valeur centrale ne bouge pas d'un niveau à l'autre
+      proche(b80[i].xT, b95[i].xT, 1e-12, `${loi.nom} : centrale invariante à T=${T[i]}`);
+      proche(b80[i].xT, base.quantile(T[i]), 1e-12, `${loi.nom} : centrale = quantile`);
+      // la borne haute, elle, monte avec le niveau
+      assert.ok(b95[i].haut >= b80[i].haut,
+        `${loi.nom} à T=${T[i]} : borne haute ${b95[i].haut.toFixed(1)} à 95 % contre ${b80[i].haut.toFixed(1)} à 80 %`);
+      assert.ok(b80[i].haut > b80[i].xT, `${loi.nom} : la borne haute dépasse la centrale`);
+      assert.ok(b80[i].bas < b80[i].xT, `${loi.nom} : la borne basse est sous la centrale`);
+    }
+  }
+});
+
+test("la valeur de projet suit le niveau dicté par la série", () => {
+  const persistante = "25 20 26 40 50 51 67 69 82 66 63 38 26 17 34 35 33 36 35 49 62 51 29 39 50 29 37 48 67 64"
+    .split(" ").map(Number);
+  const projet = (serie) => {
+    const n = s.niveauApplicable(s.controlerSerie(serie).retenu.niveau).niveau;
+    return { niveau: n, haut: s.bandeGumbel(serie, [100], n)[0].haut,
+             centrale: s.ajuster("gumbel", serie).quantile(100) };
+  };
+  const a = projet(SERIE), b = projet(persistante);
+  // la série suspecte impose un niveau plus haut, donc une valeur de projet
+  // plus éloignée de sa centrale
+  assert.ok(b.niveau > a.niveau, "niveau plus exigeant sur la série suspecte");
+  const marge = (x) => (x.haut - x.centrale) / x.centrale;
+  assert.ok(marge(b) > marge(a),
+    `marge ${(marge(b) * 100).toFixed(0)} % contre ${(marge(a) * 100).toFixed(0)} %`);
+  // et la borne haute retenue dépasse toujours la centrale
+  for (const x of [a, b]) assert.ok(x.haut > x.centrale);
+});

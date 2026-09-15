@@ -175,6 +175,16 @@ function majAjustement() {
   const bande = methode === "kite" ? bandeGumbel(serie, grille, niveau)
     : methode === "bootstrap" ? bandeBootstrap(serie, choisi.id, grille, { niveau }) : null;
 
+  // Un encadrement PAR LOI : sans cela le tableau montrerait cinq valeurs
+  // centrales, invariantes par construction, et une seule ligne d'intervalle
+  // — celle de la loi encadrée. On ne verrait donc pas le niveau agir.
+  const bandeDe = (a) => methode === null ? null
+    : (mode !== "bootstrap" && a.id === "gumbel")
+      ? bandeGumbel(serie, PERIODES, niveau)
+      : bandeBootstrap(serie, a.id, PERIODES, { niveau });
+  const bandes = new Map(ajustements.map((a) => [a.id, bandeDe(a)]));
+  const borneHaute = el("gValeur").value === "haute" && methode !== null;
+
   figure(serie, ajustements, bande, position);
 
   el("gLegende").innerHTML = `<div class="data-summary" style="margin-top:10px">${
@@ -190,27 +200,55 @@ function majAjustement() {
           a.horsDomaine ? " · <strong>|Cs| &gt; 2 : hors domaine</strong>" : ""}</small></span>`;
     }).join("")}</div>`;
 
-  const ic = bande ? PERIODES.map((T) => bande.find((b) => b.T === T)) : null;
+  const cellule = (a, T) => {
+    const b = bandes.get(a.id);
+    const centrale = a.quantile(T);
+    if (!b) return `${fr(centrale, 1)}`;
+    const ligne = b.find((x) => x.T === T);
+    return borneHaute
+      ? `${fr(ligne.haut, 1)}<small style="display:block;font-weight:500;color:#64748b">${fr(centrale, 1)}</small>`
+      : `${fr(centrale, 1)}<small style="display:block;font-weight:500;color:#64748b">≤ ${fr(ligne.haut, 1)}</small>`;
+  };
+
   el("gTable").innerHTML = `<table class="resultats abaque" style="margin-top:14px">
     <thead><tr><th>T (ans)</th>${PERIODES.map((T) => `<th>${T}</th>`).join("")}</tr></thead>
     <tbody>
       <tr><td>variable réduite y</td>${PERIODES.map((T) =>
         `<td class="q">${fr(yGumbel(T), 2)}</td>`).join("")}</tr>
       ${ajustements.map((a) => `<tr><td>${a.nom}</td>${PERIODES.map((T) =>
-        `<td class="${a.id === choisi.id ? "q retenue" : "q"}">${fr(a.quantile(T), 1)}</td>`).join("")}</tr>`).join("")}
-      ${ic ? `<tr><td>intervalle ${fr(niveau * 100, 0)} %</td>${ic.map((b) =>
-        `<td class="motif" style="text-align:right">${fr(b.bas, 0)} – ${fr(b.haut, 0)}</td>`).join("")}</tr>` : ""}
-    </tbody></table>`;
+        `<td class="${a.id === choisi.id ? "q retenue" : "q"}">${cellule(a, T)}</td>`).join("")}</tr>`).join("")}
+    </tbody></table>
+    <p class="method-note">${methode === null
+      ? "Sans intervalle, chaque case ne porte que la valeur centrale — invariante par construction : elle ne dépend pas du niveau de confiance, seulement de la loi et de la série."
+      : borneHaute
+        ? `Chiffre principal : <strong>la borne haute de l'intervalle à ${fr(niveau * 100, 2)} %</strong>,
+           c'est-à-dire la valeur de projet. En dessous, en gris, la valeur centrale de la loi —
+           elle, ne bouge pas avec le niveau.`
+        : `Chiffre principal : la valeur centrale de la loi, qui ne dépend pas du niveau de confiance.
+           En dessous, la borne haute de l'intervalle à ${fr(niveau * 100, 2)} %.`}
+      ${methode === null ? "" : `Les intervalles sont calculés loi par loi : ${
+        methode === "kite" ? "formule de Kite pour Gumbel, rééchantillonnage pour les autres"
+                           : "rééchantillonnage pour toutes"}.`}</p>`;
 
   const ks = ecartKs(serie, choisi);
   const meilleur = ajustements.reduce((a, b) => ecartKs(serie, b).D < ecartKs(serie, a).D ? b : a);
-  const icCent = ic?.[PERIODES.indexOf(100)];
+  // Intervalle de la loi encadrée, aux périodes du tableau.
+  const ic = bandes.get(choisi.id);
+  const icCent = ic?.find((b) => b.T === 100);
   const etendue = ajustements.map((a) => a.quantile(100));
+  const retenue = borneHaute && ic ? icCent.haut : choisi.quantile(100);
   el("gOut").innerHTML =
     `<strong>${choisi.nom}</strong> (${choisi.methode}) — ${choisi.resume} ·
-     x₁₀₀ = ${fr(choisi.quantile(100), 1)} mm
-     ${icCent ? `, intervalle ${fr(niveau * 100, 2)} % : ${fr(icCent.bas, 0)} à ${fr(icCent.haut, 0)} mm
-       (${methode === "kite" ? "formule de Kite" : "bootstrap"})` : ""}.
+     ${borneHaute && icCent
+       ? `<strong>valeur de projet au centennal : ${fr(retenue, 1)} mm</strong> —
+          borne haute de l'intervalle à ${fr(niveau * 100, 2)} % (${fr(icCent.bas, 0)} à
+          ${fr(icCent.haut, 0)} mm par ${methode === "kite" ? "la formule de Kite" : "bootstrap"}),
+          pour une valeur centrale de ${fr(choisi.quantile(100), 1)} mm.`
+       : icCent
+         ? `x₁₀₀ = ${fr(choisi.quantile(100), 1)} mm, intervalle à ${fr(niveau * 100, 2)} % :
+            ${fr(icCent.bas, 0)} à ${fr(icCent.haut, 0)} mm
+            (${methode === "kite" ? "formule de Kite" : "bootstrap"}).`
+         : `x₁₀₀ = ${fr(choisi.quantile(100), 1)} mm.`}
      ${dicte ? `<small><br><strong>Niveau dicté par les tests de la série</strong> :
        ${fr(dicte.niveau * 100, 2)} %, commandé par ${dicte.test} (${dicte.famille})${
          applicable.borne ? ` — ${applicable.sens} à ${fr(niveau * 100, 1)} % pour rester
@@ -240,6 +278,6 @@ el("gExemple").addEventListener("change", () => {
   const v = el("gExemple").value;
   if (EXEMPLES[v]) { el("gSerie").value = EXEMPLES[v]; tout(); }
 });
-for (const id of ["gLoi", "gBande", "gNiveau", "gPosition"])
+for (const id of ["gLoi", "gBande", "gNiveau", "gPosition", "gValeur"])
   el(id).addEventListener("change", majAjustement);
 tout();
