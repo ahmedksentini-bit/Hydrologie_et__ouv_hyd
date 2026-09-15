@@ -471,9 +471,140 @@
   <div class="actions"><a class="secondary" href="index.html#ch5">Exercices du chapitre</a></div>
 </section>
 
+<section id="ch6" class="card">
+  <h2>6 · Hydraulique des dalots et des buses</h2>
+
+  <h3>Ce qu'on demande à l'ouvrage</h3>
+  <p>Faire passer le débit de projet sans que l'eau amont ne monte au-delà de ce que la
+     route accepte. Tout le calcul consiste donc à répondre à une seule question :
+     <strong>à quelle hauteur l'eau monte-t-elle à l'amont</strong> pour que le débit
+     passe ? Cette hauteur se note HW, comptée depuis le radier d'entrée.</p>
+
+  <h3>Deux contrôles, un seul résultat</h3>
+  <p>L'écoulement peut être limité en deux endroits, pour deux raisons sans rapport :</p>
+  <table class="resultats"><thead><tr><th></th><th>Contrôle à l'entrée</th><th>Contrôle à la sortie</th></tr></thead>
+    <tbody>
+      <tr><td>Ce qui limite</td><td class="motif">la section d'entrée elle-même : l'ouvrage n'avale pas plus</td><td class="motif">l'aval et les pertes : l'ouvrage n'évacue pas plus</td></tr>
+      <tr><td>Ce dont ça dépend</td><td class="motif">forme et géométrie de la tête, pente</td><td class="motif">longueur, rugosité, niveau aval, pertes d'entrée et de sortie</td></tr>
+      <tr><td>Ce qui n'intervient pas</td><td class="motif">ni la longueur, ni la rugosité, ni l'aval</td><td class="motif">le détail de la tête n'intervient que par K<sub>e</sub></td></tr>
+    </tbody></table>
+  <p class="formula">HW = max( HW<sub>entrée</sub> , HW<sub>sortie</sub> )</p>
+  <p>Les deux calculs sont <strong>indépendants</strong> et menés jusqu'au bout tous les
+     deux ; c'est le plus grand qui commande, et c'est lui qu'on retient. Un ouvrage court
+     et raide sur une sortie libre est presque toujours contrôlé à l'entrée ; un ouvrage
+     long, rugueux ou noyé à l'aval passe sous contrôle à la sortie.</p>
+
+  <h3>Contrôle à l'entrée</h3>
+  <p>On passe par une intensité adimensionnelle du débit :</p>
+  <p class="formula">X = 1,811 · q / ( A<sub>pleine</sub> · √D )&nbsp;&nbsp;
+     (q = débit par cellule)</p>
+  <p>puis, selon que l'entrée est dénoyée ou noyée :</p>
+  <p class="formula">dénoyée : HW/D = E<sub>c</sub>/D + K·X<sup>M</sup> + K<sub>pente</sub>·J<br>
+     noyée&nbsp;&nbsp;&nbsp;: HW/D = C·X² + Y + K<sub>pente</sub>·J</p>
+  <p>Entre X = 1,93 et X = 2,21, on interpole linéairement entre les deux formes. Cette
+     zone n'est pas une frontière physique : c'est un raccord entre deux ajustements,
+     et il vaut mieux le dire que de laisser croire à un basculement net.</p>
+  <div class="hint"><strong>K<sub>pente</sub> vaut −0,50 partout sauf une entrée.</strong>
+     Une pente plus forte abaisse la charge nécessaire — sauf pour l'entrée métallique
+     coupée suivant le talus, où le coefficient vaut <strong>+0,70</strong> : la pente y
+     relève la charge. C'est la seule exception du tableau, et elle se vérifie.</div>
+
+  <h3>Contrôle à la sortie</h3>
+  <p>C'est une équation d'énergie : on part du niveau aval et on remonte en ajoutant les
+     pertes, moins la dénivelée du radier.</p>
+  <p class="formula">pertes = (K<sub>e</sub> + K<sub>s</sub>)·V²/2g + J<sub>f</sub>·L&nbsp;&nbsp;·&nbsp;&nbsp;
+     HW = h<sub>0</sub> + pertes − J·L</p>
+  <p>La hauteur de départ h<sub>0</sub> dépend de l'état de la sortie : si la sortie est
+     <strong>noyée</strong>, c'est le niveau aval TW lui-même, et la ligne d'énergie est
+     continue depuis l'aval. Sinon, on prend h<sub>0</sub> = max(TW, (y<sub>c</sub> + D)/2) —
+     c'est l'approximation FHWA, qui n'est valable que si le résultat reste
+     <strong>au-dessus de 0,75 D</strong>. En dessous, il faut un vrai calcul de remous.</p>
+
+  <h3>La condition aval</h3>
+  <p>Le niveau aval TW ne se devine pas : il vient soit d'une PHE connue, soit d'un calcul
+     du chenal récepteur, soit de l'hypothèse assumée d'une sortie libre. <strong>Ce mode
+     se choisit ; l'état de la sortie, lui, se déduit</strong> :</p>
+  <table class="resultats"><thead><tr><th>Profondeur aval</th><th>État de la sortie</th></tr></thead>
+    <tbody>
+      <tr><td>TW ≈ 0</td><td class="motif">libre</td></tr>
+      <tr><td>0 &lt; TW &lt; D</td><td class="motif">partiellement noyée</td></tr>
+      <tr><td>TW ≥ D</td><td class="motif">noyée — énergie en pleine section</td></tr>
+    </tbody></table>
+  <div class="hint"><strong>État constaté et influence effective sont deux choses.</strong>
+     Entre 0 et y<sub>c</sub>, il y a de l'eau à la sortie — l'état n'est donc pas « libre » —
+     mais la ligne d'eau n'en dépend pas encore : l'aval ne commande qu'au-delà de la
+     profondeur critique. L'un décrit ce qu'on constate, l'autre ce qui pilote le calcul.</div>
+
+  <h3>Régime dans l'ouvrage</h3>
+  <p>La profondeur critique y<sub>c</sub> sépare les régimes : au-dessus l'écoulement est
+     fluvial, en dessous torrentiel. On la compare au tirant normal y<sub>n</sub>, donné par
+     Manning-Strickler. Si la pente du radier dépasse la pente critique, l'écoulement est
+     torrentiel dans l'ouvrage et un <strong>ressaut</strong> peut se former à la sortie,
+     là où il rencontre le niveau aval. L'avertissement n'est pas bloquant, mais il
+     commande la protection à prévoir en aval (chapitre 8).</p>
+
+  <h3>Vitesse admissible</h3>
+  <p>La vitesse en sortie décide de l'érosion du lit récepteur. L'ordre de grandeur
+     couramment retenu est <strong>3 m/s</strong> ; la valeur exacte dépend du matériau du
+     lit et des prescriptions du maître d'ouvrage — c'est un réglage de projet, pas une
+     constante. Au-delà, il faut soit élargir l'ouvrage, soit protéger la sortie.</p>
+
+  <div class="calc" id="calcOH">
+    <h3>Calculer un ouvrage</h3>
+    <div class="data-grid">
+      <div class="field"><label for="oForme">Forme</label>
+        <div class="input-wrap"><select id="oForme">
+          <option value="dalot">Dalot rectangulaire</option>
+          <option value="buse">Buse circulaire</option></select></div></div>
+      <div class="field"><label for="oEntree">Type d'entrée</label>
+        <div class="input-wrap"><select id="oEntree"></select></div></div>
+      <div class="field"><label for="oQ">Débit de projet Q</label>
+        <div class="input-wrap"><input id="oQ" type="text" inputmode="decimal" value="8"><span class="unit">m³/s</span></div></div>
+      <div class="field"><label for="oB">Largeur B</label>
+        <div class="input-wrap"><input id="oB" type="text" inputmode="decimal" value="2"><span class="unit">m</span></div></div>
+      <div class="field"><label for="oD">Hauteur D (ou diamètre)</label>
+        <div class="input-wrap"><input id="oD" type="text" inputmode="decimal" value="1,5"><span class="unit">m</span></div></div>
+      <div class="field"><label for="oN">Nombre de cellules</label>
+        <div class="input-wrap"><input id="oN" type="text" inputmode="numeric" value="1"></div></div>
+      <div class="field"><label for="oL">Longueur L</label>
+        <div class="input-wrap"><input id="oL" type="text" inputmode="decimal" value="12"><span class="unit">m</span></div></div>
+      <div class="field"><label for="oJ">Pente du radier J</label>
+        <div class="input-wrap"><input id="oJ" type="text" inputmode="decimal" value="1"><span class="unit">%</span></div></div>
+      <div class="field"><label for="oK">Strickler K</label>
+        <div class="input-wrap"><input id="oK" type="text" inputmode="decimal" value="70"></div></div>
+      <div class="field"><label for="oTw">Niveau aval TW</label>
+        <div class="input-wrap"><input id="oTw" type="text" inputmode="decimal" value="0"><span class="unit">m</span></div></div>
+    </div>
+    <div id="oFig"></div>
+    <div id="oTable"></div>
+    <p class="final-result" id="oOut"></p>
+  </div>
+
+  <h3>Les abaques : l'abaque dit le matériau, l'échelle dit l'entrée</h3>
+  <p>C'est le piège de nomenclature le plus courant. Les planches sont organisées par
+     <strong>matériau</strong> — béton, métal ondulé, bague biseautée — et chacune porte
+     plusieurs <strong>échelles</strong>, une par type de tête. Les trois entrées en béton
+     ne sont donc pas « les abaques 1, 2 et 3 » : ce sont les échelles 1, 2 et 3 d'un même
+     abaque. Une référence d'entrée s'écrit toujours en deux morceaux : abaque <em>n</em>,
+     échelle <em>x</em>.</p>
+
+  <h3>Ne pas confondre les K</h3>
+  <table class="resultats"><thead><tr><th>Symbole</th><th>Ce qu'il désigne</th><th>Où il intervient</th></tr></thead>
+    <tbody>
+      <tr><td>K (Strickler)</td><td class="motif">rugosité de la paroi, en m<sup>1/3</sup>/s</td><td class="motif">Manning : tirant normal, pertes de frottement</td></tr>
+      <tr><td>K<sub>e</sub></td><td class="motif">perte de charge à l'entrée</td><td class="motif">contrôle à la sortie uniquement</td></tr>
+      <tr><td>K<sub>s</sub></td><td class="motif">perte de charge à la sortie, 1 par défaut</td><td class="motif">contrôle à la sortie uniquement</td></tr>
+      <tr><td>K<sub>pente</sub></td><td class="motif">correction de pente, sans dimension</td><td class="motif">contrôle à l'entrée uniquement</td></tr>
+    </tbody></table>
+  <p class="method-note">Les quatre portent la même lettre et n'ont ni les mêmes unités, ni
+     le même rôle, ni le même contrôle. K<sub>e</sub> et K<sub>s</sub> n'apparaissent jamais
+     dans le contrôle à l'entrée ; K<sub>pente</sub> n'apparaît jamais dans celui à la sortie.</p>
+  <div class="actions"><a class="secondary" href="index.html#ch6">Exercices du chapitre</a></div>
+</section>
+
 <section class="card">
   <h2>Chapitres en préparation</h2>
-  <p class="en-preparation">Les chapitres 6, 7 et 8 sont en cours de rédaction.
+  <p class="en-preparation">Les chapitres 7 et 8 sont en cours de rédaction.
      Leur plan est visible depuis l'accueil.</p>
 </section>
 
@@ -500,4 +631,5 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
 <script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
+<script type="module" src="src/cours-ch6.js"></script>
 </body></html>

@@ -125,7 +125,8 @@
         "pertes d'entrée Ke",
         "ressaut en sortie"
       ],
-      "cours": false
+      "cours": true,
+      "exercices": 7
     },
     {
       "id": "ch7",

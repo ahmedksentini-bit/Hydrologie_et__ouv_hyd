@@ -4,6 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as h from "../src/solvers-hydro.js";
+import * as o from "../src/solvers-ouvrages.js";
 
 const banque = (ch) => JSON.parse(readFileSync(new URL(`../data/exercices-${ch}.json`, import.meta.url)));
 const q = (b, exoId, i) => b.exercices.find((e) => e.id === exoId).questions[i];
@@ -11,7 +12,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -202,4 +203,64 @@ test("ch5 — risque et période de retour recalculés", () => {
   vaut(q(b, "ch5-e3", 2), h.periodePourRisque(0.1, 30), "T pour 10 % sur 30 ans");
   vaut(q(b, "ch5-e5", 2),
     h.periodeRetour({ categorie: "classee", ouvrage: "dalot", S: 9.8, tjma: 650 }), "frontière TJMA");
+});
+
+// ── chapitre 6 : les réponses viennent du moteur hydraulique ───────────────
+const DALOT = { forme: "dalot", B: 2, D: 1.5, Q: 8, L: 12, J: 0.01, K: 70,
+                entree: "box-ailes-evasees", tw: 0 };
+
+test("ch6 — les deux contrôles du dalot recalculés", () => {
+  const b = banque("ch6");
+  const r = o.calculerOuvrage(DALOT);
+  vaut(q(b, "ch6-e1", 0), r.profondeurCritique, "profondeur critique");
+  vaut(q(b, "ch6-e1", 1), r.entreeC.X, "intensité X");
+  vaut(q(b, "ch6-e1", 2), r.entreeC.HW, "HW contrôle à l'entrée");
+  vaut(q(b, "ch6-e1", 3), r.sortieC.HW, "HW contrôle à la sortie");
+  vaut(q(b, "ch6-e1", 4), r.HW, "HW retenu");
+  assert.equal(r.controle, "entrée", "le contrôle est bien à l'entrée");
+});
+
+test("ch6 — aval noyé et allongement recalculés", () => {
+  const b = banque("ch6");
+  const noye = o.calculerOuvrage({ ...DALOT, tw: 2.5 });
+  assert.equal(noye.etatSortie, "noyée");
+  vaut(q(b, "ch6-e2", 1), noye.sortieC.HW, "HW sortie noyée");
+  vaut(q(b, "ch6-e2", 2), noye.HW, "HW retenu");
+  assert.equal(noye.controle, "sortie");
+  const longue = o.calculerOuvrage({ ...DALOT, L: 45 });
+  vaut(q(b, "ch6-e3", 0), longue.entreeC.HW, "HW entrée inchangé par la longueur");
+  vaut(q(b, "ch6-e3", 1), longue.sortieC.HW, "HW sortie après allongement");
+  assert.ok(longue.sortieC.HW < o.calculerOuvrage(DALOT).sortieC.HW,
+    "allonger sur une pente abaisse HW sous contrôle à la sortie");
+});
+
+test("ch6 — tête et cellules recalculées", () => {
+  const b = banque("ch6");
+  vaut(q(b, "ch6-e4", 0),
+    o.calculerOuvrage({ ...DALOT, entree: "box-ailes-paralleles" }).entreeC.HW, "ailes parallèles");
+  const deux = o.calculerOuvrage({ ...DALOT, cellules: 2 });
+  vaut(q(b, "ch6-e4", 2), deux.entreeC.X, "X à deux cellules");
+  vaut(q(b, "ch6-e4", 3), deux.HW, "HW à deux cellules");
+  assert.equal(deux.entreeC.regime, "transition", "le régime bascule en transition");
+});
+
+test("ch6 — buse et exception de la correction de pente", () => {
+  const b = banque("ch6");
+  const base = { forme: "buse", D: 1.2, Q: 2, L: 14, J: 0.015, K: 70, tw: 0 };
+  const vive = o.calculerOuvrage({ ...base, entree: "buse-arete-vive" });
+  vaut(q(b, "ch6-e5", 0), vive.entreeC.X, "X de la buse");
+  vaut(q(b, "ch6-e5", 1), vive.entreeC.HW, "HW entrée béton arête vive");
+  const talus = o.calculerOuvrage({ ...base, entree: "buse-metal-talus" });
+  vaut(q(b, "ch6-e5", 2), talus.entreeC.HW, "HW entrée métallique au talus");
+  assert.ok(talus.entreeC.HW > vive.entreeC.HW, "l'entrée au talus demande plus de charge");
+});
+
+test("ch6 — vitesse et régime recalculés", () => {
+  const b = banque("ch6");
+  const r = o.calculerOuvrage(DALOT);
+  vaut(q(b, "ch6-e6", 0), r.profondeurNormale, "tirant normal");
+  vaut(q(b, "ch6-e6", 1), r.vitesse, "vitesse");
+  assert.ok(r.profondeurNormale < r.profondeurCritique, "écoulement torrentiel");
+  assert.equal(r.penteSuperieureACritique, true, "pente au-dessus de la pente critique");
+  assert.equal(r.vitesseOk, false, "au-delà de la vitesse admissible de 3 m/s");
 });
