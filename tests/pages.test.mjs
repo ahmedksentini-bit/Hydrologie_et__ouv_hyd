@@ -89,3 +89,52 @@ test("le bassin de démonstration est cohérent", () => {
   // l'exutoire est sur le tracé de la route
   assert.equal(bv.exutoire[1], bv.ligneRoute, "exutoire sur la route");
 });
+
+test("les stations SOGREAH sont cohérentes et dans l'emprise des planches", () => {
+  const j = JSON.parse(lire("data/stations-sogreah.json"));
+  assert.equal(j.stations.length, 19);
+  for (const s of j.stations) {
+    assert.ok(s.nom && Number.isFinite(s.lon) && Number.isFinite(s.lat), `${s.nom} : coordonnées`);
+    // les planches couvrent le Centre et le Sud, rien au-dessus de 36,3° N
+    assert.ok(s.lat > 32 && s.lat < 36.3, `${s.nom} : latitude hors des planches`);
+    assert.ok(s.lon > 7.5 && s.lon < 11.6, `${s.nom} : longitude hors des planches`);
+    // la seule règle universelle
+    if (s.P10 !== null) assert.ok(s.P10 < s.P100, `${s.nom} : P10 < P100`);
+    // et le drapeau doit correspondre à la donnée, pas la précéder
+    const depasse = s.P10 !== null && s.P0 >= s.P10;
+    assert.equal(!!s.seuilAuDessusDeP10, depasse, `${s.nom} : drapeau P0 ≥ P10`);
+  }
+  const marquees = j.stations.filter((s) => s.seuilAuDessusDeP10).map((s) => s.nom);
+  assert.deepEqual(marquees, ["Tozeur", "Kébili", "Douz"], "le Sud saharien");
+  assert.equal(j.stations.filter((s) => s.P10 === null).length, 1, "une lecture incomplète");
+});
+
+test("l'échelle séquentielle de la carte est monotone et d'une seule teinte", () => {
+  const src = lire("src/cours-ch4-stations.js");
+  const m = /const RAMPE = \[([^\]]+)\]/.exec(src);
+  assert.ok(m, "rampe déclarée");
+  const rampe = m[1].match(/#[0-9a-f]{6}/gi);
+  assert.equal(rampe.length, 5, "cinq pas contrôlés");
+
+  // luminance relative WCAG : elle doit décroître strictement (clair → foncé)
+  const lum = (hex) => {
+    const v = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  };
+  const L = rampe.map(lum);
+  for (let i = 1; i < L.length; i++)
+    assert.ok(L[i] < L[i - 1], `pas ${i} : clarté non décroissante`);
+  // le pas le plus clair doit rester lisible sur le fond de carte #f8fafc
+  const contraste = (a, b) => {
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+    return (x + 0.05) / (y + 0.05);
+  };
+  assert.ok(contraste(rampe[0], "#f8fafc") >= 2,
+    `pas le plus clair à ${contraste(rampe[0], "#f8fafc").toFixed(2)}:1, plancher 2:1`);
+  // une seule teinte : tous les pas dominés par le bleu
+  for (const c of rampe) {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+    assert.ok(b > r && b >= g, `${c} n'est pas dans la teinte bleue`);
+  }
+});

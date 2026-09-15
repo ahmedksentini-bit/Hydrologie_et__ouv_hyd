@@ -262,6 +262,50 @@
        aller comprendre dans l'histoire du poste avant de toucher au calcul.</p>
   </div>
 
+
+  <h3>Le niveau de confiance ne se choisit pas : il se déduit</h3>
+  <p>Un verdict « conservée / rejetée » à 5 % laisse la question la plus utile sans réponse :
+     <strong>à partir de quel niveau</strong> l'hypothèse tient-elle ? Le p du test la donne
+     directement. Un test rejette si p &lt; α, donc il conserve pour tout α ≤ p, c'est-à-dire
+     à tout niveau de confiance supérieur ou égal à 1 − p :</p>
+  <p class="formula">niveau à partir duquel l'hypothèse est conservée = 1 − p</p>
+  <p>Chacune des trois hypothèses reçoit ainsi son niveau — l'homogénéité prenant le plus
+     défavorable de ses deux tests. Et comme il faut qu'elles tiennent <em>toutes les
+     trois en même temps</em>, on retient le plus exigeant :</p>
+  <p class="formula">niveau retenu = max( 1 − p<sub>stationnarité</sub> ,
+     1 − p<sub>indépendance</sub> , 1 − p<sub>homogénéité</sub> )</p>
+  <div class="hint"><strong>Un niveau élevé n'est pas une bonne nouvelle.</strong> C'est le
+     contresens à éviter absolument, parce que « 99,8 % de confiance » sonne comme une
+     réussite. Il signifie l'inverse : qu'il faut se réclamer de 99,8 % de confiance pour
+     continuer à conserver l'hypothèse, donc qu'elle ne tient que de justesse. Un niveau
+     retenu <em>bas</em> — 50 ou 60 % — décrit une série confortable, dont les trois
+     hypothèses tiennent sans effort.</div>
+  <p>Ce niveau ne dépend pas du seuil coché dans le calculateur : il ne se choisit pas, il se
+     déduit de la série. Et il se reporte tel quel sur l'<strong>intervalle de confiance du
+     quantile</strong>, plus bas : une série dont un test passe de justesse impose ainsi un
+     intervalle plus large. Le doute sur les hypothèses se propage jusqu'au quantile, ce qui
+     est exactement l'effet recherché.</p>
+  <div class="sanity-check"><h3>Ce que la propagation change, en millimètres</h3>
+    <p>Deux séries de longueur voisine, ajustées par la même loi de Gumbel. La première —
+       celle du calculateur — conserve ses trois hypothèses dès <strong>57,87 %</strong> :
+       son intervalle centennal va de 104 à 138 mm, soit <strong>34 mm</strong> de large.
+       La seconde, fortement autocorrélée, ne les conserve qu'à partir de
+       <strong>99,98 %</strong> : le même intervalle s'étend de 53 à 142 mm, soit
+       <strong>89 mm</strong>.</p>
+    <p>Presque trois fois plus large, pour un défaut qui ne se voit pas sur l'ajustement —
+       les points s'alignent aussi bien dans les deux cas. C'est précisément ce que les
+       tests servent à faire apparaître, et ce que le niveau retenu transporte jusqu'au
+       quantile. Lire les deux séries à 95 % par convention aurait effacé la différence.</p>
+  </div>
+
+  <div class="hint"><strong>Deux précisions de méthode.</strong> Le niveau d'un test
+     d'hypothèse et celui d'un intervalle d'estimation ne sont pas le même objet : les
+     chaîner est une <em>convention de projet</em>, qui rend la lecture de l'ajustement
+     cohérente avec la validation de la série, et non une identité mathématique. En
+     revanche, prendre le maximum répond correctement à un vrai problème : trois tests
+     appliqués ensemble rejettent plus souvent qu'un seul, et retenir le plus exigeant est
+     la réponse conservatrice à cette inflation.</div>
+
   <h3>Ajuster : la loi de Gumbel</h3>
   <p>Les maxima annuels suivent bien, en climat méditerranéen et semi-aride, la loi de
      Gumbel. Sa fonction de répartition s'écrit</p>
@@ -378,6 +422,7 @@
           <option value="aucune">Aucun</option></select></div></div>
       <div class="field"><label for="gNiveau">Niveau de confiance</label>
         <div class="input-wrap"><select id="gNiveau">
+          <option value="tests" selected>dicté par les tests de la série</option>
           <option value="0.95">95 %</option><option value="0.90">90 %</option>
           <option value="0.80">80 %</option></select></div></div>
       <div class="field"><label for="gPosition">Position de tracage</label>
@@ -527,7 +572,9 @@
   <p>Trois lectures de cartes suffisent. On lit au <strong>centre de gravité du bassin</strong>,
      jamais au franchissement ; les zones sont des plages, sans interpolation ; et la
      lecture se reporte dans la note avec les <strong>coordonnées du point lu</strong>.
-     Contrôle obligatoire : P<sub>0</sub> &lt; P<sub>10</sub> &lt; P<sub>100</sub>.</p>
+     Contrôle obligatoire : <strong>P<sub>10</sub> &lt; P<sub>100</sub></strong>. On ajoute
+     souvent P<sub>0</sub> &lt; P<sub>10</sub> à ce contrôle : c'est vrai au Centre, et faux
+     dans le Sud saharien — voir plus bas.</p>
 
   <figure class="planche"><img src="assets/carte_sogreah_p0.png" alt="Carte du seuil de ruissellement P0" loading="lazy">
     <figcaption>Seuil de ruissellement P<sub>0</sub> — zones 10 à 50 mm. Planche redessinée,
@@ -541,6 +588,42 @@
      — sols secs et perméables, il faut plus de pluie avant que le ruissellement démarre —
      tandis que la pluie journalière rare croît vers la côte Est et le Sud-Est. Les deux
      effets se combinent dans (P<sub>T</sub> − P<sub>0</sub>).</p>
+
+  <div class="calc" id="calcStations">
+    <h3>Les mêmes lectures, cliquables</h3>
+    <p class="method-note" style="margin:0 0 12px">Les planches ci-dessus sont des images :
+       on y lit une zone, on n'y clique pas. Voici les mêmes valeurs rattachées à des
+       coordonnées. La couleur code la grandeur choisie — une seule teinte, du clair au
+       foncé, pour que l'ordre se lise sans légende. Cliquer une localité donne sa lecture
+       complète, puis ce que la formule en fait.</p>
+    <div class="data-grid">
+      <div class="field"><label for="stGrandeur">Grandeur en couleur</label>
+        <div class="input-wrap"><select id="stGrandeur"></select></div></div>
+      <div class="field"><label for="stT">Période de retour</label>
+        <div class="input-wrap"><select id="stT">
+          <option>10</option><option>20</option><option>30</option>
+          <option selected>50</option><option>100</option></select><span class="unit">ans</span></div></div>
+      <div class="field"><label for="stS">Surface du bassin</label>
+        <div class="input-wrap"><input id="stS" type="text" inputmode="decimal" value="50"><span class="unit">km²</span></div></div>
+    </div>
+    <div class="duo">
+      <div><div id="stCarte"></div><div id="stEchelle"></div></div>
+      <div id="stFiche"></div>
+    </div>
+  </div>
+
+  <div class="sanity-check"><h3>Trois localités où le contrôle de cohérence tombe</h3>
+    <p>La règle que l'on énonce d'ordinaire — P₀ &lt; P₁₀ &lt; P₁₀₀ — est vraie au Centre et
+       fausse au Sud. À <strong>Tozeur, Kébili et Douz</strong>, le seuil de ruissellement
+       vaut 50 mm quand la pluie journalière décennale n'en fait que 40. Ce n'est pas une
+       erreur de relevé : c'est la description exacte d'un milieu saharien, où il faut une
+       crue plus rare que décennale pour que quoi que ce soit ruisselle.</p>
+    <p>La formule y donnerait (40 − 50)/12 &lt; 0, c'est-à-dire un <strong>débit
+       négatif</strong>. Un débit négatif n'est pas un petit débit : c'est un résultat qui
+       n'existe pas, et qu'il faut refuser en disant pourquoi plutôt que de le laisser
+       traverser une synthèse. Ce qui reste universel, c'est <strong>P₁₀ &lt; P₁₀₀</strong> ;
+       le reste se vérifie, il ne se suppose pas.</p>
+  </div>
 
   <h3>Les régionalisations tunisiennes</h3>
   <p>Six méthodes, six familles de coefficients calés sur des jeux de bassins différents.
@@ -1710,6 +1793,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch2.js"></script>
 <script type="module" src="src/cours-ch3.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
+<script type="module" src="src/cours-ch4-stations.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>

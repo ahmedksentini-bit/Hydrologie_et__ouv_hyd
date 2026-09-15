@@ -2,7 +2,8 @@
 // chronologique : d'abord les trois hypothèses testées, ensuite l'ajustement.
 // C'est l'ordre du travail réel, et c'est pourquoi les blocs sont dans cet ordre.
 import { LOIS, ajuster, frequenceEmpirique, yGumbel, ecartKs, ecartQuadratique,
-         bandeGumbel, bandeBootstrap, controlerSerie } from "./solvers-stats.js";
+         bandeGumbel, bandeBootstrap, controlerSerie, niveauApplicable }
+  from "./solvers-stats.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
@@ -34,27 +35,49 @@ function majTests() {
     el("gVerdict").textContent = "Saisir au moins huit valeurs pour que les tests aient un sens.";
     return;
   }
-  const { essais } = controlerSerie(serie, seuil);
+  const { essais, hypotheses, retenu } = controlerSerie(serie, seuil);
   const rejetes = essais.filter((e) => e.p < seuil);
 
   el("gTests").innerHTML = `<table class="resultats">
-    <thead><tr><th>Test</th><th>Hypothèse</th><th>Statistique</th><th>p</th><th>Verdict</th></tr></thead>
+    <thead><tr><th>Test</th><th>Hypothèse</th><th>Statistique</th><th>p</th>
+      <th>Conservée à partir de</th><th>Verdict</th></tr></thead>
     <tbody>${essais.map((e) => `<tr${e.p < seuil ? ' class="alerte"' : ""}>
       <td>${e.test}</td><td class="motif">${e.hypothese}</td>
       <td class="motif">${detail(e)}</td>
       <td class="q">${e.p < 1e-4 ? "&lt; 0,0001" : fr(e.p, 4)}</td>
+      <td class="${e.test === retenu.test && e.famille === retenu.famille ? "q retenue" : "q"}">${fr((1 - e.p) * 100, 2)} %</td>
       <td class="motif"><strong>${e.verdict}</strong>${e.sens ? ` — ${e.sens}` : ""}</td>
-    </tr>`).join("")}</tbody></table>`;
+    </tr>`).join("")}</tbody></table>
+    <div class="data-summary" style="margin-top:12px">
+      ${hypotheses.map((h) => `<span><small>${h.famille} — ${h.test}</small>
+        <strong>${fr(h.niveau * 100, 2)} %</strong></span>`).join("")}
+      <span><small><strong>Niveau retenu</strong> = max des trois</small>
+        <strong>${fr(retenu.niveau * 100, 2)} %</strong></span>
+    </div>`;
 
-  el("gVerdict").innerHTML = rejetes.length === 0
-    ? `<strong>Aucune hypothèse rejetée au seuil de ${fr(seuil * 100, 0)} %.</strong>
-       <small><br>Ce qui ne veut pas dire « vérifiées » : sur ${serie.length} valeurs, un
-       test ne détecte qu'une anomalie franche. L'ajustement peut se faire, en le disant.</small>`
-    : `<strong>${rejetes.length} hypothèse${rejetes.length > 1 ? "s" : ""} rejetée${rejetes.length > 1 ? "s" : ""} :
-       ${rejetes.map((e) => e.test).join(", ")}.</strong>
-       <small><br>Avant de toucher au calcul, chercher la cause dans l'histoire du poste :
-       déplacement, changement d'appareil, aménagement du bassin. Un ajustement sur cette
-       série donnerait un nombre, pas un quantile.</small>`;
+  // Un niveau ÉLEVÉ n'est pas une bonne nouvelle : il dit qu'une hypothèse ne
+  // tient que de justesse. C'est le contresens que ce bloc doit empêcher.
+  const eleve = retenu.niveau >= 0.95, confortable = retenu.niveau < 0.80;
+  el("gVerdict").innerHTML =
+    `<strong>Les trois hypothèses ne tiennent simultanément qu'à partir de
+     ${fr(retenu.niveau * 100, 2)} % de confiance</strong> — c'est
+     ${retenu.test} (${retenu.famille}) qui commande.
+     <small><br>${confortable
+       ? `Niveau modeste : les trois hypothèses tiennent facilement, et lire l'ajustement à
+          95 % est alors plus exigeant que la série ne le réclame.`
+       : eleve
+         ? `<strong>Un niveau élevé n'est pas une bonne nouvelle</strong> : il dit qu'il faut
+            se réclamer de ${fr(retenu.niveau * 100, 2)} % de confiance pour continuer à
+            conserver l'hypothèse de ${retenu.famille}. Autrement dit, elle ne tient que de
+            justesse. Chercher la cause dans l'histoire du poste — déplacement, changement
+            d'appareil, aménagement du bassin — avant de toucher au calcul.`
+         : `Niveau intermédiaire : aucune hypothèse n'est franchement mise en défaut, mais
+            aucune n'est confortable non plus.`}
+     ${rejetes.length ? `<br>Au seuil de ${fr(seuil * 100, 0)} % que vous avez choisi,
+       ${rejetes.length} test${rejetes.length > 1 ? "s rejettent" : " rejette"} :
+       ${rejetes.map((e) => e.test).join(", ")}.` : ""}
+     <br>Ce niveau retenu ne dépend <em>pas</em> du seuil choisi ci-dessus : il ne se coche
+     pas, il se déduit. C'est lui que l'ajustement reprend plus bas.</small>`;
 }
 
 const detail = (e) => e.test === "Mann-Kendall"
@@ -122,8 +145,16 @@ function figure(serie, ajustements, bande, position) {
 function majAjustement() {
   const serie = lireSerie();
   const position = el("gPosition").value;
-  const niveau = parseFloat(el("gNiveau").value);
   const idLoi = el("gLoi").value;
+
+  // Le niveau de l'intervalle vient par défaut des tests de la série : le doute
+  // sur les hypothèses se propage ainsi jusqu'au doute sur le quantile.
+  const choixNiveau = el("gNiveau").value;
+  const dicte = choixNiveau === "tests" && serie.length >= 8
+    ? controlerSerie(serie).retenu : null;
+  const applicable = dicte ? niveauApplicable(dicte.niveau) : null;
+  const niveau = applicable ? applicable.niveau
+    : choixNiveau === "tests" ? 0.95 : parseFloat(choixNiveau);
 
   if (serie.length < 3) {
     el("gFig").innerHTML = ""; el("gTable").innerHTML = ""; el("gLegende").innerHTML = "";
@@ -178,8 +209,14 @@ function majAjustement() {
   el("gOut").innerHTML =
     `<strong>${choisi.nom}</strong> (${choisi.methode}) — ${choisi.resume} ·
      x₁₀₀ = ${fr(choisi.quantile(100), 1)} mm
-     ${icCent ? `, intervalle ${fr(niveau * 100, 0)} % : ${fr(icCent.bas, 0)} à ${fr(icCent.haut, 0)} mm
+     ${icCent ? `, intervalle ${fr(niveau * 100, 2)} % : ${fr(icCent.bas, 0)} à ${fr(icCent.haut, 0)} mm
        (${methode === "kite" ? "formule de Kite" : "bootstrap"})` : ""}.
+     ${dicte ? `<small><br><strong>Niveau dicté par les tests de la série</strong> :
+       ${fr(dicte.niveau * 100, 2)} %, commandé par ${dicte.test} (${dicte.famille})${
+         applicable.borne ? ` — ${applicable.sens} à ${fr(niveau * 100, 1)} % pour rester
+         exploitable` : ""}. Une série dont un test passe de justesse impose ainsi un
+       intervalle plus large : le doute sur les hypothèses se propage jusqu'au quantile.</small>`
+       : ""}
      <small><br>Les cinq lois s'échelonnent de ${fr(Math.min(...etendue), 0)} à
      ${fr(Math.max(...etendue), 0)} mm au centennal${icCent
        ? ` — soit ${fr(Math.max(...etendue) - Math.min(...etendue), 0)} mm d'écart entre lois,

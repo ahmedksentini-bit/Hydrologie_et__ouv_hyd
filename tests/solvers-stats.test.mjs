@@ -199,3 +199,86 @@ test("Kolmogorov-Smirnov — classe les lois, et annonce sa limite", () => {
   const decalee = { quantile: (T) => s.ajuster("gumbel", SERIE).quantile(T) + 40 };
   assert.ok(s.ecartKs(SERIE, decalee).D > ks.D, "une loi décalée s'écarte davantage");
 });
+
+test("niveau de confiance — chaque test dit à partir de quand il conserve", () => {
+  // Un test rejette si p < α, donc conserve pour α ≤ p : le seuil est 1 − p.
+  proche(s.niveauDeConfiance(0.05), 0.95, 1e-12, "p = 0,05");
+  proche(s.niveauDeConfiance(0.6732), 1 - 0.6732, 1e-12, "un p élevé demande peu");
+  // propriété : le niveau est décroissant en p, et un test défavorable EXIGE plus
+  assert.ok(s.niveauDeConfiance(0.001) > s.niveauDeConfiance(0.5),
+    "plus le test est défavorable, plus le niveau exigé est haut");
+
+  const r = s.controlerSerie(SERIE);
+  assert.equal(r.hypotheses.length, 3, "trois hypothèses, quatre tests");
+  assert.deepEqual(r.hypotheses.map((h) => h.famille),
+    ["stationnarité", "indépendance", "homogénéité"]);
+  // l'homogénéité retient le plus défavorable de ses deux tests
+  const homo = r.hypotheses.find((h) => h.famille === "homogénéité");
+  assert.equal(homo.tests.length, 2, "Wilcoxon et Pettitt");
+  proche(homo.p, Math.min(...homo.tests.map((t) => t.p)), 1e-12, "le pire des deux commande");
+  // le niveau retenu est le maximum des trois
+  proche(r.retenu.niveau, Math.max(...r.hypotheses.map((h) => h.niveau)), 1e-12,
+    "niveau retenu = max des trois");
+  proche(r.retenu.niveau, 1 - Math.min(...r.essais.map((e) => e.p)), 1e-12,
+    "équivaut à 1 − min(p) sur tous les tests");
+  // et il ne dépend PAS du seuil coché
+  for (const seuil of [0.01, 0.05, 0.10])
+    proche(s.controlerSerie(SERIE, seuil).retenu.niveau, r.retenu.niveau, 1e-12,
+      `indépendant du seuil ${seuil}`);
+});
+
+test("niveau retenu — les séries d'école le commandent par le bon test", () => {
+  const lire = (t) => s.controlerSerie(t).retenu;
+  const tendance = "39 60 32 43 50 70 51 56 39 62 49 67 52 53 63 25 93 68 68 40 48 67 79 67 73 75 63 74 56 89"
+    .split(" ").map(Number);
+  let r = lire(tendance);
+  assert.equal(r.famille, "stationnarité", "la tendance commande");
+  assert.ok(r.niveau > 0.99, `niveau ${(r.niveau * 100).toFixed(2)} %`);
+
+  const persistante = "25 20 26 40 50 51 67 69 82 66 63 38 26 17 34 35 33 36 35 49 62 51 29 39 50 29 37 48 67 64"
+    .split(" ").map(Number);
+  r = lire(persistante);
+  assert.equal(r.famille, "indépendance", "la persistance commande");
+  assert.equal(r.test, "Wald-Wolfowitz");
+
+  const rupture = "71 31 19 33 30 45 22 15 37 80 75 74 51 59 85 47 70 70 66 42 76 61 40 74 54 45 77 55 41 78"
+    .split(" ").map(Number);
+  r = lire(rupture);
+  assert.equal(r.famille, "homogénéité", "la rupture commande");
+  assert.equal(r.test, "Pettitt", "et c'est Pettitt qui la trouve, pas Wilcoxon");
+
+  // une série confortable demande un niveau modeste
+  assert.ok(lire(SERIE).niveau < 0.8, "la série d'école tient sans effort");
+});
+
+test("niveau applicable — borné, et la borne se dit", () => {
+  const brut = s.niveauApplicable(0.9998);
+  proche(brut.niveau, 0.999, 1e-12, "abaissé au plafond");
+  assert.equal(brut.borne, true);
+  assert.equal(brut.sens, "abaissé");
+  proche(brut.brut, 0.9998, 1e-12, "la valeur brute reste disponible");
+  const bas = s.niveauApplicable(0.2);
+  proche(bas.niveau, 0.50, 1e-12, "relevé au plancher");
+  assert.equal(bas.sens, "relevé");
+  const dedans = s.niveauApplicable(0.8787);
+  assert.equal(dedans.borne, false);
+  proche(dedans.niveau, 0.8787, 1e-12);
+});
+
+test("la propagation du doute élargit réellement l'intervalle", () => {
+  const persistante = "25 20 26 40 50 51 67 69 82 66 63 38 26 17 34 35 33 36 35 49 62 51 29 39 50 29 37 48 67 64"
+    .split(" ").map(Number);
+  const large = (serie) => {
+    const n = s.niveauApplicable(s.controlerSerie(serie).retenu.niveau).niveau;
+    const ic = s.intervalleGumbel(serie, 100, n);
+    return ic.haut - ic.bas;
+  };
+  const confortable = large(SERIE), suspecte = large(persistante);
+  assert.ok(suspecte > 2 * confortable,
+    `série suspecte ${suspecte.toFixed(1)} mm contre ${confortable.toFixed(1)} mm`);
+  // à niveau conventionnel identique, la différence s'efface
+  const a95 = s.intervalleGumbel(SERIE, 100, 0.95);
+  const b95 = s.intervalleGumbel(persistante, 100, 0.95);
+  assert.ok(b95.haut - b95.bas < a95.haut - a95.bas,
+    "à 95 % pour les deux, la série suspecte paraît même plus sûre — c'est l'effacement qu'on évite");
+});

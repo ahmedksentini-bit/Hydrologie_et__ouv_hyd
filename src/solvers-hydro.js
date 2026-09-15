@@ -233,8 +233,25 @@ export function sogreahPluie(T, P10, P100) {
   return P10 + ((gumbel(T) - 2.25) / (4.6 - 2.25)) * (P100 - P10);
 }
 
-/** SOGREAH — Q = S^0,75 · (P_T − P0) / 12. */
-export const sogreahDebit = (S, PT, P0) => (Math.pow(S, 0.75) * (PT - P0)) / 12;
+/**
+ * SOGREAH — Q = S^0,75 · (P_T − P0) / 12.
+ * Borné à zéro : sous le seuil de ruissellement, il n'y a pas de débit négatif,
+ * il n'y a pas de ruissellement. Le cas se rencontre réellement dans le Sud
+ * saharien, où P0 = 50 mm dépasse la pluie journalière décennale de 40 mm.
+ */
+export const sogreahDebit = (S, PT, P0) =>
+  PT > P0 ? (Math.pow(S, 0.75) * (PT - P0)) / 12 : 0;
+
+/**
+ * Le seuil est-il atteint ? À dire explicitement plutôt que de laisser un zéro
+ * se confondre avec une case vide.
+ */
+export const sogreahRuisselle = (PT, P0) => PT > P0
+  ? { ruisselle: true, motif: null }
+  : { ruisselle: false,
+      motif: `pluie de projet ${PT.toFixed(1).replace(".", ",")} mm sous le seuil de `
+        + `ruissellement ${P0.toFixed(0)} mm : la formule ne produit aucun débit à cette `
+        + `période de retour` };
 
 /**
  * Ghorbel zones I à III — P en MÈTRES (pluie annuelle / 1000), Δh en m, L en km.

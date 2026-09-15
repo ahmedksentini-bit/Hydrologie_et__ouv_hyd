@@ -234,3 +234,25 @@ test("SOGREAH interpole en variable de Gumbel, pas en T", () => {
   const attendu = P10 + ((h.gumbel(50) - 2.25) / (4.6 - 2.25)) * (P100 - P10);
   assert.ok(Math.abs(P50 - attendu) < 1e-9, "position en variable réduite");
 });
+
+// Le seuil de ruissellement peut dépasser la pluie décennale : c'est le cas du
+// Sud saharien, et la formule doit le dire au lieu de sortir un débit négatif.
+test("SOGREAH — sous le seuil, aucun débit, et le motif est explicite", () => {
+  // Tozeur : P0 = 50 mm, P10 = 40 mm
+  const PT10 = h.sogreahPluie(10, 40, 70);
+  assert.equal(PT10, 40, "à 10 ans, P_T vaut P10");
+  const verdict = h.sogreahRuisselle(PT10, 50);
+  assert.equal(verdict.ruisselle, false);
+  assert.match(verdict.motif, /sous le seuil de ruissellement/);
+  assert.equal(h.sogreahDebit(50, PT10, 50), 0, "zéro, jamais un débit négatif");
+  // à une période plus rare, le seuil est franchi
+  const PT50 = h.sogreahPluie(50, 40, 70);
+  assert.ok(PT50 > 50, `P_T à 50 ans vaut ${PT50.toFixed(1)} mm`);
+  assert.equal(h.sogreahRuisselle(PT50, 50).ruisselle, true);
+  assert.ok(h.sogreahDebit(50, PT50, 50) > 0);
+  // la borne est exacte : au seuil lui-même, rien ne ruisselle
+  assert.equal(h.sogreahDebit(50, 50, 50), 0, "P_T = P0 : pas de ruissellement");
+  assert.equal(h.sogreahRuisselle(50, 50).ruisselle, false);
+  // et le cas courant reste inchangé
+  proche(h.sogreahDebit(2.35, 96.72, 20), 12.13, 0.01, "Kasserine, inchangé");
+});

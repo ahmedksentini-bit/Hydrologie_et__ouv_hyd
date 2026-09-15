@@ -1,0 +1,190 @@
+{
+ "source": "Cartes SOGREAH du seuil de ruissellement P0 et des pluies journalières P10 et P100 — planches Centre et Sud, redessinées. Valeurs de ZONE lues aux localités.",
+ "avertissements": [
+  "Ce sont des valeurs de zone, pas des mesures ponctuelles : deux localités d'une même plage portent la même valeur.",
+  "Les planches couvrent le Centre et le Sud. Pour le Nord, la planche d'origine fait foi.",
+  "Aucune interpolation entre zones : ce sont des plages, pas des isohyètes.",
+  "La lecture se fait au centre de gravité du bassin, pas au franchissement."
+ ],
+ "coherence": {
+  "regle": "P10 < P100 partout ; en revanche P0 peut DÉPASSER P10 dans le Sud saharien.",
+  "consequence": "Là où P0 ≥ P10, la formule ne produit aucun débit décennal : le seuil n'est pas atteint."
+ },
+ "grandeurs": [
+  {
+   "id": "P0",
+   "libelle": "Seuil de ruissellement P₀",
+   "court": "P₀",
+   "unite": "mm"
+  },
+  {
+   "id": "P10",
+   "libelle": "Pluie journalière décennale P₁₀",
+   "court": "P₁₀",
+   "unite": "mm"
+  },
+  {
+   "id": "P100",
+   "libelle": "Pluie journalière centennale P₁₀₀",
+   "court": "P₁₀₀",
+   "unite": "mm"
+  }
+ ],
+ "stations": [
+  {
+   "nom": "Thala",
+   "lon": 8.67,
+   "lat": 35.57,
+   "P0": 20,
+   "P10": null,
+   "P100": 90
+  },
+  {
+   "nom": "Kasserine",
+   "lon": 8.83,
+   "lat": 35.17,
+   "P0": 20,
+   "P10": 75,
+   "P100": 120
+  },
+  {
+   "nom": "Sbeitla",
+   "lon": 9.12,
+   "lat": 35.24,
+   "P0": 20,
+   "P10": 80,
+   "P100": 200
+  },
+  {
+   "nom": "Sidi Bouzid",
+   "lon": 9.48,
+   "lat": 35.04,
+   "P0": 20,
+   "P10": 80,
+   "P100": 200
+  },
+  {
+   "nom": "Kairouan",
+   "lon": 10.1,
+   "lat": 35.68,
+   "P0": 40,
+   "P10": 80,
+   "P100": 200
+  },
+  {
+   "nom": "El Jem",
+   "lon": 10.71,
+   "lat": 35.3,
+   "P0": 10,
+   "P10": 80,
+   "P100": 250
+  },
+  {
+   "nom": "Mahdia",
+   "lon": 11.06,
+   "lat": 35.5,
+   "P0": 10,
+   "P10": 110,
+   "P100": 250
+  },
+  {
+   "nom": "Sfax",
+   "lon": 10.76,
+   "lat": 34.74,
+   "P0": 10,
+   "P10": 110,
+   "P100": 250
+  },
+  {
+   "nom": "Maknassy",
+   "lon": 9.61,
+   "lat": 34.63,
+   "P0": 40,
+   "P10": 80,
+   "P100": 250
+  },
+  {
+   "nom": "Gafsa",
+   "lon": 8.78,
+   "lat": 34.42,
+   "P0": 50,
+   "P10": 75,
+   "P100": 150
+  },
+  {
+   "nom": "Métlaoui",
+   "lon": 8.4,
+   "lat": 34.32,
+   "P0": 50,
+   "P10": 75,
+   "P100": 150
+  },
+  {
+   "nom": "Tozeur",
+   "lon": 8.13,
+   "lat": 33.92,
+   "P0": 50,
+   "P10": 40,
+   "P100": 70,
+   "seuilAuDessusDeP10": true
+  },
+  {
+   "nom": "Kébili",
+   "lon": 8.97,
+   "lat": 33.7,
+   "P0": 50,
+   "P10": 40,
+   "P100": 70,
+   "seuilAuDessusDeP10": true
+  },
+  {
+   "nom": "Douz",
+   "lon": 9.02,
+   "lat": 33.46,
+   "P0": 50,
+   "P10": 40,
+   "P100": 70,
+   "seuilAuDessusDeP10": true
+  },
+  {
+   "nom": "Gabès",
+   "lon": 10.1,
+   "lat": 33.88,
+   "P0": 40,
+   "P10": 80,
+   "P100": 250
+  },
+  {
+   "nom": "Zarzis",
+   "lon": 11.11,
+   "lat": 33.5,
+   "P0": 40,
+   "P10": 110,
+   "P100": 250
+  },
+  {
+   "nom": "Médenine",
+   "lon": 10.5,
+   "lat": 33.35,
+   "P0": 40,
+   "P10": 60,
+   "P100": 250
+  },
+  {
+   "nom": "Ben Gardane",
+   "lon": 11.22,
+   "lat": 33.14,
+   "P0": 40,
+   "P10": 80,
+   "P100": 250
+  },
+  {
+   "nom": "Tataouine",
+   "lon": 10.45,
+   "lat": 32.93,
+   "P0": 40,
+   "P10": 60,
+   "P100": 250
+  }
+ ]
+}

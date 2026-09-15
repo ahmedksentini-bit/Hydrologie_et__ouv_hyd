@@ -437,6 +437,102 @@
           "explication": "C'est la limite structurelle du procédé. Le bootstrap est universel et honnête sur le principe — il s'applique à n'importe quelle loi — mais dans l'extrapolation il est optimiste, parce qu'il ne peut pas inventer un événement plus fort que le plus fort observé. Sur la partie centrale, en revanche, il est parfaitement légitime."
         }
       ]
+    },
+    {
+      "id": "ch2-e11",
+      "titre": "Le niveau que la série impose",
+      "difficulte": 2,
+      "enonce": "Sur la série de 20 maxima du chapitre, les quatre tests donnent : Mann-Kendall p = 0,6732 (stationnarité), Wald-Wolfowitz p = 0,4213 (indépendance), Wilcoxon p = 0,5967 et Pettitt p = 1,0000 (homogénéité).",
+      "questions": [
+        {
+          "texte": "À partir de quel niveau de confiance l'hypothèse d'indépendance est-elle conservée ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 57.87,
+          "tolerance": 0.5,
+          "explication": "Un test rejette si p < α, donc il conserve pour tout α ≤ p — c'est-à-dire à tout niveau 1 − α ≥ 1 − p. Ici 1 − 0,4213 = 0,5787, soit 57,87 %."
+        },
+        {
+          "texte": "Quel niveau l'homogénéité impose-t-elle, sachant qu'elle est jugée par deux tests ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 40.33,
+          "tolerance": 0.5,
+          "explication": "C'est le plus défavorable des deux qui commande : Wilcoxon avec p = 0,5967 donne 40,33 %, contre 0 % pour Pettitt dont le p vaut 1. Une hypothèse jugée par plusieurs tests retient le pire d'entre eux — sans quoi il suffirait d'en ajouter un complaisant."
+        },
+        {
+          "texte": "Quel est alors le niveau retenu pour la suite du calcul ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 57.87,
+          "tolerance": 0.5,
+          "explication": "max(32,68 ; 57,87 ; 40,33) = 57,87 %, commandé par Wald-Wolfowitz. C'est le plus petit niveau auquel les trois hypothèses tiennent SIMULTANÉMENT : en dessous, l'indépendance serait rejetée."
+        },
+        {
+          "texte": "Ce niveau dépend-il du seuil de 5 % coché dans le calculateur ?",
+          "type": "choix",
+          "options": [
+            "Oui : c'est lui qui définit le rejet",
+            "Non : il se déduit des p, pas du seuil. Le seuil sert à afficher un verdict, le niveau retenu à porter le doute plus loin"
+          ],
+          "reponse": 1,
+          "explication": "C'est tout l'intérêt de la construction. Un seuil est un choix d'affichage ; 1 − p est une propriété de la série. Cocher 1 % au lieu de 5 % change les verdicts affichés, jamais le niveau retenu."
+        }
+      ]
+    },
+    {
+      "id": "ch2-e12",
+      "titre": "Quand un niveau élevé est une mauvaise nouvelle",
+      "difficulte": 3,
+      "enonce": "Deux séries de trente ans, ajustées par la même loi de Gumbel. La première conserve ses trois hypothèses dès 57,87 %. La seconde, fortement autocorrélée, ne les conserve qu'à partir de 99,98 % — Wald-Wolfowitz y donne p = 0,0002.",
+      "questions": [
+        {
+          "texte": "Que signifie « niveau retenu = 99,98 % » pour la seconde série ?",
+          "type": "choix",
+          "options": [
+            "Que ses hypothèses sont vérifiées avec une confiance de 99,98 %",
+            "Qu'il faut se réclamer de 99,98 % de confiance pour continuer à conserver l'indépendance — donc qu'elle ne tient que de justesse"
+          ],
+          "reponse": 1,
+          "explication": "C'est le contresens à éviter, parce que le nombre sonne comme une réussite. Un niveau retenu ÉLEVÉ décrit une série suspecte ; un niveau BAS — 50 ou 60 % — décrit une série confortable, dont les hypothèses tiennent sans effort. La lecture s'inverse par rapport à l'intuition."
+        },
+        {
+          "texte": "Intervalle de confiance centennal de la première série à son niveau retenu : 103,7 à 138,0 mm. Quelle largeur ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 34.3,
+          "tolerance": 1.5,
+          "explication": "138,0 − 103,7 = 34,3 mm autour de 120,9 mm. Un niveau modeste donne un intervalle étroit : la série ne réclame pas davantage."
+        },
+        {
+          "texte": "Celui de la seconde, à son niveau retenu borné à 99,9 % : 53,3 à 141,6 mm. Largeur ?",
+          "type": "nombre",
+          "unite": "mm",
+          "reponse": 88.3,
+          "tolerance": 2.5,
+          "explication": "141,6 − 53,3 = 88,3 mm, soit 2,6 fois plus large que la première — pour une série de même longueur et une loi identique. Le défaut d'indépendance ne se voit pas sur l'ajustement, où les points s'alignent tout aussi bien : c'est le niveau retenu qui le transporte jusqu'au quantile."
+        },
+        {
+          "texte": "Lues toutes les deux au niveau conventionnel de 95 %, leurs intervalles font 87,3 et 49,4 mm. Qu'en conclure ?",
+          "type": "choix",
+          "options": [
+            "Que la seconde série est plus sûre, puisque son intervalle est plus étroit",
+            "Que la convention efface le défaut, et l'inverse même : la série suspecte paraît alors la plus fiable des deux"
+          ],
+          "reponse": 1,
+          "explication": "À 95 % pour les deux, c'est l'écart-type de chaque échantillon qui décide, et la série autocorrélée se trouve être la moins dispersée. Le classement s'inverse, et rien ne signale que l'une des deux viole une hypothèse de l'ajustement. Faire dicter le niveau par les tests, c'est refuser cet effacement."
+        },
+        {
+          "texte": "Pourquoi borner le niveau retenu à 99,9 % au lieu d'appliquer 99,98 % ?",
+          "type": "choix",
+          "options": [
+            "Pour rendre l'intervalle plus étroit",
+            "Parce qu'au-delà l'intervalle cesse d'être exploitable — et parce qu'un niveau aussi extrême est un signal à examiner, pas une largeur à appliquer"
+          ],
+          "reponse": 1,
+          "explication": "La borne est affichée avec la valeur brute, jamais appliquée en silence. Un niveau retenu de 99,98 % dit qu'il faut aller regarder l'histoire du poste — déplacement, changement d'appareil, cycles pluriannuels — avant de produire un quantile. Élargir l'intervalle ne répare pas une série non conforme, cela documente seulement le doute."
+        }
+      ]
     }
   ]
 }

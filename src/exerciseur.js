@@ -114,7 +114,11 @@ function calculer() {
   else {
     const PT = h.sogreahPluie(T, P10, P100);
     if (PT <= P0) rows.push(ligne("SOGREAH", 0, "ko", "P_T ≤ P0 : pas de ruissellement"));
-    else { const q = h.sogreahDebit(S, PT, P0); rows.push(ligne("SOGREAH", q, "ok")); retenus.push(q); }
+    else {
+      const seuil = h.sogreahRuisselle(PT, P0);
+      if (!seuil.ruisselle) rows.push(ligne("SOGREAH", 0, "ko", seuil.motif));
+      else { const q = h.sogreahDebit(S, PT, P0); rows.push(ligne("SOGREAH", q, "ok")); retenus.push(q); }
+    }
   }
 
   const zg = el("ghorbel").value;

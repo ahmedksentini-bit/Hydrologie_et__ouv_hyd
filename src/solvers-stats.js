@@ -300,7 +300,8 @@ export function mannKendall(serie, seuil = 0.05) {
   const sen = quantileEmpirique(pentes, 0.5);
 
   const p = pBilaterale(Z);
-  return { test: "Mann-Kendall", hypothese: "stationnarité (absence de tendance)",
+  return { test: "Mann-Kendall", famille: "stationnarité",
+           hypothese: "stationnarité (absence de tendance)",
            n, S, variance, Z, p, sen, seuil, verdict: verdict(p, seuil),
            sens: p < seuil ? (S > 0 ? "tendance à la hausse" : "tendance à la baisse") : "aucune tendance décelée" };
 }
@@ -324,7 +325,8 @@ export function waldWolfowitz(serie, seuil = 0.05) {
       / ((n - 1) * (n - 2));
   const u = (R - esperance) / Math.sqrt(variance);
   const p = pBilaterale(u);
-  return { test: "Wald-Wolfowitz", hypothese: "indépendance des valeurs successives",
+  return { test: "Wald-Wolfowitz", famille: "indépendance",
+           hypothese: "indépendance des valeurs successives",
            n, R, esperance, variance, u, p, seuil, verdict: verdict(p, seuil) };
 }
 
@@ -349,7 +351,8 @@ export function wilcoxon(serie, seuil = 0.05) {
   const variance = ((n1 * n2) / 12) * (n + 1 - correction / (n * (n - 1)));
   const u = (W - esperance) / Math.sqrt(variance);
   const p = pBilaterale(u);
-  return { test: "Wilcoxon-Mann-Whitney", hypothese: "homogénéité des deux moitiés",
+  return { test: "Wilcoxon-Mann-Whitney", famille: "homogénéité",
+           hypothese: "homogénéité des deux moitiés",
            n, n1, n2, W, esperance, variance, u, p, seuil, verdict: verdict(p, seuil) };
 }
 
@@ -369,15 +372,73 @@ export function pettitt(serie, seuil = 0.05) {
     if (Math.abs(U) > K) { K = Math.abs(U); tau = t; signe = Math.sign(U); }
   }
   const p = Math.min(1, 2 * Math.exp((-6 * K * K) / (n * n * n + n * n)));
-  return { test: "Pettitt", hypothese: "absence de rupture", n, K, tau, p, seuil,
+  return { test: "Pettitt", famille: "homogénéité",
+           hypothese: "absence de rupture", n, K, tau, p, seuil,
            verdict: verdict(p, seuil),
            sens: p < seuil ? (signe < 0 ? "niveau plus élevé après la rupture"
                                         : "niveau plus faible après la rupture") : "aucune rupture décelée" };
+}
+
+// ── Le niveau de confiance que la série autorise ──────────────────────────
+
+/**
+ * Niveau de confiance à partir duquel un test CONSERVE son hypothèse.
+ * Un test rejette si p < α, donc il conserve pour tout α ≤ p, c'est-à-dire
+ * pour tout niveau de confiance 1 − α ≥ 1 − p. Le seuil est donc 1 − p.
+ * Un p faible — un test défavorable — exige un niveau ÉLEVÉ pour être conservé.
+ */
+export const niveauDeConfiance = (p) => 1 - p;
+
+/** Les trois hypothèses, chacune commandée par son test le plus défavorable. */
+export function parHypothese(essais) {
+  const familles = ["stationnarité", "indépendance", "homogénéité"];
+  return familles.map((famille) => {
+    const tests = essais.filter((e) => e.famille === famille);
+    if (!tests.length) return null;
+    const pire = tests.reduce((a, b) => (b.p < a.p ? b : a));
+    return { famille, p: pire.p, niveau: niveauDeConfiance(pire.p),
+             test: pire.test, tests };
+  }).filter(Boolean);
+}
+
+/**
+ * Niveau de confiance retenu pour la suite du calcul : le MAXIMUM des 1 − p
+ * des trois hypothèses, c'est-à-dire le plus petit niveau auquel elles tiennent
+ * toutes les trois EN MÊME TEMPS. C'est le test le plus défavorable qui commande.
+ *
+ * AVERTISSEMENT DE MÉTHODE : le niveau d'un test d'hypothèse et celui d'un
+ * intervalle d'estimation ne sont pas le même objet. Les chaîner est une
+ * convention de projet — elle rend la lecture de l'ajustement cohérente avec la
+ * validation de la série — et non une identité mathématique. Elle a le mérite
+ * de répondre au problème de multiplicité : trois tests appliqués ensemble
+ * rejettent plus souvent qu'un seul, et prendre le maximum est la réponse
+ * conservatrice à cette inflation.
+ */
+export function niveauRetenu(essais) {
+  const hyp = parHypothese(essais);
+  if (!hyp.length) return null;
+  const commandant = hyp.reduce((a, b) => (b.niveau > a.niveau ? b : a));
+  return { niveau: commandant.niveau, p: commandant.p,
+           famille: commandant.famille, test: commandant.test, hypotheses: hyp };
+}
+
+/**
+ * Niveau réellement applicable à un intervalle de confiance. Hors de
+ * [50 % ; 99,9 %] le nombre cesse d'être exploitable — un intervalle à 5 % ne
+ * dit rien, un intervalle à 99,999 % est sans borne utile. On borne, et on le
+ * DIT : la valeur brute reste affichée à côté.
+ */
+export function niveauApplicable(niveau, { min = 0.50, max = 0.999 } = {}) {
+  if (!Number.isFinite(niveau)) return null;
+  const borne = Math.min(Math.max(niveau, min), max);
+  return { niveau: borne, brut: niveau, borne: Math.abs(borne - niveau) > 1e-12,
+           sens: borne > niveau ? "relevé" : borne < niveau ? "abaissé" : null };
 }
 
 /** Les trois hypothèses d'un coup, dans l'ordre où elles se posent. */
 export function controlerSerie(serie, seuil = 0.05) {
   const essais = [mannKendall(serie, seuil), waldWolfowitz(serie, seuil),
                   wilcoxon(serie, seuil), pettitt(serie, seuil)].filter(Boolean);
-  return { essais, toutesConservees: essais.every((e) => e.p >= seuil), seuil };
+  return { essais, toutesConservees: essais.every((e) => e.p >= seuil), seuil,
+           hypotheses: parHypothese(essais), retenu: niveauRetenu(essais) };
 }

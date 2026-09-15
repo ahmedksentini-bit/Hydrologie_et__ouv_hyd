@@ -111,3 +111,17 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 .schema-oh{margin:18px 0}
 .schema-oh svg{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
 .schema-oh figcaption{margin-top:10px;color:#334155;font-size:13.5px}
+
+/* Échelle séquentielle d'une carte : une teinte, du clair au foncé. */
+.echelle{margin-top:10px}
+.echelle>small{display:block;color:var(--muted);font-weight:700;margin-bottom:6px}
+.echelle-pas{display:flex;flex-wrap:wrap;gap:4px 12px}
+.echelle-pas span{display:flex;align-items:center;gap:6px;font-size:12px;font-variant-numeric:tabular-nums;color:#334155}
+.echelle-pas i{width:16px;height:12px;border-radius:3px;display:inline-block}
+/* Une station se survole, se clique et se tabule. */
+.station{cursor:pointer}
+.station circle{transition:r .12s}
+.station:hover circle{r:9}
+.station:focus-visible{outline:none}
+.station:focus-visible circle{stroke:#0f172a;stroke-width:2.6}
+#stFiche h4{color:#075985}

@@ -47,7 +47,8 @@ maj();
 // interpoler entre deux périodes tabulées — ce qu'aucun manuel n'autorise.
 import {
   GHORBEL_R, GHORBEL_ZONES, FERSI_Y, FRIGUI, KALLEL, FRANCOU_K,
-  rectangleEquivalent, sogreahPluie, sogreahDebit, ghorbelQmax123, ghorbelQmax45,
+  rectangleEquivalent, sogreahPluie, sogreahDebit, sogreahRuisselle,
+  ghorbelQmax123, ghorbelQmax45,
   kallel, fersiEcoulement, fersiQxMoyen, fersiQx, frigui, francouRodier, synthese,
 } from "./solvers-hydro.js";
 
@@ -76,7 +77,9 @@ function methodes(d) {
   if (T < 10) out.push({ nom: "SOGREAH", refus: "calée entre 10 et 100 ans : sous 10 ans, P_T sortirait de l'interpolation" });
   else {
     const PT = sogreahPluie(T, P10, P100);
-    out.push({ nom: "SOGREAH", Q: sogreahDebit(S, PT, P0),
+    const seuil = sogreahRuisselle(PT, P0);
+    if (!seuil.ruisselle) out.push({ nom: "SOGREAH", refus: seuil.motif });
+    else out.push({ nom: "SOGREAH", Q: sogreahDebit(S, PT, P0),
       detail: `P_T = ${fr(PT, 1)} mm (interpolée en y entre P10 et P100) · S^0,75 = ${fr(Math.pow(S, 0.75), 2)}` });
   }
 

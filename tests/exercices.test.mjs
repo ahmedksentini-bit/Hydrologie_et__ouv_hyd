@@ -547,3 +547,51 @@ test("ch8 — la chaîne averse → fossé → descente", () => {
   vaut(q(b, "ch8-e8", 4), d.conjuguee * 100, "conjuguée en cm");
   assert.ok(d.conjuguee / d.yn > 10, "onze fois le tirant amont");
 });
+
+test("ch2 — le niveau de confiance dicté par les tests", () => {
+  const b = banque("ch2");
+  const r = st.controlerSerie(SERIE2);
+  const indep = r.hypotheses.find((x) => x.famille === "indépendance");
+  const homo = r.hypotheses.find((x) => x.famille === "homogénéité");
+  vaut(q(b, "ch2-e11", 0), indep.niveau * 100, "niveau de l'indépendance");
+  vaut(q(b, "ch2-e11", 1), homo.niveau * 100, "niveau de l'homogénéité");
+  vaut(q(b, "ch2-e11", 2), r.retenu.niveau * 100, "niveau retenu");
+  assert.equal(r.retenu.famille, "indépendance", "c'est Wald-Wolfowitz qui commande");
+  // l'homogénéité retient bien le pire de ses deux tests
+  assert.equal(homo.test, "Wilcoxon-Mann-Whitney");
+
+  const persistante = "25 20 26 40 50 51 67 69 82 66 63 38 26 17 34 35 33 36 35 49 62 51 29 39 50 29 37 48 67 64"
+    .split(" ").map(Number);
+  const rp = st.controlerSerie(persistante);
+  const niv = (serie, r2) => st.niveauApplicable(r2.retenu.niveau).niveau;
+  const ic1 = st.intervalleGumbel(SERIE2, 100, niv(SERIE2, r));
+  const ic2 = st.intervalleGumbel(persistante, 100, niv(persistante, rp));
+  vaut(q(b, "ch2-e12", 1), ic1.haut - ic1.bas, "largeur de la série confortable");
+  vaut(q(b, "ch2-e12", 2), ic2.haut - ic2.bas, "largeur de la série suspecte");
+  // le renversement annoncé par la dernière question
+  const a95 = st.intervalleGumbel(SERIE2, 100, 0.95);
+  const b95 = st.intervalleGumbel(persistante, 100, 0.95);
+  assert.ok(b95.haut - b95.bas < a95.haut - a95.bas,
+    "à 95 % pour les deux, la suspecte paraît la plus sûre");
+});
+
+test("ch4 — le seuil de ruissellement de Tozeur", () => {
+  const b = banque("ch4");
+  const [P0, P10, P100] = [50, 40, 70];
+  vaut(q(b, "ch4-e9", 1), h.sogreahPluie(10, P10, P100), "P_T à 10 ans");
+  // la période à laquelle le seuil est franchi, par dichotomie
+  let lo = 10, hi = 100;
+  for (let i = 0; i < 200; i++) {
+    const m = (lo + hi) / 2;
+    if (h.sogreahPluie(m, P10, P100) < P0) lo = m; else hi = m;
+  }
+  vaut(q(b, "ch4-e9", 3), (lo + hi) / 2, "période de franchissement du seuil");
+  vaut(q(b, "ch4-e9", 4), h.sogreahDebit(50, h.sogreahPluie(50, P10, P100), P0), "Q à 50 ans");
+  // et le refus à 10 ans
+  assert.equal(h.sogreahDebit(50, h.sogreahPluie(10, P10, P100), P0), 0);
+  // la station de l'énoncé existe bien dans le fichier, avec ces valeurs
+  const j = JSON.parse(readFileSync(new URL("../data/stations-sogreah.json", import.meta.url)));
+  const t = j.stations.find((s) => s.nom === "Tozeur");
+  assert.deepEqual([t.P0, t.P10, t.P100], [P0, P10, P100], "lecture de Tozeur");
+  assert.equal(t.seuilAuDessusDeP10, true);
+});
