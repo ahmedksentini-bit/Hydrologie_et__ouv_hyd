@@ -55,3 +55,6 @@ a.brand strong,a.brand small{text-decoration:none}
 .exo-score{margin-top:18px;padding:15px;border-radius:12px;background:#f0fdf4;color:#166534;font-weight:900}
 .exo-score.faible{background:#fef2f2;color:#991b1b}
 @media(max-width:560px){.calc .data-grid{grid-template-columns:1fr}}
+
+table.abaque{margin-top:6px}
+table.abaque td.retenue{background:#cffafe;border-radius:6px;box-shadow:inset 0 0 0 2px var(--cyan)}

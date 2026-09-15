@@ -1,0 +1,277 @@
+{
+  "chapitre": "ch4",
+  "exercices": [
+    {
+      "id": "ch4-e1",
+      "titre": "Morphométrie d'un petit bassin",
+      "difficulte": 1,
+      "enonce": "Bassin BV1, région de Kasserine : S = 2,35 km², périmètre P = 7,20 km, longueur de l'écoulement principal L = 2,85 km, dénivelé du profil D = 96 m, pente équivalente Ieq = 3,40 %. Sur la courbe hypsométrique : H 5 % = 800 m, H 95 % = 696 m. Altitudes : H max 816, H min 690, H moyenne 744, H médiane 739, altitude au franchissement 693 m.",
+      "questions": [
+        {
+          "texte": "Indice de compacité de Gravelius Ic ?",
+          "type": "nombre", "unite": "", "reponse": 1.325, "tolerance": 0.01,
+          "explication": "Ic = P / (2√(πS)) = 0,28209 × 7,20 / √2,35 = 0,28209 × 7,20 / 1,5330 = 1,325. Supérieur à 1,12 : le bassin est allongé, ce qui étale l'hydrogramme et abaisse le débit de pointe à surface égale. C'est pourquoi Ic figure au dénominateur de la formule de Ghorbel."
+        },
+        {
+          "texte": "Longueur du rectangle équivalent ?",
+          "type": "nombre", "unite": "km", "reponse": 2.745, "tolerance": 0.03,
+          "explication": "f = Ic·√S/1,128 = 1,325 × 1,5330 / 1,128 = 1,8006 ; √(1 − (1,128/Ic)²) = 0,5246 ; L = f(1 + 0,5246) = 2,745 km et l = f(1 − 0,5246) = 0,856 km. Contrôle : L × l = 2,35 km² = S."
+        },
+        {
+          "texte": "Indice global de pente Ig ?",
+          "type": "nombre", "unite": "m/km", "reponse": 37.89, "tolerance": 0.4,
+          "explication": "Ig = (H5 % − H95 %) / L_rectangle = (800 − 696) / 2,745 = 37,89 m/km. À comparer à Ieq × 10 = 34,0 m/km : proches ici (11 % d'écart) parce que le bassin est petit et le profil régulier, mais ce sont deux indices différents — Ig décrit le relief, Ieq le temps de parcours."
+        },
+        {
+          "texte": "Dénivelée Δh à utiliser dans la formule de Ghorbel ?",
+          "type": "nombre", "unite": "m", "reponse": 46, "tolerance": 0.5,
+          "explication": "Δh = H médiane − altitude au franchissement = 739 − 693 = 46 m. Ce n'est pas H max − H min = 126 m : Δh mesure la chute depuis la moitié de la surface du bassin jusqu'à l'ouvrage, pas l'écart entre le sommet et le point bas."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e2",
+      "titre": "Temps de concentration : quatre formules, une seule retenue",
+      "difficulte": 2,
+      "enonce": "Toujours BV1 : S = 2,35 km², L = 2,85 km, D = 96 m, Ieq = 3,40 %, H moyenne 744 m, H min 690 m. Attention aux unités attendues par chaque formule, et à celles qu'elle rend.",
+      "questions": [
+        {
+          "texte": "Kirpich : tc = 0,0195 · (L³/D)^0,385, avec L et D en mètres. Résultat en minutes ?",
+          "type": "nombre", "unite": "min", "reponse": 32.9, "tolerance": 0.4,
+          "explication": "L = 2 850 m, D = 96 m. L³ = 2,3149·10¹⁰ ; L³/D = 2,4114·10⁸ ; (L³/D)^0,385 = 1 687,2 ; tc = 0,0195 × 1 687,2 = 32,90 min. Mettre L en kilomètres donnerait un résultat faux d'un facteur 1000^0,385 ≈ 14."
+        },
+        {
+          "texte": "Passini : tc = 0,108 · (S·L)^⅓ / √(i/100). Résultat en minutes ?",
+          "type": "nombre", "unite": "min", "reponse": 66.2, "tolerance": 1,
+          "explication": "S·L = 6,6975 ; (S·L)^⅓ = 1,8850 ; √(3,40/100) = 0,18439 ; tc = 0,108 × 1,8850 / 0,18439 = 1,104 h. La formule rend des HEURES : 1,104 × 60 = 66,2 min. Reporter 1,104 dans une case « minutes » multiplierait l'intensité par 60^b ≈ 13."
+        },
+        {
+          "texte": "Giandotti : tc = (4√S + 1,5 L) / (0,8 √Hmoy), avec Hmoy la dénivelée moyenne. Résultat en minutes ?",
+          "type": "nombre", "unite": "min", "reponse": 106.2, "tolerance": 1.5,
+          "explication": "Hmoy = H moyenne − H min = 744 − 690 = 54 m, et non H max − H min. Numérateur : 4√2,35 + 1,5 × 2,85 = 6,1319 + 4,275 = 10,4069 ; dénominateur : 0,8 × √54 = 5,8788 ; tc = 1,770 h = 106,2 min."
+        },
+        {
+          "texte": "Rapport entre le plus long et le plus court des quatre temps de concentration ?",
+          "type": "nombre", "unite": "", "reponse": 3.2, "tolerance": 0.2,
+          "explication": "106,2 / 32,90 = 3,2. Comme l'intensité décroît avec la durée, ce facteur 3 se répercute sur le débit : 13,83 m³/s avec Kirpich contre 8,88 m³/s avec Passini. Le choix de la formule n'est pas un détail de présentation, c'est une hypothèse de calcul — elle doit être écrite."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e3",
+      "titre": "De l'averse au débit : la méthode rationnelle",
+      "difficulte": 2,
+      "enonce": "BV1, T = 30 ans, tc retenu = Kirpich = 32,90 min. Station de Kasserine : i = a · t^(−b) · T^c avec a = 211, b = 0,633, c = 0,178, t en minutes. Couverture végétale du bassin : 38 %. Pente Ieq = 3,40 %. Sur les cartes : P0 = 20 mm, P10 = 75 mm, P100 = 120 mm.",
+      "questions": [
+        {
+          "texte": "Intensité de pluie i ?",
+          "type": "nombre", "unite": "mm/h", "reponse": 42.35, "tolerance": 0.5,
+          "explication": "Terme de durée : 32,90^(−0,633) = 0,10955. Terme de fréquence : 30^0,178 = 1,8320. i = 211 × 0,10955 × 1,8320 = 42,35 mm/h. La période de retour entre analytiquement — aucune table à consulter, aucune période à arrondir."
+        },
+        {
+          "texte": "Coefficient de ruissellement C lu dans l'abaque ?",
+          "type": "nombre", "unite": "", "reponse": 0.5, "tolerance": 0.001,
+          "explication": "Pente 3,40 % ⇒ 2 % ≤ 3,40 % ≤ 8 % ⇒ classe moyenne, donc ligne « pente faible ou moyenne ». Couverture 38 % ⇒ entre 30 et 50 % ⇒ indice de végétation 2. Croisement : C = 0,50."
+        },
+        {
+          "texte": "Débit par la méthode rationnelle ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 13.83, "tolerance": 0.2,
+          "explication": "Q = 0,278 · C · i · S = 0,278 × 0,50 × 42,35 × 2,35 = 13,83 m³/s. Domaine respecté : S = 2,35 km² < 4 km²."
+        },
+        {
+          "texte": "Lame d'eau que représente cette intensité pendant tc ?",
+          "type": "nombre", "unite": "mm", "reponse": 23.2, "tolerance": 0.5,
+          "explication": "i × tc = 42,35 × (32,90/60) = 23,2 mm en 33 minutes, soit 31 % de la pluie journalière décennale du site (P10 = 75 mm). Proportion courante : le contrôle passe. C'est LE contrôle à faire avant de retenir une intensité."
+        },
+        {
+          "texte": "Un opérateur applique la même formule avec t exprimé en heures (t = 0,5483 h). Quelle intensité obtient-il ?",
+          "type": "nombre", "unite": "mm/h", "reponse": 565.45, "tolerance": 6,
+          "explication": "i = 211 × 0,5483^(−0,633) × 1,8320 = 565,45 mm/h, soit exactement 60^0,633 = 13,35 fois la valeur correcte — le terme de fréquence étant commun aux deux lectures, il s'élimine dans le rapport. La lame d'eau deviendrait 310 mm en 33 minutes, quatre fois la pluie journalière décennale : impossible."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e4",
+      "titre": "SOGREAH : des cartes au débit",
+      "difficulte": 2,
+      "enonce": "BV1, S = 2,35 km², T = 30 ans. Lectures au centre de gravité du bassin : P0 = 20 mm, P10 = 75 mm, P100 = 120 mm. Pluie annuelle 300 mm. Rappel : Y_T = −ln[−ln(1 − 1/T)], Y10 = 2,25 et Y100 = 4,60.",
+      "questions": [
+        {
+          "texte": "Variable réduite de Gumbel pour T = 30 ans ?",
+          "type": "nombre", "unite": "", "reponse": 3.384, "tolerance": 0.02,
+          "explication": "1 − 1/30 = 0,96667 ; ln(0,96667) = −0,03390 ; −ln(…) = 0,03390 ; ln(0,03390) = −3,38429 ; Y30 = 3,3843. L'interpolation de la pluie se fait linéairement en Y, pas en T."
+        },
+        {
+          "texte": "Pluie de projet P30 ?",
+          "type": "nombre", "unite": "mm", "reponse": 96.72, "tolerance": 1,
+          "explication": "(Y30 − 2,25)/(4,60 − 2,25) = 1,1343/2,35 = 0,4827 ; P30 = 75 + 0,4827 × (120 − 75) = 75 + 21,72 = 96,72 mm. Contrôles : pluie annuelle 300 ≤ 500 mm, et P30 = 96,72 > P0 = 20 mm."
+        },
+        {
+          "texte": "Débit SOGREAH Q30 ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 12.13, "tolerance": 0.2,
+          "explication": "S^0,75 = 2,35^0,75 = 1,8980 ; (96,72 − 20)/12 = 6,3934 ; Q = 1,8980 × 6,3934 = 12,13 m³/s. À comparer aux 13,83 m³/s de la rationnelle : 14 % d'écart entre deux méthodes qui ne partagent aucune hypothèse — la meilleure confirmation qu'aucune des deux ne dérape."
+        },
+        {
+          "texte": "Le bassin est proche d'une limite de zone et l'on hésite à lire P0 = 40 mm au lieu de 20 mm. Le débit obtenu serait alors…",
+          "type": "choix",
+          "options": ["plus fort, car P0 augmente la pluie efficace", "plus faible, car P0 est retranché de la pluie de projet", "inchangé, P0 n'intervenant pas à T = 30 ans"],
+          "reponse": 1,
+          "explication": "P0 est le seuil de ruissellement, retranché de la pluie de projet : Q = S^0,75 (P_T − P0)/12. Le surestimer minore le débit, le sous-estimer le majore. C'est la seule des trois lectures qui joue en sens inverse — d'où la règle : à surfaces comparables, retenir le P_T le plus fort et le P0 le plus faible."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e5",
+      "titre": "Ghorbel sur un bassin moyen, et le piège de Δh",
+      "difficulte": 3,
+      "enonce": "Bassin BV2, dorsale : S = 42 km², P = 31 km, L = 12,5 km, pluie annuelle 320 mm, H médiane 552 m, altitude au franchissement 394 m, H max 800 m, H min 390 m. Zone Ghorbel III, T = 50 ans (R50 = 5,68). Formule : Qmax(moy) = S^0,8 · [1,075 · √(P·Δh/L) / Ic − 0,232], avec P en MÈTRES.",
+      "questions": [
+        {
+          "texte": "Indice de compacité Ic ?",
+          "type": "nombre", "unite": "", "reponse": 1.349, "tolerance": 0.01,
+          "explication": "Ic = 0,28209 × 31,0 / √42 = 0,28209 × 31,0 / 6,4807 = 1,349."
+        },
+        {
+          "texte": "Débit maximum moyen Qmax(moy) ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 27.25, "tolerance": 0.4,
+          "explication": "Δh = 552 − 394 = 158 m ; P = 0,320 m ; P·Δh/L = 4,04480 ; √ = 2,01117 ; /Ic = 1,49045 ; ×1,075 = 1,60223 ; −0,232 = 1,37023 ; S^0,8 = 19,8884 ; Qmax = 19,8884 × 1,37023 = 27,25 m³/s. La pluie annuelle se met en mètres, pas en millimètres."
+        },
+        {
+          "texte": "Débit cinquantennal Q50 ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 154.79, "tolerance": 2,
+          "explication": "Q50 = R50 × Qmax(moy) = 5,68 × 27,25 = 154,79 m³/s, soit 3,69 m³/s/km². Qmax(moy) est une grandeur de référence du bassin ; R_T est le rapport de fréquence qui l'amène à la période voulue."
+        },
+        {
+          "texte": "Un opérateur prend Δh = H max − H min = 410 m. De combien de pour cent le débit est-il alors surestimé ?",
+          "type": "nombre", "unite": "%", "reponse": 71.4, "tolerance": 3,
+          "explication": "Avec Δh = 410 m : P·Δh/L = 10,496 ; √ = 3,23975 ; /Ic = 2,40093 ; crochet = 2,34900 ; Qmax = 46,72 au lieu de 27,25, soit +71,4 % — et autant sur Q50 (265 au lieu de 155). Δh entre sous une racine, mais le terme est ensuite amputé de la constante 0,232, ce qui amplifie l'écart relatif. Un débit majoré de 71 % reste parfaitement plausible à la lecture : seule la définition protège."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e6",
+      "titre": "Grand bassin du Sud-Est : Fersi et Kallel",
+      "difficulte": 3,
+      "enonce": "Bassin BV3 : S = 265 km², Ig = 4,55 m/km, pluie annuelle 180 mm, T = 100 ans. Secteur Fersi Sud-Est (y100 = 10,2), région Kallel Sud-Est & Sud-Ouest (q0 = 12,35 ; α = 0,5). Fersi : He = 0,01639·P·√Ig, puis Qx_moy = 0,266·He·√S·log₁₀(S), puis Qx_T = y_T·[S·Ig/270]^(−0,423)·Qx_moy.",
+      "questions": [
+        {
+          "texte": "Écoulement annuel moyen He ?",
+          "type": "nombre", "unite": "mm", "reponse": 6.293, "tolerance": 0.1,
+          "explication": "√4,55 = 2,13307 ; He = 0,01639 × 180 × 2,13307 = 6,293 mm. Domaine vérifié : pluie annuelle 180 ≤ 400 mm."
+        },
+        {
+          "texte": "Débit maximum annuel moyen Qx_moy ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 66.03, "tolerance": 1,
+          "explication": "S ≥ 2 km² donc le terme logarithmique est log₁₀(S) : √265 = 16,2788 et log₁₀(265) = 2,42325 ; Qx_moy = 0,266 × 6,293 × 16,2788 × 2,42325 = 66,03 m³/s."
+        },
+        {
+          "texte": "Débit centennal de Fersi ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 357.65, "tolerance": 5,
+          "explication": "S·Ig/270 = 1 205,75/270 = 4,46574 ; élevé à −0,423 : 0,53100 ; Qx100 = 10,2 × 0,53100 × 66,03 = 357,65 m³/s, soit 1,35 m³/s/km². Fersi part d'un bilan annuel : elle est structurellement plus basse que les méthodes de pointe."
+        },
+        {
+          "texte": "Débit centennal par Kallel ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 1328.28, "tolerance": 15,
+          "explication": "Q = q0 · S^α · T^0,41 = 12,35 × √265 × 100^0,41 = 12,35 × 16,2788 × 6,6069 = 1 328,28 m³/s, soit 5,01 m³/s/km². Domaine respecté : S ≥ 100 km². Méthode analytique, donc toute période de retour est admise."
+        },
+        {
+          "texte": "Fersi et Kallel diffèrent d'un facteur 3,7. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "L'une des deux est fausse : il faut retrouver l'erreur de calcul",
+            "Les deux sont valides mais visent des grandeurs différentes : Fersi passe par un bilan annuel, Kallel estime directement la pointe",
+            "Il faut faire leur moyenne, qui sera plus juste que chacune"
+          ],
+          "reponse": 1,
+          "explication": "Aucune erreur : Fersi part de l'écoulement annuel moyen, une grandeur de bilan qui lisse les pointes, alors que Kallel est une régression sur les débits de pointe. Fersi constitue une borne basse documentée, pas une estimation concurrente — et une moyenne entre deux grandeurs de nature différente n'aurait aucun sens."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e7",
+      "titre": "Domaines de validité : quelle méthode pour quel bassin ?",
+      "difficulte": 2,
+      "enonce": "Pour chaque situation, dire si la méthode s'applique et, sinon, quel est le motif exact : hors zone, hors domaine ou hors table.",
+      "questions": [
+        {
+          "texte": "Méthode rationnelle sur un bassin de 42 km².",
+          "type": "choix",
+          "options": ["Applicable", "Hors zone", "Hors domaine : S ≥ 4 km²", "Hors table"],
+          "reponse": 2,
+          "explication": "La rationnelle suppose une pluie uniforme sur tout le bassin pendant une durée égale à tc. À 42 km², avec près de deux heures de concentration, l'hypothèse tombe — et la formule ne se dégrade pas doucement hors de son domaine, elle diverge."
+        },
+        {
+          "texte": "Kallel sur un bassin de 42 km².",
+          "type": "choix",
+          "options": ["Applicable", "Hors zone", "Hors domaine : S < 100 km²", "Hors table"],
+          "reponse": 2,
+          "explication": "Kallel est calée sur des bassins d'au moins 100 km². La formule donnerait bien un nombre (257 m³/s ici), mais il ne doit pas entrer dans la synthèse : une valeur calculée hors domaine n'est pas une estimation."
+        },
+        {
+          "texte": "Frigui à T = 100 ans, région Centre & Sud.",
+          "type": "choix",
+          "options": ["Applicable", "Hors zone", "Hors domaine", "Hors table : λ calé pour 2, 5, 10 et 50 ans"],
+          "reponse": 3,
+          "explication": "Les paramètres Am et n existent pour la région, mais λ n'est calé que pour quatre périodes. Aucune extrapolation depuis λ50 : la publication n'en donne pas la règle, et prolonger une table de quantiles produit un débit invérifiable."
+        },
+        {
+          "texte": "Fersi sur un bassin de la dorsale centrale.",
+          "type": "choix",
+          "options": ["Applicable", "Hors zone : Fersi n'est calée que sur les secteurs Sud-Est et Sud-Ouest", "Hors domaine", "Hors table"],
+          "reponse": 1,
+          "explication": "C'est une question de géographie, pas de taille ni de période : la régionalisation ne couvre pas ce secteur. Les trois motifs — hors zone, hors domaine, hors table — ne se confondent pas, et chacun s'écrit tel quel dans la note."
+        },
+        {
+          "texte": "Francou–Rodier avec K = 4,8 sur un bassin de 2,35 km² : la formule donne 107,88 m³/s. Qu'en faire ?",
+          "type": "choix",
+          "options": [
+            "La retenir : c'est le débit le plus fort, donc le plus sécuritaire",
+            "L'écarter : c'est une enveloppe calée sur de grands bassins, et 46 m³/s/km² n'a aucun sens physique",
+            "En faire la moyenne avec les autres méthodes"
+          ],
+          "reponse": 1,
+          "explication": "L'exposant 1 − K/10 = 0,52 étant petit, le débit spécifique croît sans limite quand S diminue : la valeur se calcule mais ne s'interprète pas. Sur ce bassin, 46 m³/s/km² dépasse de très loin tout ce qui s'observe. L'écarter fait tomber le coefficient de variation de la synthèse de 100 % à 7 %."
+        }
+      ]
+    },
+    {
+      "id": "ch4-e8",
+      "titre": "Synthèse : lire un faisceau de débits",
+      "difficulte": 3,
+      "enonce": "Sur BV2 (42 km², T = 50 ans), quatre méthodes ont produit une valeur : Ghorbel 154,79 · SOGREAH 167,98 · Frigui 455,56 · Francou–Rodier 483,16 m³/s. Francou–Rodier est hors domaine (S < 100 km²).",
+      "questions": [
+        {
+          "texte": "Médiane des quatre valeurs ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 311.77, "tolerance": 2,
+          "explication": "Quatre valeurs : la médiane est la moyenne des deux centrales, (154,79 + 455,56)/2 = 311,77 m³/s. Elle ne correspond à aucune méthode — elle tombe dans le vide entre deux groupes."
+        },
+        {
+          "texte": "Le coefficient de variation vaut 48,9 %, donc juste sous le seuil de 50 %. Le faisceau est-il pour autant satisfaisant ?",
+          "type": "choix",
+          "options": [
+            "Oui : sous 50 %, la dispersion est acceptable et la médiane suffit",
+            "Non : il est fait de deux couples serrés séparés d'un facteur 2,9, ce qu'un indicateur d'étalement ne voit pas"
+          ],
+          "reponse": 1,
+          "explication": "Ghorbel et SOGREAH se recoupent à 9 % ; Frigui et Francou–Rodier à 6 % ; mais les deux groupes sont séparés d'un facteur 2,9. Ce ne sont pas quatre estimations dispersées autour d'une valeur centrale, ce sont deux couples très éloignés. Un seuil n'est pas un diagnostic : il faut regarder la structure du faisceau."
+        },
+        {
+          "texte": "Après avoir écarté Francou–Rodier (hors domaine), quelle est la médiane des trois valeurs restantes ?",
+          "type": "nombre", "unite": "m³/s", "reponse": 167.98, "tolerance": 2,
+          "explication": "Trois valeurs — 154,79 · 167,98 · 455,56 — la médiane est la valeur centrale : 167,98 m³/s, celle de SOGREAH. C'est le tri par les domaines de validité, et non le calcul statistique, qui produit l'estimation utilisable."
+        },
+        {
+          "texte": "Quel débit retenir pour le dimensionnement, et pourquoi ?",
+          "type": "choix",
+          "options": [
+            "311,77 m³/s, parce que c'est la médiane des quatre méthodes",
+            "≈ 168 m³/s, confirmé par Ghorbel à 9 % près, en mentionnant Frigui comme majorant",
+            "455,56 m³/s, la valeur la plus forte étant toujours la plus prudente"
+          ],
+          "reponse": 1,
+          "explication": "Ghorbel et SOGREAH se confirment mutuellement alors qu'elles ne partagent aucune hypothèse, et Ghorbel est la méthode de référence entre 10 et 100 km². Frigui reste dans son domaine : on ne l'élimine pas, on le retient comme majorant et on vérifie que l'ouvrage reste submersible sans dommage à ce débit. « C'est la médiane » n'est jamais une justification."
+        }
+      ]
+    }
+  ]
+}

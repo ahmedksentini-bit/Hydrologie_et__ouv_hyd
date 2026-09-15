@@ -109,9 +109,11 @@ export function rendreExercice(exo, conteneur, onRetour) {
       if (!Number.isFinite(v)) { feedback.textContent = "Pas de réponse."; feedback.className = "feedback bad"; }
       else {
         juste = Math.abs(v - q.reponse) <= (q.tolerance ?? 0);
+        const fr = (x) => x.toLocaleString("fr-FR", { maximumFractionDigits: 3 });
         feedback.textContent = juste
           ? "Exact."
-          : `Attendu : ${q.reponse}${q.unite ? " " + q.unite : ""}${q.tolerance ? ` (± ${q.tolerance})` : ""}.`;
+          : `Attendu : ${fr(q.reponse)}${q.unite ? " " + q.unite : ""}` +
+            `${q.tolerance ? ` (± ${fr(q.tolerance)})` : ""}.`;
         feedback.className = `feedback ${juste ? "good" : "bad"}`;
       }
     }

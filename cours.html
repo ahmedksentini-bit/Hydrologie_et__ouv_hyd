@@ -99,6 +99,18 @@
      trois : seule la frontière à 8 % change le résultat. Q étant linéaire en C, un
      changement d'indice vaut 20 % de débit.</p>
 
+  <div class="calc" id="calcAbaque">
+    <h3>Lire l'abaque</h3>
+    <div class="data-grid">
+      <div class="field"><label for="aPente">Pente du bassin</label>
+        <div class="input-wrap"><input id="aPente" type="text" inputmode="decimal" value="3,4"><span class="unit">%</span></div></div>
+      <div class="field"><label for="aCouv">Couverture végétale</label>
+        <div class="input-wrap"><input id="aCouv" type="text" inputmode="decimal" value="38"><span class="unit">%</span></div></div>
+    </div>
+    <div id="aTable"></div>
+    <p class="final-result" id="aOut"></p>
+  </div>
+
   <h3>SOGREAH et ses cartes</h3>
   <p class="formula">P<sub>T</sub> = P<sub>10</sub> + (Y<sub>T</sub> − 2,25)/(4,60 − 2,25) · (P<sub>100</sub> − P<sub>10</sub>)
      &nbsp;&nbsp;puis&nbsp;&nbsp; Q<sub>T</sub> = S<sup>0,75</sup> · (P<sub>T</sub> − P<sub>0</sub>) / 12</p>
@@ -143,7 +155,8 @@
      max ; au-delà de CV = 50 %, la médiane seule ne suffit plus. Et même sous ce seuil, il
      faut regarder la <strong>structure</strong> du faisceau : deux couples cohérents très
      éloignés l'un de l'autre donnent une médiane qui ne correspond à aucune méthode.</p>
-  <div class="actions"><a class="primary" href="exerciseur.html">Ouvrir l'exerciseur</a></div>
+  <div class="actions"><a class="primary" href="exerciseur.html">Ouvrir l'exerciseur</a>
+     <a class="secondary" href="index.html#ch4">Exercices du chapitre</a></div>
 </section>
 
 <section id="ch5" class="card">
@@ -261,5 +274,6 @@ document.getElementById("sommaire").innerHTML = chapitres.map((c) => {
     ${c.number} · ${c.title}<small>${pret ? "disponible" : "en préparation"}</small></a></li>`;
 }).join("");
 </script>
+<script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 </body></html>
