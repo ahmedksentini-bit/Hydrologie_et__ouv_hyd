@@ -144,17 +144,20 @@ export function fondDeCarte(frontieres, px, py, zone, fenetre, idClip) {
 /** Graticule, tracé PAR-DESSUS les terres et sous les données. */
 export function graticule(px, py, zone, pasLon, pasLat) {
   const { x0, y0, x1, y1 } = zone;
+  // Zoomée, une carte gradue au quart ou au dixième de degré : 8,25 et non 8.25.
+  const etiq = (v) => Number.isInteger(v)
+    ? String(v) : v.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
   const lignes = [];
   for (const lon of pasLon)
     lignes.push(`<line x1="${px(lon).toFixed(1)}" y1="${y0}" x2="${px(lon).toFixed(1)}" y2="${y1}"
         stroke="${FOND.graticule}" stroke-width="0.7" opacity=".7"/>
       <text x="${px(lon).toFixed(1)}" y="${y1 + 14}" font-size="10" fill="#64748b"
-        text-anchor="middle">${lon}° E</text>`);
+        text-anchor="middle">${etiq(lon)}° E</text>`);
   for (const lat of pasLat)
     lignes.push(`<line x1="${x0}" y1="${py(lat).toFixed(1)}" x2="${x1}" y2="${py(lat).toFixed(1)}"
         stroke="${FOND.graticule}" stroke-width="0.7" opacity=".7"/>
       <text x="${x0 - 6}" y="${(py(lat) + 3).toFixed(1)}" font-size="10" fill="#64748b"
-        text-anchor="end">${lat}° N</text>`);
+        text-anchor="end">${etiq(lat)}° N</text>`);
   return lignes.join("");
 }
 

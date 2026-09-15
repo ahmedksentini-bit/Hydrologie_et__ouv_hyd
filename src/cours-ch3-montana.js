@@ -56,8 +56,59 @@ const valeurAffichee = (s) => {
 
 let zoneCarte = { x0: 0, y0: 0, x1: 0, y1: 0 };
 
+// ── Zoom ──────────────────────────────────────────────────────────────────
+// À l'échelle du pays, dix-sept paires de stations tiennent dans moins de
+// quatorze pixels — soit moins que le diamètre d'une pastille : elles se
+// recouvrent, et on ne peut ni les distinguer ni les cliquer séparément.
+//
+// Le zoom est GÉOGRAPHIQUE et non graphique : on rétrécit la fenêtre en
+// degrés puis on reprojette. Tout suit — le découpage des frontières, le pas
+// du graticule, le placement des étiquettes. Mettre un `scale()` sur le SVG
+// aurait grossi du même coup les traits, les rayons et les textes, et décalé
+// les cibles de survol, qui raisonnent en pixels.
+const FENETRE_PLEINE = { lon0: 7.6, lat0: 30.0, lon1: 11.8, lat1: 37.7 };
+const ZOOM_MAX = 4;
+// Faute de station choisie qui soit placée, on vise le barycentre du semis :
+// vingt des trente stations sont au nord de 36°, le centre du pays est vide.
+const BARYCENTRE = {
+  lon: PLACEES.reduce((a, s) => a + s.lon, 0) / PLACEES.length,
+  lat: PLACEES.reduce((a, s) => a + s.lat, 0) / PLACEES.length,
+};
+let zoom = 1;
+let centre = null;                       // dernière station PLACÉE choisie
+
+/**
+ * Fenêtre affichée. Le zoom se fait autour de la station choisie — elle reste
+ * donc toujours en vue — et la fenêtre est calée dans l'emprise du pays : on
+ * ne dérive jamais sur du vide.
+ */
+function fenetreCourante() {
+  if (zoom <= 1) return FENETRE_PLEINE;
+  const { lon0, lat0, lon1, lat1 } = FENETRE_PLEINE;
+  const f = Math.pow(2, zoom - 1);
+  const dLon = (lon1 - lon0) / f, dLat = (lat1 - lat0) / f;
+  const c = centre || BARYCENTRE;
+  const cale = (v, d, min, max) => Math.min(Math.max(v - d / 2, min), max - d);
+  const a = cale(c.lon, dLon, lon0, lon1), b = cale(c.lat, dLat, lat0, lat1);
+  return { lon0: a, lat0: b, lon1: a + dLon, lat1: b + dLat };
+}
+
+const dansFenetre = (s, f) =>
+  s.lon >= f.lon0 && s.lon <= f.lon1 && s.lat >= f.lat0 && s.lat <= f.lat1;
+
+/** Graduations : le pas le plus fin qui tienne en huit lignes, bords exclus. */
+function graduations(min, max) {
+  const pas = [0.05, 0.1, 0.25, 0.5, 1, 2].find((x) => (max - min) / x <= 8) ?? 2;
+  const marge = (max - min) * 0.02, out = [];
+  for (let v = Math.ceil(min / pas) * pas; v <= max + 1e-9; v += pas) {
+    const x = Math.round(v * 1000) / 1000;
+    if (x > min + marge && x < max - marge) out.push(x);
+  }
+  return out;
+}
+
 function carte(classes) {
-  const FENETRE = { lon0: 7.6, lat0: 30.0, lon1: 11.8, lat1: 37.7 };
+  const FENETRE = fenetreCourante();
   const proj = projection(FENETRE, { largeurMax: 250, hauteurMax: 420,
                                      mg: 40, md: 12, mh: 12, mb: 28 });
   const { px, py, zone } = proj;
@@ -65,7 +116,10 @@ function carte(classes) {
   const W = Math.round(proj.largeur), H = Math.round(proj.hauteur);
   const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE, "clipMontana");
 
-  const pts = [...PLACEES].sort((a, b) => a.lat - b.lat).map((s) => {
+  // Hors fenêtre, on ne dessine pas : le masque suffirait à cacher le point
+  // mais laisserait sa cible dans l'arbre, et un survol fantôme avec.
+  const pts = PLACEES.filter((s) => dansFenetre(s, FENETRE))
+    .sort((a, b) => a.lat - b.lat).map((s) => {
     const x = px(s.lon), y = py(s.lat), actif = s.nom === choisie.nom;
     const aGauche = s.lon > 10.2;
     const v = valeurAffichee(s);
@@ -89,7 +143,8 @@ function carte(classes) {
   return `<svg viewBox="0 0 ${W} ${H}" class="carte-bv" width="100%" role="img"
       aria-label="Carte de la Tunisie et des stations de Montana dont la position est recoupée">
     <defs>${base.defs}</defs>${base.fond}
-    ${graticule(px, py, zone, [8, 9, 10, 11], [31, 32, 33, 34, 35, 36, 37])}
+    ${graticule(px, py, zone, graduations(FENETRE.lon0, FENETRE.lon1),
+                            graduations(FENETRE.lat0, FENETRE.lat1))}
     ${base.reperes}<g clip-path="url(#clipMontana)">${pts}</g>
     ${calqueSurvol("survolMontana")}</svg>`;
 }
@@ -190,20 +245,45 @@ function fiche() {
       i = ${fr(a, 1)} × ${fr(t, 0)}<sup>−${fr(s.b, 3)}</sup> × ${T}<sup>${fr(s.c, 3)}</sup>.</small></p>`;
 }
 
+/** Choisir une station recentre le zoom sur elle, si elle est placée. */
+function choisir(nom) {
+  choisie = JEU.stations.find((s) => s.nom === nom);
+  if (choisie.position === "wgs84") centre = choisie;
+  el("mStation").value = choisie.nom;
+  maj();
+}
+
+function reglerZoom(n) {
+  const avant = zoom;
+  zoom = Math.min(Math.max(n, 1), ZOOM_MAX);
+  if (zoom !== avant) maj();
+}
+
+function etatZoom() {
+  const f = fenetreCourante();
+  const n = PLACEES.filter((s) => dansFenetre(s, f)).length;
+  el("mZoomPlus").disabled = zoom >= ZOOM_MAX;
+  el("mZoomMoins").disabled = zoom <= 1;
+  el("mZoomEtat").innerHTML = zoom <= 1
+    ? `Vue d'ensemble — les ${PLACEES.length} stations placées.`
+    : `Zoom ×${Math.pow(2, zoom - 1)} autour de ${centre ? centre.nom : "la zone dense"} —
+       ${n} station${n > 1 ? "s" : ""} sur ${PLACEES.length} dans la fenêtre.`;
+  el("mZoomReset").hidden = zoom <= 1;
+}
+
 function maj() {
+  // L'échelle de couleur reste calée sur les TRENTE stations, pas sur les
+  // seules visibles : une pastille doit garder la même couleur d'un zoom à
+  // l'autre, sinon on croit lire une variation là où on n'a changé que le cadre.
   const classes = classerContinu(PLACEES.map(valeurAffichee));
   el("mCarte").innerHTML = carte(classes);
   el("mEchelle").innerHTML = legende(classes);
+  etatZoom();
   attacherSurvol(el("mCarte"), "survolMontana", zoneCarte);
   for (const g of el("mCarte").querySelectorAll(".station")) {
-    const prendre = () => {
-      choisie = JEU.stations.find((s) => s.nom === g.dataset.nom);
-      el("mStation").value = choisie.nom;
-      maj();
-    };
-    g.addEventListener("click", prendre);
+    g.addEventListener("click", () => choisir(g.dataset.nom));
     g.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); prendre(); }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choisir(g.dataset.nom); }
     });
   }
   fiche();
@@ -212,10 +292,15 @@ function maj() {
 el("mStation").innerHTML = JEU.stations
   .map((s) => `<option value="${s.nom}"${s.nom === choisie.nom ? " selected" : ""}>${
     s.nom}${s.position === "wgs84" ? "" : " — non placée"}</option>`).join("");
-el("mStation").addEventListener("change", () => {
-  choisie = JEU.stations.find((s) => s.nom === el("mStation").value);
-  maj();
-});
+el("mStation").addEventListener("change", () => choisir(el("mStation").value));
 for (const id of ["mGrandeur", "mT_periode"]) el(id).addEventListener("change", maj);
 el("mT_duree").addEventListener("input", maj);
+el("mZoomPlus").addEventListener("click", () => reglerZoom(zoom + 1));
+el("mZoomMoins").addEventListener("click", () => reglerZoom(zoom - 1));
+el("mZoomReset").addEventListener("click", () => reglerZoom(1));
+// Au clavier : une station a le focus, « + » et « − » agissent sans viser un bouton.
+el("mCarte").parentElement.addEventListener("keydown", (e) => {
+  if (e.key === "+" || e.key === "=") { e.preventDefault(); reglerZoom(zoom + 1); }
+  if (e.key === "-" || e.key === "_") { e.preventDefault(); reglerZoom(zoom - 1); }
+});
 maj();

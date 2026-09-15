@@ -296,3 +296,27 @@ test("le sélecteur de base du logarithme démontre sans piéger", () => {
   // …et seulement dans les zones où la formule logarithmique s'applique.
   assert.match(src, /grande && base === "log10"/, "l'avertissement est limité aux zones IV et V");
 });
+
+test("carte de Montana — zoom géographique et emprise qui couvre le semis", () => {
+  const html = lire("cours.html"), src = lire("src/cours-ch3-montana.js");
+  for (const id of ["mZoomPlus", "mZoomMoins", "mZoomReset", "mZoomEtat"])
+    assert.ok(html.includes(`id="${id}"`), `${id} manque dans cours.html`);
+  // Le zoom rétrécit la FENÊTRE puis reprojette. Un scale() sur le SVG grossirait
+  // aussi les traits et décalerait les cibles de survol, qui sont en pixels.
+  assert.ok(!/scale\(/.test(src), "le zoom ne passe pas par une transformation du SVG");
+  assert.match(src, /graduations\(FENETRE\.lon0, FENETRE\.lon1\)/,
+    "le graticule suit la fenêtre au lieu d'une liste figée");
+
+  // L'emprise pleine doit contenir toutes les stations placées, sinon une
+  // station existe dans la liste sans jamais paraître sur la carte.
+  const f = src.match(/FENETRE_PLEINE = \{ lon0: ([\d.]+), lat0: ([\d.]+), lon1: ([\d.]+), lat1: ([\d.]+) \}/);
+  assert.ok(f, "FENETRE_PLEINE lisible");
+  const [lon0, lat0, lon1, lat1] = f.slice(1).map(Number);
+  const jeu = JSON.parse(lire("data/stations-montana.json"));
+  const placees = jeu.stations.filter((s) => s.position === "wgs84");
+  assert.equal(placees.length, 30, "trente stations placées");
+  for (const s of placees) {
+    assert.ok(s.lon > lon0 && s.lon < lon1, `${s.nom} hors de l'emprise en longitude`);
+    assert.ok(s.lat > lat0 && s.lat < lat1, `${s.nom} hors de l'emprise en latitude`);
+  }
+});

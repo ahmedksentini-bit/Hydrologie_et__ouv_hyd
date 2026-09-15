@@ -601,7 +601,14 @@
         </select><span class="unit">ans</span></div></div>
     </div>
     <div class="duo">
-      <div><div id="mCarte"></div><div id="mEchelle"></div>
+      <div><div class="carte-zoomable"><div id="mCarte"></div>
+          <div class="zoom-carte">
+            <button type="button" id="mZoomPlus" title="Zoomer (touche +)" aria-label="Zoomer">+</button>
+            <button type="button" id="mZoomMoins" title="Dézoomer (touche −)" aria-label="Dézoomer">−</button>
+          </div></div>
+        <p class="method-note" aria-live="polite" style="margin:8px 0 0"><span id="mZoomEtat"></span>
+          <button type="button" class="lien-zoom" id="mZoomReset" hidden>vue d'ensemble</button></p>
+        <div id="mEchelle"></div>
         <p class="diagram-note">Fond de carte : Natural Earth (domaine public), découpé et simplifié à 900 m. Projection à rapport vrai des degrés.</p></div>
       <div id="mFiche"></div>
     </div>
