@@ -1,0 +1,415 @@
+{
+  "source": "Positions approximatives, destinées au REPÉRAGE des noms cités par les zonages régionaux. Ce ne sont pas des limites de zones : les manuels décrivent leurs zones par des noms, pas par des coordonnées.",
+  "precision": "Les oueds et les régions sont posés en un point représentatif de leur bassin ou de leur étendue ; les villes sont à leur position réelle, au centième de degré.",
+  "reperes": [
+    {
+      "id": "extremeNord",
+      "nom": "Extrême nord",
+      "type": "region",
+      "lon": 8.95,
+      "lat": 36.92,
+      "note": "Kroumirie et Mogods, le versant le plus arrosé du pays",
+      "etiquette": {
+        "dx": -10,
+        "dy": 4,
+        "ancre": "end"
+      }
+    },
+    {
+      "id": "medjerda",
+      "nom": "Medjerda",
+      "type": "oued",
+      "lon": 9.3,
+      "lat": 36.62,
+      "note": "le seul cours d'eau pérenne, de la frontière algérienne à la mer",
+      "etiquette": {
+        "dx": 0,
+        "dy": -11,
+        "ancre": "middle"
+      }
+    },
+    {
+      "id": "ichkeul",
+      "nom": "Ichkeul",
+      "type": "lac",
+      "lon": 9.67,
+      "lat": 37.16,
+      "note": "lac du nord, exutoire de plusieurs oueds de Mogods",
+      "etiquette": {
+        "dx": -10,
+        "dy": 4,
+        "ancre": "end"
+      }
+    },
+    {
+      "id": "capBon",
+      "nom": "Cap-Bon",
+      "type": "region",
+      "lon": 10.82,
+      "lat": 36.8,
+      "note": "péninsule du nord-est",
+      "etiquette": {
+        "dx": -11,
+        "dy": 4,
+        "ancre": "end"
+      }
+    },
+    {
+      "id": "meliane",
+      "nom": "Meliane",
+      "type": "oued",
+      "lon": 10.12,
+      "lat": 36.52,
+      "note": "descend du Zaghouan vers le golfe de Tunis",
+      "etiquette": {
+        "dx": 10,
+        "dy": 4,
+        "ancre": "start"
+      }
+    },
+    {
+      "id": "dorsale",
+      "nom": "Dorsale",
+      "type": "relief",
+      "lon": 9.5,
+      "lat": 35.85,
+      "note": "chaîne orientée sud-ouest / nord-est, de Kasserine à Zaghouan",
+      "etiquette": {
+        "dx": 10,
+        "dy": 4,
+        "ancre": "start"
+      }
+    },
+    {
+      "id": "merguellil",
+      "nom": "Merguellil",
+      "type": "oued",
+      "lon": 9.62,
+      "lat": 35.7,
+      "note": "rejoint la plaine de Kairouan par l'ouest",
+      "etiquette": {
+        "dx": 10,
+        "dy": 12,
+        "ancre": "start"
+      }
+    },
+    {
+      "id": "zeroud",
+      "nom": "Zeroud",
+      "type": "oued",
+      "lon": 9.4,
+      "lat": 35.25,
+      "note": "amont vers Sbeitla et Kasserine, rejoint Kairouan par le sud-ouest",
+      "etiquette": {
+        "dx": 0,
+        "dy": -9,
+        "ancre": "middle"
+      }
+    },
+    {
+      "id": "sahel",
+      "nom": "Sahel",
+      "type": "region",
+      "lon": 10.62,
+      "lat": 35.35,
+      "note": "plaine côtière de Sousse à Sfax",
+      "etiquette": {
+        "dx": -11,
+        "dy": 4,
+        "ancre": "end"
+      }
+    },
+    {
+      "id": "sudEst",
+      "nom": "Sud-Est",
+      "type": "region",
+      "lon": 10.55,
+      "lat": 32.95,
+      "note": "Médenine, Tataouine, Djeffara",
+      "etiquette": {
+        "dx": 0,
+        "dy": -10,
+        "ancre": "middle"
+      }
+    },
+    {
+      "id": "sudOuest",
+      "nom": "Sud-Ouest",
+      "type": "region",
+      "lon": 8.6,
+      "lat": 33.75,
+      "note": "Tozeur, Kébili, bordure des chotts",
+      "etiquette": {
+        "dx": 10,
+        "dy": 4,
+        "ancre": "start"
+      }
+    }
+  ],
+  "villes": [
+    {
+      "nom": "Tunis",
+      "lon": 10.18,
+      "lat": 36.8
+    },
+    {
+      "nom": "Bizerte",
+      "lon": 9.87,
+      "lat": 37.27
+    },
+    {
+      "nom": "Béja",
+      "lon": 9.18,
+      "lat": 36.73
+    },
+    {
+      "nom": "Zaghouan",
+      "lon": 10.14,
+      "lat": 36.4
+    },
+    {
+      "nom": "Kairouan",
+      "lon": 10.1,
+      "lat": 35.68
+    },
+    {
+      "nom": "Sousse",
+      "lon": 10.64,
+      "lat": 35.83
+    },
+    {
+      "nom": "Kasserine",
+      "lon": 8.83,
+      "lat": 35.17
+    },
+    {
+      "nom": "Sfax",
+      "lon": 10.76,
+      "lat": 34.74
+    },
+    {
+      "nom": "Gafsa",
+      "lon": 8.78,
+      "lat": 34.42
+    },
+    {
+      "nom": "Tozeur",
+      "lon": 8.13,
+      "lat": 33.92
+    },
+    {
+      "nom": "Gabès",
+      "lon": 10.1,
+      "lat": 33.88
+    },
+    {
+      "nom": "Médenine",
+      "lon": 10.5,
+      "lat": 33.35
+    },
+    {
+      "nom": "Tataouine",
+      "lon": 10.45,
+      "lat": 32.93
+    }
+  ],
+  "zonages": {
+    "ghorbel": {
+      "nom": "Ghorbel",
+      "zones": [
+        {
+          "cle": "I",
+          "libelle": "Extrême nord",
+          "reperes": [
+            "extremeNord"
+          ]
+        },
+        {
+          "cle": "II",
+          "libelle": "Rive droite Mejerda, Cap-Bon, Zeroud amont",
+          "reperes": [
+            "medjerda",
+            "capBon",
+            "zeroud"
+          ]
+        },
+        {
+          "cle": "III",
+          "libelle": "Meliane, Merguellil, nord Zeroud",
+          "reperes": [
+            "meliane",
+            "merguellil",
+            "zeroud"
+          ]
+        },
+        {
+          "cle": "IV",
+          "libelle": "Sahel",
+          "reperes": [
+            "sahel"
+          ]
+        },
+        {
+          "cle": "V",
+          "libelle": "Sud",
+          "reperes": [
+            "sudEst",
+            "sudOuest"
+          ]
+        }
+      ]
+    },
+    "kallel": {
+      "nom": "Kallel",
+      "zones": [
+        {
+          "cle": "NordCapBon",
+          "libelle": "Nord et Cap-Bon",
+          "reperes": [
+            "extremeNord",
+            "medjerda",
+            "capBon"
+          ]
+        },
+        {
+          "cle": "NoyauDorsale",
+          "libelle": "Noyau de la dorsale",
+          "reperes": [
+            "dorsale"
+          ]
+        },
+        {
+          "cle": "CentreSahel",
+          "libelle": "Centre et Sahel",
+          "reperes": [
+            "merguellil",
+            "zeroud",
+            "sahel"
+          ]
+        },
+        {
+          "cle": "SudEstSudOuest",
+          "libelle": "Sud-Est et Sud-Ouest",
+          "reperes": [
+            "sudEst",
+            "sudOuest"
+          ]
+        }
+      ]
+    },
+    "frigui": {
+      "nom": "Frigui",
+      "zones": [
+        {
+          "cle": "Nord",
+          "libelle": "Nord",
+          "reperes": [
+            "extremeNord",
+            "ichkeul"
+          ]
+        },
+        {
+          "cle": "Medjerda",
+          "libelle": "Medjerda",
+          "reperes": [
+            "medjerda"
+          ]
+        },
+        {
+          "cle": "CapBonMeliane",
+          "libelle": "Cap-Bon et Meliane",
+          "reperes": [
+            "capBon",
+            "meliane"
+          ]
+        },
+        {
+          "cle": "CentreSud",
+          "libelle": "Centre et Sud",
+          "reperes": [
+            "zeroud",
+            "sahel",
+            "sudEst",
+            "sudOuest"
+          ]
+        }
+      ]
+    },
+    "fersi": {
+      "nom": "Fersi",
+      "zones": [
+        {
+          "cle": "SudEst",
+          "libelle": "Sud-Est",
+          "reperes": [
+            "sudEst"
+          ]
+        },
+        {
+          "cle": "SudOuest",
+          "libelle": "Sud-Ouest",
+          "reperes": [
+            "sudOuest"
+          ]
+        }
+      ]
+    },
+    "francou": {
+      "nom": "Francou–Rodier",
+      "zones": [
+        {
+          "cle": "NordMedjerda",
+          "libelle": "Nord / Medjerda",
+          "reperes": [
+            "medjerda"
+          ]
+        },
+        {
+          "cle": "NordIchkeul",
+          "libelle": "Nord / Ichkeul",
+          "reperes": [
+            "ichkeul"
+          ]
+        },
+        {
+          "cle": "NordCatastrophe",
+          "libelle": "Nord catastrophe",
+          "reperes": [
+            "extremeNord",
+            "medjerda"
+          ]
+        },
+        {
+          "cle": "CentreDorsale",
+          "libelle": "Centre dorsale",
+          "reperes": [
+            "dorsale"
+          ]
+        },
+        {
+          "cle": "Zeroud",
+          "libelle": "Zéroud / Sidi Saad",
+          "reperes": [
+            "zeroud"
+          ]
+        },
+        {
+          "cle": "Sud50",
+          "libelle": "Sud / Centre-Sud",
+          "reperes": [
+            "sudEst",
+            "sudOuest"
+          ]
+        },
+        {
+          "cle": "Sud100",
+          "libelle": "Sud / Centre-Sud (fort)",
+          "reperes": [
+            "sudEst",
+            "sudOuest"
+          ]
+        }
+      ]
+    }
+  }
+}

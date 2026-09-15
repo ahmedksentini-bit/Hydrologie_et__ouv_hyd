@@ -1100,6 +1100,38 @@
      comme une panne, et la réaction naturelle — interpoler entre 10 et 50 ans — n'a aucune
      justification : les manuels n'en donnent pas la règle.</div>
 
+  <h3>Où sont ces zones ? Une carte de repérage, et pas davantage</h3>
+  <p>Chaque zonage nomme ses zones par des lieux : « rive droite Mejerda, Cap-Bon, Zeroud
+     amont », « noyau de la dorsale », « nord Zeroud ». Ces phrases supposent qu'on sache où
+     sont la Medjerda, le Zeroud et la dorsale — ce qui n'a rien d'évident pour un étudiant
+     qui n'a pas grandi dans le bassin concerné.</p>
+  <div class="hint"><strong>Ce n'est pas une carte des zones, et ce ne peut pas en être une.</strong>
+     Les manuels décrivent leurs zones par des <em>noms</em>, jamais par des coordonnées : il
+     n'existe, dans les sources dont ce cours dispose, aucun tracé des limites. En dessiner à
+     partir de ces phrases reviendrait à fabriquer une donnée que le lecteur prendrait ensuite
+     pour acquise — exactement ce que ce cours reproche aux tableaux recopiés. La carte
+     ci-dessous place donc les <strong>noms</strong>, et s'arrête là. Pour les limites, il faut
+     les planches d'origine.</div>
+
+  <div class="calc" id="calcReperes">
+    <h3>Situer les noms cités</h3>
+    <p class="method-note" style="margin:0 0 10px">Choisir une méthode et une de ses zones :
+       les repères qu'elle cite passent en orange. Survoler un repère donne ce qu'il désigne.</p>
+    <div class="curseurs">
+      <div class="field"><label for="rpMethode">Zonage</label>
+        <div class="input-wrap"><select id="rpMethode"></select></div></div>
+      <div class="field"><label for="rpZone">Zone</label>
+        <div class="input-wrap"><select id="rpZone"></select></div></div>
+    </div>
+    <div class="duo">
+      <div><div id="rpCarte"></div>
+        <p class="diagram-note">Fond de carte : Natural Earth (domaine public). Les oueds et
+           les régions sont posés en un point représentatif, pas tracés : ce sont des repères,
+           pas des contours.</p></div>
+      <div id="rpLegende"></div>
+    </div>
+  </div>
+
   <h3>Domaines de validité : quatre bornes, et jamais les mêmes</h3>
   <p>Chaque méthode a été calée sur un échantillon de bassins, et n'a de sens que dans le
      domaine de cet échantillon. Les bornes portent sur quatre choses — la <strong>surface</strong>,
@@ -2438,6 +2470,7 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch3-montana.js"></script>
 <script type="module" src="src/cours-ch4.js"></script>
 <script type="module" src="src/cours-ch4-stations.js"></script>
+<script type="module" src="src/cours-ch4-reperes.js"></script>
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>

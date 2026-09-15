@@ -406,3 +406,55 @@ test("pluviomètre et pluviographe — même averse, deux lectures", () => {
   assert.match(src, /prefers-reduced-motion/, "l'animation respecte le réglage système");
 });
 
+
+test("carte de repérage — des noms, jamais des limites", () => {
+  const jeu = JSON.parse(lire("data/reperes-tunisie.json"));
+  const ids = new Set(jeu.reperes.map((r) => r.id));
+  // Tout repère cité par un zonage doit exister : c'est ce lien qui garantit
+  // qu'on ne laisse pas une zone sans moyen de la situer.
+  for (const [methode, z] of Object.entries(jeu.zonages))
+    for (const zone of z.zones) {
+      assert.ok(zone.reperes.length, `${methode}/${zone.cle} ne cite aucun repère`);
+      for (const r of zone.reperes)
+        assert.ok(ids.has(r), `${methode}/${zone.cle} cite « ${r} », inconnu`);
+    }
+  // Et tout repère doit servir à quelque chose.
+  const cites = new Set(Object.values(jeu.zonages)
+    .flatMap((z) => z.zones.flatMap((x) => x.reperes)));
+  for (const id of ids) assert.ok(cites.has(id), `le repère « ${id} » n'est cité par personne`);
+
+  // Les positions sont dans l'emprise du pays, et les étiquettes sont posées.
+  for (const r of [...jeu.reperes, ...jeu.villes]) {
+    assert.ok(r.lon > 7.5 && r.lon < 11.6, `${r.nom} hors de Tunisie en longitude`);
+    assert.ok(r.lat > 30 && r.lat < 37.6, `${r.nom} hors de Tunisie en latitude`);
+  }
+  for (const r of jeu.reperes) {
+    assert.ok(r.etiquette && Number.isFinite(r.etiquette.dx), `${r.nom} sans étiquette posée`);
+    assert.ok(["start", "middle", "end"].includes(r.etiquette.ancre), `${r.nom} : ancre`);
+    assert.ok(r.note && r.note.length > 10, `${r.nom} sans explication`);
+  }
+
+  // L'avertissement doit être DANS le dessin, pas seulement à côté : une
+  // capture d'écran de la carte voyagera sans le texte qui l'entoure.
+  const src = lire("src/cours-ch4-reperes.js");
+  assert.match(src, /ceci n'est pas une carte des limites de zones/,
+    "l'avertissement doit être gravé dans le SVG");
+  assert.match(lire("cours.html"), /Ce n'est pas une carte des zones, et ce ne peut pas en être une/);
+});
+
+test("les zonages de la carte sont ceux des solveurs", async () => {
+  const jeu = JSON.parse(lire("data/reperes-tunisie.json"));
+  const h = await import("../src/solvers-hydro.js");
+  const attendus = {
+    ghorbel: Object.keys(h.GHORBEL_R), kallel: Object.keys(h.KALLEL),
+    frigui: Object.keys(h.FRIGUI), fersi: Object.keys(h.FERSI_Y),
+    francou: Object.keys(h.FRANCOU_K),
+  };
+  for (const [id, cles] of Object.entries(attendus)) {
+    const vues = jeu.zonages[id].zones.map((z) => z.cle);
+    assert.deepEqual(vues, cles, `les zones de ${id} doivent suivre le solveur`);
+  }
+  // Et les libellés de Ghorbel sont mot pour mot ceux du solveur.
+  for (const z of jeu.zonages.ghorbel.zones)
+    assert.equal(z.libelle, h.GHORBEL_ZONES[z.cle], `libellé de la zone ${z.cle}`);
+});
