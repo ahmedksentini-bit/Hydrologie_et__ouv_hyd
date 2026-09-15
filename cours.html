@@ -831,6 +831,86 @@
       <tr><td>Ce qui n'intervient pas</td><td class="motif">ni la longueur, ni la rugosité, ni l'aval</td><td class="motif">le détail de la tête n'intervient que par K<sub>e</sub></td></tr>
     </tbody></table>
   <p class="formula">HW = max( HW<sub>entrée</sub> , HW<sub>sortie</sub> )</p>
+  <figure class="schema-oh">
+    <div class="duo">
+      <div>
+        <svg viewBox="0 0 430 250" width="100%" role="img"
+             aria-label="Contrôle à l'entrée : la section de contrôle est à l'entrée de l'ouvrage, l'aval n'intervient pas">
+          <text x="6" y="14" font-size="12" font-weight="800" fill="#075985">Contrôle à l'entrée</text>
+          <text x="6" y="28" font-size="10" fill="#64748b">l'ouvrage n'avale pas plus</text>
+          <!-- remblai et chaussée -->
+          <polygon points="30,205 118,72 312,72 400,205" fill="#f1f5f9" stroke="#cbd5e1"/>
+          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
+          <line x1="0" y1="205" x2="430" y2="205" stroke="#a8a29e" stroke-width="1.5"/>
+          <!-- eau amont -->
+          <rect x="0" y="137" width="95" height="68" fill="#bae6fd" opacity=".75"/>
+          <line x1="0" y1="137" x2="95" y2="137" stroke="#0369a1" stroke-width="2"/>
+          <!-- ouvrage -->
+          <polygon points="95,183 335,193 335,159 95,149" fill="#fff" stroke="#475569" stroke-width="1.6"/>
+          <!-- ligne d'eau dans l'ouvrage : chute depuis l'entrée -->
+          <path d="M95,137 C102,152 112,168 130,172 L335,180" fill="none" stroke="#0369a1"
+                stroke-width="2" stroke-dasharray="0"/>
+          <path d="M95,183 L335,193 L335,180 C240,176 140,172 130,172 C112,168 102,152 95,137 Z"
+                fill="#bae6fd" opacity=".6"/>
+          <!-- section de contrôle -->
+          <line x1="95" y1="129" x2="95" y2="191" stroke="#b45309" stroke-width="2.4"/>
+          <text x="99" y="125" font-size="10" fill="#b45309" font-weight="700">section de contrôle</text>
+          <!-- cotes -->
+          <line x1="58" y1="137" x2="58" y2="183" stroke="#0369a1" stroke-width="1"/>
+          <path d="M55,140 L58,134 L61,140 M55,180 L58,186 L61,180" fill="none" stroke="#0369a1"/>
+          <text x="52" y="163" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
+          <text x="140" y="146" font-size="10" fill="#334155">D</text>
+          <line x1="132" y1="152" x2="132" y2="185" stroke="#334155" stroke-width="0.8"/>
+          <!-- aval sans influence -->
+          <text x="345" y="215" font-size="10" fill="#94a3b8">aval libre</text>
+          <text x="6" y="232" font-size="10" fill="#334155">n'intervient pas : L · K · niveau aval</text>
+          <text x="6" y="245" font-size="10" fill="#334155">intervient : forme de la tête, pente J</text>
+        </svg>
+      </div>
+      <div>
+        <svg viewBox="0 0 430 250" width="100%" role="img"
+             aria-label="Contrôle à la sortie : la charge amont se reconstruit depuis l'aval en remontant les pertes">
+          <text x="6" y="14" font-size="12" font-weight="800" fill="#0f766e">Contrôle à la sortie</text>
+          <text x="6" y="28" font-size="10" fill="#64748b">l'ouvrage n'évacue pas plus</text>
+          <polygon points="30,205 118,72 312,72 400,205" fill="#f1f5f9" stroke="#cbd5e1"/>
+          <rect x="112" y="64" width="206" height="9" fill="#78716c"/>
+          <line x1="0" y1="205" x2="430" y2="205" stroke="#a8a29e" stroke-width="1.5"/>
+          <!-- ouvrage en charge -->
+          <polygon points="95,183 335,193 335,159 95,149" fill="#bae6fd" stroke="#475569" stroke-width="1.6"/>
+          <!-- eau amont et aval -->
+          <rect x="0" y="126" width="95" height="79" fill="#bae6fd" opacity=".75"/>
+          <line x1="0" y1="126" x2="95" y2="126" stroke="#0369a1" stroke-width="2"/>
+          <rect x="335" y="166" width="95" height="39" fill="#a5f3fc" opacity=".8"/>
+          <line x1="335" y1="166" x2="430" y2="166" stroke="#0891b2" stroke-width="2"/>
+          <!-- ligne d'énergie, de l'aval vers l'amont -->
+          <path d="M430,160 L335,160 L100,122 L0,118" fill="none" stroke="#b45309"
+                stroke-width="1.8" stroke-dasharray="6 3"/>
+          <text x="196" y="112" font-size="10" fill="#b45309" font-weight="700">ligne d'énergie</text>
+          <!-- pertes -->
+          <line x1="335" y1="160" x2="335" y2="166" stroke="#b45309" stroke-width="3"/>
+          <text x="341" y="152" font-size="9.5" fill="#b45309">K<tspan font-size="7" dy="2">s</tspan><tspan dy="-2">·V²/2g</tspan></text>
+          <text x="196" y="145" font-size="9.5" fill="#b45309" text-anchor="middle">J<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">·L</tspan></text>
+          <line x1="100" y1="122" x2="100" y2="130" stroke="#b45309" stroke-width="3"/>
+          <text x="34" y="112" font-size="9.5" fill="#b45309">K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2">·V²/2g</tspan></text>
+          <!-- cotes -->
+          <line x1="58" y1="126" x2="58" y2="183" stroke="#0369a1" stroke-width="1"/>
+          <path d="M55,129 L58,123 L61,129 M55,180 L58,186 L61,180" fill="none" stroke="#0369a1"/>
+          <text x="52" y="157" font-size="11" fill="#0369a1" font-weight="800" text-anchor="end">HW</text>
+          <line x1="372" y1="166" x2="372" y2="193" stroke="#0891b2" stroke-width="1"/>
+          <text x="378" y="184" font-size="11" fill="#0e7490" font-weight="800">TW</text>
+          <text x="6" y="232" font-size="10" fill="#334155">interviennent : L · K · niveau aval · K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2"></tspan> · K<tspan font-size="7" dy="2">s</tspan><tspan dy="-2"></tspan></text>
+          <text x="6" y="245" font-size="10" fill="#334155">la tête n'intervient que par K<tspan font-size="7" dy="2">e</tspan><tspan dy="-2"></tspan></text>
+        </svg>
+      </div>
+    </div>
+    <figcaption>Deux mécanismes distincts, menés tous les deux jusqu'au bout. À gauche,
+      c'est la section d'entrée qui limite : la ligne d'eau chute dès l'entrée et l'ouvrage
+      coule à surface libre sans que l'aval ni la longueur n'aient leur mot à dire. À
+      droite, l'ouvrage est en charge : on part du niveau aval et on remonte les pertes
+      jusqu'à l'amont. C'est le plus grand des deux HW qui commande — et un même ouvrage
+      passe de l'un à l'autre quand le débit, la longueur ou le niveau aval changent.</figcaption>
+  </figure>
+
   <p>Les deux calculs sont <strong>indépendants</strong> et menés jusqu'au bout tous les
      deux ; c'est le plus grand qui commande, et c'est lui qu'on retient. Un ouvrage court
      et raide sur une sortie libre est presque toujours contrôlé à l'entrée ; un ouvrage
@@ -920,6 +1000,47 @@
     <div id="oFig"></div>
     <div id="oTable"></div>
     <p class="final-result" id="oOut"></p>
+  </div>
+
+  <h3>Les abaques : une contre-épreuve, jamais un moteur</h3>
+  <p>Avant les équations de régression, la charge amont se lisait sur des <strong>abaques</strong>.
+     Ceux de Nguyen Van Tuu (<em>La route et l'hydraulique</em>, BCEOM 1979, figures 71 à 77)
+     donnent, en sortie libre, la charge réduite H1/D en fonction d'un débit réduit Q*, sur
+     des axes logarithmiques. Ils restent utiles pour une raison précise : ils sont
+     <strong>indépendants</strong> du calcul HDS-5. Deux méthodes sans rapport qui se
+     rejoignent valent mieux qu'une méthode raffinée toute seule ; quand elles divergent,
+     c'est l'écart qui est l'information.</p>
+  <p class="formula">buses circulaires (71, 72, 73) : Q* = Q / √(2g·D⁵)<br>
+     arche (75) : Q* = Q / (A·√(2g·D))&nbsp;&nbsp;·&nbsp;&nbsp;
+     dalot (77) : Q* = Q / (B·D·√(2g·D))&nbsp;&nbsp;·&nbsp;&nbsp;
+     H1* = H1 / D</p>
+  <div class="hint"><strong>Les buses circulaires n'emploient pas la même normalisation que
+     l'arche et le dalot.</strong> Q/√(2gD⁵) et Q/(A√(2gD)) diffèrent d'un facteur 4/π ≈ 1,273
+     sur une section circulaire. Employer la seconde sur la planche 71 décale la lecture d'un
+     quart, dans le sens rassurant — la charge lue est trop faible.</div>
+  <div class="hint"><strong>Deux règles de lecture, et pas de troisième.</strong>
+     L'interpolation se fait linéairement en log₁₀(Q*) / log₁₀(H1*), comme sur le papier. Et
+     <strong>on n'extrapole pas</strong> : hors du domaine tracé, on ne lit rien et on dit
+     pourquoi. Prolonger une courbe relevée sur un scan ancien reviendrait à inventer des
+     points que l'auteur n'a jamais publiés.</div>
+
+  <div class="calc" id="calcAbaqueBceom">
+    <h3>Lire l'abaque, et le confronter au calcul</h3>
+    <div class="data-grid">
+      <div class="field"><label for="abPlanche">Planche</label>
+        <div class="input-wrap"><select id="abPlanche"></select></div></div>
+      <div class="field"><label for="abCourbe">Courbe (type de tête)</label>
+        <div class="input-wrap"><select id="abCourbe"></select></div></div>
+      <div class="field"><label for="abQ">Débit par cellule Q</label>
+        <div class="input-wrap"><input id="abQ" type="text" inputmode="decimal" value="8"><span class="unit">m³/s</span></div></div>
+      <div class="field"><label for="abD">Hauteur ou diamètre D</label>
+        <div class="input-wrap"><input id="abD" type="text" inputmode="decimal" value="1,5"><span class="unit">m</span></div></div>
+      <div class="field"><label for="abB">Largeur B (dalot)</label>
+        <div class="input-wrap"><input id="abB" type="text" inputmode="decimal" value="2"><span class="unit">m</span></div></div>
+    </div>
+    <div id="abFig"></div>
+    <div id="abTable"></div>
+    <p class="final-result" id="abOut"></p>
   </div>
 
   <h3>Les abaques : l'abaque dit le matériau, l'échelle dit l'entrée</h3>
@@ -1182,5 +1303,6 @@ marquerSectionLue();
 <script type="module" src="src/cours-ch5.js"></script>
 <script type="module" src="src/cours-ch6.js"></script>
 <script type="module" src="src/cours-ch7.js"></script>
+<script type="module" src="src/cours-ch6-abaques.js"></script>
 <script type="module" src="src/tableaux.js"></script>
 </body></html>

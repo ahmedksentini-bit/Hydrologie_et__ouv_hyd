@@ -106,3 +106,8 @@ table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
 
 /* Sous-titre de méthode : plus discret qu'un h3, mais structurant. */
 .card h4{margin:20px 0 8px;font-size:15px;color:#075985;letter-spacing:.01em}
+
+/* Schéma explicatif : deux panneaux et une légende commune. */
+.schema-oh{margin:18px 0}
+.schema-oh svg{display:block;width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
+.schema-oh figcaption{margin-top:10px;color:#334155;font-size:13.5px}

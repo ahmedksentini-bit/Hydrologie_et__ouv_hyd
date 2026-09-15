@@ -25,7 +25,7 @@ for (const page of PAGES) {
 
 test("les figures du cours ne visent que des identifiants existants", () => {
   const ids = new Set(idsDe(lire("cours.html")));
-  const scripts = readdirSync(join(racine, "src")).filter((f) => /^cours-ch\d+\.js$/.test(f));
+  const scripts = readdirSync(join(racine, "src")).filter((f) => /^cours-ch\d+(-[a-z]+)?\.js$/.test(f));
   assert.ok(scripts.length >= 7, "un script de figure par chapitre rédigé");
   for (const f of scripts) {
     const src = lire(join("src", f));
