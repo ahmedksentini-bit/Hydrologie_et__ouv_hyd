@@ -43,6 +43,26 @@
      inclinées, une partie de l'eau passe sous la ligne de crête. Le tracé
      topographique reste la base du calcul, mais la réserve doit être écrite.</div>
 
+
+  <div class="calc" id="calcCarte">
+    <h3>Un bassin versant, délimité</h3>
+    <p class="method-note" style="margin:0 0 12px">Bassin obtenu par la chaîne décrite
+       ci-dessus, appliquée à un modèle numérique de terrain : comblement des cuvettes,
+       direction de plus grande pente cellule par cellule, accumulation des surfaces
+       drainées, puis remontée depuis l'exutoire. La ligne de partage des eaux n'est pas
+       dessinée à la main — elle est le <em>bord</em> de l'ensemble des cellules qui
+       s'écoulent vers ce point.</p>
+    <div class="bascules">
+      <label><input type="checkbox" id="cContours" checked> Courbes de niveau (50 m)</label>
+      <label><input type="checkbox" id="cReseau" checked> Réseau hydrographique</label>
+      <label><input type="checkbox" id="cLimite" checked> Ligne de partage des eaux</label>
+      <label><input type="checkbox" id="cRemplissage" checked> Surface drainée</label>
+      <label><input type="checkbox" id="cRoute" checked> Tracé de la route</label>
+    </div>
+    <div id="cFig"></div>
+    <p class="final-result" id="cOut"></p>
+  </div>
+
   <h3>Surface et périmètre</h3>
   <p>La surface se mesure par planimétrage ou par un logiciel de cartographie. Le
      périmètre demande plus de précaution : <strong>il dépend de la finesse du tracé</strong>.
@@ -98,6 +118,20 @@
   <p class="method-note">Pourquoi 5 % et 95 % plutôt que H max et H min ? Parce qu'un
      sommet isolé ou un point bas d'un seul pixel ne représentent presque aucune surface
      et ne commandent aucun écoulement. Les quantiles écartent ces extrêmes ponctuels.</p>
+
+
+  <div class="calc" id="calcHypso">
+    <h3>Lire la courbe hypsométrique</h3>
+    <p class="method-note" style="margin:0 0 12px">Le même bassin. À gauche la carte, à
+       droite la courbe : deux vues de la même information. Déplacer l'altitude fait
+       ressortir la courbe de niveau correspondante et le point de la courbe — c'est
+       exactement la lecture qu'on fait sur une carte papier, courbe après courbe.</p>
+    <div class="field"><label for="hAlt">Altitude lue</label>
+      <div class="input-wrap"><input id="hAlt" type="range" min="150" max="600" step="50" value="400">
+        <span class="unit" id="hAltVal">400 m</span></div></div>
+    <div id="hFig"></div>
+    <p class="final-result" id="hOut"></p>
+  </div>
 
   <h3>Deux indices de pente qu'on ne peut pas confondre</h3>
   <table class="resultats"><thead><tr><th></th><th>Indice global I<sub>g</sub></th><th>Pente équivalente I<sub>eq</sub></th></tr></thead>

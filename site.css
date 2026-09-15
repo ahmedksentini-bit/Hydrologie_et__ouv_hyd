@@ -93,3 +93,13 @@ table.abaque td.retenue{background:#cffafe;border-radius:6px;box-shadow:inset 0 
 table.resultats tr.alerte{background:#fffbeb}
 table.resultats tr.alerte td.q{color:#b45309}
 table.resultats tr.alerte td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
+
+/* Cases à cocher d'une figure : la règle globale input{width:100%} les étire. */
+.bascules{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:14px}
+.bascules label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#334155;cursor:pointer}
+.bascules input[type="checkbox"]{flex:0 0 auto;width:auto;min-width:0;margin:0;accent-color:var(--blue)}
+.calc input[type="range"]{accent-color:var(--blue);padding:9px 11px}
+/* Carte du bassin et courbe hypsométrique côte à côte, empilées si étroit. */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:700px){.duo{grid-template-columns:1fr}}
+.carte-bv{background:#f8fafc;border:1px solid var(--line);border-radius:12px}

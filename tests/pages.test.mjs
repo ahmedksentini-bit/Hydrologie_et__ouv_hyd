@@ -61,3 +61,31 @@ test("chaque chapitre annoncé disponible a bien sa section et sa banque", () =>
     }
   }
 });
+
+test("le bassin de démonstration est cohérent", () => {
+  const bv = JSON.parse(lire("data/bassin-demo.json"));
+  assert.ok(bv.aire > 0 && bv.perimetre > 0, "surface et périmètre");
+  const { nx, ny } = bv.grille;
+  // la surface annoncée doit correspondre à la grille
+  assert.ok(bv.aire < nx * ny * bv.grille.pas ** 2, "surface inférieure à la grille");
+  // le contour est fermé
+  const [a, b] = [bv.limite[0], bv.limite[bv.limite.length - 1]];
+  assert.deepEqual(a, b, "ligne de partage des eaux fermée");
+  // l'hypsométrie décroît de Hmax à Hmin, et couvre bien [0,1]
+  const h = bv.hypsometrie;
+  assert.equal(h[0][1], 0); assert.equal(h[h.length - 1][1], 1);
+  for (let i = 1; i < h.length; i++) {
+    assert.ok(h[i][0] <= h[i - 1][0] + 1e-9, `hypsométrie non décroissante au rang ${i}`);
+    assert.ok(h[i][1] > h[i - 1][1], `fractions non croissantes au rang ${i}`);
+  }
+  const A = bv.altitudes;
+  assert.ok(A.Hmin <= A.H95 && A.H95 <= A.H50 && A.H50 <= A.H5 && A.H5 <= A.Hmax,
+    "altitudes caractéristiques ordonnées");
+  assert.ok(A.Hmoy > A.Hmin && A.Hmoy < A.Hmax, "altitude moyenne dans la plage");
+  // le réseau et les contours restent dans la grille
+  for (const [x1, y1, x2, y2] of bv.reseau)
+    assert.ok(x1 >= 0 && x1 < nx && y1 >= 0 && y1 < ny && x2 >= 0 && x2 < nx && y2 >= 0 && y2 < ny,
+      "segment de réseau hors grille");
+  // l'exutoire est sur le tracé de la route
+  assert.equal(bv.exutoire[1], bv.ligneRoute, "exutoire sur la route");
+});
