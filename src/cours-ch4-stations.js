@@ -11,12 +11,13 @@ import { sogreahPluie, sogreahDebit, sogreahRuisselle, gumbel } from "./solvers-
 import { RAMPE_SEQUENTIELLE, ABSENT, classer, couleurDe } from "./echelle.js";
 import { chargerFrontieres, projection, fondDeCarte, graticule, FOND,
          calqueSurvol, attacherSurvol } from "./carte-fond.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const JEU = await fetch("data/stations-sogreah.json").then((r) => r.json());
+const JEU = await chargerJson("data/stations-sogreah.json");
 const FRONTIERES = await chargerFrontieres();
 const RAMPE = RAMPE_SEQUENTIELLE;
 

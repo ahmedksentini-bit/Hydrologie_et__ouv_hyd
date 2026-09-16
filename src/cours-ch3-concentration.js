@@ -11,6 +11,7 @@
 // sélecteur montre ce que ce choix coûte.
 import { tempsDeParcours, surfaceTemps, hydrogramme, semisGouttes,
          positionGoutte, VITESSES } from "./solvers-concentration.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d) => Number.isFinite(x)
@@ -22,7 +23,7 @@ const BANDES = RAMPE.length;
 const C = { limite: "#475569", reseau: "#0284c7", exutoire: "#b91c1c",
             goutte: "#0ea5e9", loin: "#b45309", muet: "#94a3b8", texte: "#334155" };
 
-const BASSIN = await fetch("data/bassin-demo.json").then((r) => r.json());
+const BASSIN = await chargerJson("data/bassin-demo.json");
 
 let carte = null, courbe = null, gouttes = null, boite = null;
 let t = 0, marche = false, depart = 0, boucle = null;

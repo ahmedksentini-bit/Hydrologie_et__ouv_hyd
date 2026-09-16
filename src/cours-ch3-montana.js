@@ -10,13 +10,14 @@ import { montana } from "./solvers-hydro.js";
 import { RAMPE_SEQUENTIELLE, ABSENT, classerContinu, couleurDe } from "./echelle.js";
 import { chargerFrontieres, projection, fondDeCarte, graticule, FOND,
          calqueSurvol, attacherSurvol } from "./carte-fond.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const JEU = await fetch("data/stations-montana.json").then((r) => r.json());
+const JEU = await chargerJson("data/stations-montana.json");
 const FRONTIERES = await chargerFrontieres();
 const PLACEES = JEU.stations.filter((s) => s.position === "wgs84");
 let choisie = JEU.stations.find((s) => s.nom === "Kasserine") || JEU.stations[0];

@@ -12,6 +12,8 @@
 // par chaque point qui règle le cas : la pastille se lit toujours contre
 // #f8fafc, quel que soit ce qu'il y a dessous.
 
+import { chargerJson } from "./donnees.js";
+
 export const FOND = {
   mer: "#eaf4fb",
   voisin: "#f1f5f9", voisinTrait: "#dde5ec",
@@ -46,7 +48,7 @@ export function projection({ lon0, lat0, lon1, lat1 }, { largeurMax, hauteurMax,
 const caches = new Map();
 export async function chargerFrontieres(fichier = "data/frontieres.json") {
   if (!caches.has(fichier))
-    caches.set(fichier, await fetch(fichier).then((r) => r.json()));
+    caches.set(fichier, await chargerJson(fichier));
   return caches.get(fichier);
 }
 

@@ -55,12 +55,36 @@ test("le fil rouge ne vise que des identifiants de sa propre page", () => {
 
 test("le service worker précharge tout ce que les pages utilisent", () => {
   const sw = lire("sw.js");
+  // Les DONNÉES aussi : un chapitre dont le fichier n'est pas en cache est un
+  // chapitre vide hors ligne. C'est le défaut qui a fait disparaître les cartes
+  // du chapitre 10 — le fichier manquait, et rien ne le disait.
   const attendus = [...new Set([
     ...PAGES,
     ...readdirSync(join(racine, "src")).map((f) => `src/${f}`),
+    ...readdirSync(join(racine, "data")).filter((f) => f.endsWith(".json"))
+      .map((f) => `data/${f}`),
   ])];
   for (const f of attendus)
     assert.ok(sw.includes(`"./${f}"`), `${f} absent de la coquille du service worker`);
+});
+
+test("hors ligne, une donnée absente ne se déguise pas en page d'accueil", () => {
+  // Le mode de panne : le service worker répondait par la coquille HTML à TOUTE
+  // requête absente du cache. Un fetch de .json recevait « <!doctype … »,
+  // jetait au premier .json(), et le chapitre restait vide, sans message.
+  const sw = lire("sw.js");
+  assert.match(sw, /request\.mode === "navigate"/,
+    "le repli sur la coquille doit être réservé aux navigations");
+  // Et le chargeur doit reconnaître le cas s'il se reproduisait autrement.
+  const d = lire("src/donnees.js");
+  assert.match(d, /\^\\s\*</, "chargerJson doit détecter une réponse HTML");
+  // Aucun module ne doit plus décoder du JSON sans ce garde-fou.
+  for (const f of readdirSync(join(racine, "src")).filter((x) => x.endsWith(".js"))) {
+    if (f === "donnees.js") continue;
+    const src = lire(join("src", f));
+    assert.ok(!/fetch\([^)]*\)\s*\.then\(\s*\(?r\)?\s*=>\s*r\.json\(\)/.test(src),
+      `${f} décode du JSON sans passer par chargerJson`);
+  }
 });
 
 test("chaque chapitre annoncé disponible a bien sa section et sa banque", () => {

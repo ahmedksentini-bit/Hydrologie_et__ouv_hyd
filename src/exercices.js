@@ -4,15 +4,21 @@
 //   révision     — le corrigé d'emblée, pour relire une méthode.
 // Deux types de question : « choix » (une bonne réponse) et « nombre » (avec tolérance).
 
+import { chargerJson } from "./donnees.js";
+
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 export async function chargerBanque(chapitreId) {
+  // Une banque absente n'est pas une panne : le chapitre annonce alors
+  // « en cours de rédaction ». On distingue quand même les deux dans la
+  // console, pour qu'un fichier réellement manquant se voie.
   try {
-    const r = await fetch(`data/exercices-${chapitreId}.json`);
-    if (!r.ok) return null;
-    return await r.json();
-  } catch { return null; }
+    return await chargerJson(`data/exercices-${chapitreId}.json`);
+  } catch (e) {
+    console.warn("Banque d'exercices :", e.message);
+    return null;
+  }
 }
 
 export function rendreListe(banque, ouvrir) {

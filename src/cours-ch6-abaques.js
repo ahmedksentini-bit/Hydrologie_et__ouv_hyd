@@ -4,13 +4,14 @@
 // l'autre.
 import { preparer, lireAbaque, DEBIT_REDUIT, ecartRelatif } from "./solvers-abaques.js";
 import { calculerOuvrage, entreePar } from "./solvers-ouvrages.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const JEU = preparer(await fetch("data/abaques-bceom.json").then((r) => r.json()));
+const JEU = preparer(await chargerJson("data/abaques-bceom.json"));
 
 /** Hypothèses de la contre-épreuve HDS-5 : l'abaque n'en porte aucune. */
 const REF = { L: 12, J: 0.01, K: 70, tw: 0 };

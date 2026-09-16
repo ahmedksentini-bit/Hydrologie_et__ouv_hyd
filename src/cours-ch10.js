@@ -12,16 +12,27 @@ import { abattement, pm10De, ciehToutes, syntheseCieh, kr10Geologie, proposerReg
 import { chargerFrontieres, projection, fondDeCarte, graticule,
          calqueSurvol, attacherSurvol } from "./carte-fond.js";
 import { panEn, regimeDe } from "./solvers-fao54.js";
+import { chargerDonnees, chargerJson, signalerPanne } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id)?.value || "").replace(",", "."));
 const fr = (x, d = 2) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const [CIEH, ORSTOM, CHECK, IDF, PLUIES] = await Promise.all(
-  ["cieh-fao54", "orstom-fao54", "checklist-fao54", "montana-afrique", "isohyetes-pan-fao54"]
-    .map((f) => fetch(`data/${f}.json`).then((r) => r.json())));
-const FRONTIERES = await chargerFrontieres("data/frontieres-afrique.json");
+const CONTENEURS = ["faCarte", "faPluies", "faIdfOut", "faRatOut", "faCiehOut",
+                    "faCiehTable", "faOrstomOut", "faOrstomChaine", "faDomaines", "faChecklist"];
+
+let CIEH, ORSTOM, CHECK, IDF, PLUIES, FRONTIERES;
+try {
+  [CIEH, ORSTOM, CHECK, IDF, PLUIES] = await chargerDonnees(
+    "cieh-fao54", "orstom-fao54", "checklist-fao54", "montana-afrique", "isohyetes-pan-fao54");
+  FRONTIERES = await chargerJson("data/frontieres-afrique.json");
+} catch (e) {
+  // Sans les tables, il n'y a pas de chapitre 10 — mais il y a une explication,
+  // et c'est tout ce qui manquait quand la page restait blanche.
+  signalerPanne(CONTENEURS, e);
+  throw e;
+}
 
 const C = { cieh: "#b45309", orstom: "#0369a1", commun: "#15803d", muet: "#94a3b8",
             cote: "#475569", alerte: "#b91c1c", fond: "#f8fafc" };

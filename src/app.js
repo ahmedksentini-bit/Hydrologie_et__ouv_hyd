@@ -2,6 +2,7 @@
 // ajouter un chapitre ou une notion ne demande aucune modification de ce fichier.
 
 import { chargerBanque, rendreListe, rendreExercice } from "./exercices.js";
+import { chargerJson } from "./donnees.js";
 
 const app = document.getElementById("app");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
@@ -10,9 +11,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) =>
 let COURS = null;
 
 async function charger() {
-  const r = await fetch("data/chapitres.json");
-  if (!r.ok) throw new Error("données du cours indisponibles");
-  COURS = await r.json();
+  COURS = await chargerJson("data/chapitres.json");
 }
 
 function exercicesDisponibles(ch) {

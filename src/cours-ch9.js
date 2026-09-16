@@ -5,13 +5,14 @@
 // d'où il vient ; il vient d'ici.
 import { sectionNaturelle, debitA, tirantNormal, coteCritique, courbeTarage,
          remous, positionRessaut, STRICKLER, kDe, G } from "./solvers-riviere.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
 const fr = (x, d) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const OUED = await fetch("data/oued-demo.json").then((r) => r.json());
+const OUED = await chargerJson("data/oued-demo.json");
 
 // Les deux rugosités sont réglables : c'est la seule donnée du calcul qui ne se
 // mesure pas, et le chapitre montre ce qu'elle coûte.

@@ -2,6 +2,7 @@
 // Le dessin sert à faire voir ce que l'indice de compacité mesure : l'écart
 // entre le contour du bassin et celui du disque le plus ramassé possible.
 import { rectangleEquivalent, IC_MINIMUM } from "./solvers-hydro.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id).value || "").replace(",", "."));
@@ -64,7 +65,7 @@ maj();
 // Les deux figures lisent le MÊME fichier : une carte et une courbe ne sont
 // pas deux objets mais deux lectures du même relief, et c'est le propos.
 
-const BV = await fetch("data/bassin-demo.json").then((r) => r.json());
+const BV = await chargerJson("data/bassin-demo.json");
 
 const COTES = [
   ["Hmax", "#94a3b8"], ["H5", "#b45309"], ["H50", "#0369a1"],

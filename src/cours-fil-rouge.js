@@ -3,15 +3,20 @@
 // cette page : c'est la règle qui empêche un cas d'école de dériver.
 import { chaine, ETAPES } from "./solvers-fil-rouge.js";
 import { DOMAINES } from "./solvers-hydro.js";
+import { chargerDonnees, signalerPanne } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 const fr = (x, d = 2) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 const pc = (x, d = 0) => Number.isFinite(x) ? `${fr(100 * x, d)} %` : "—";
 
-const [CAS, MONTANA, SOGREAH] = await Promise.all(
-  ["fil-rouge", "stations-montana", "stations-sogreah"]
-    .map((f) => fetch(`data/${f}.json`).then((r) => r.json())));
+let CAS, MONTANA, SOGREAH;
+try {
+  [CAS, MONTANA, SOGREAH] = await chargerDonnees("fil-rouge", "stations-montana", "stations-sogreah");
+} catch (e) {
+  signalerPanne(["frSynoptique", "frProfil", "frEtapes", "frBilan", "frAlerte"], e);
+  throw e;
+}
 const TABLES = { montana: MONTANA, sogreah: SOGREAH };
 
 const LIB_CATEGORIE = { classee: "classée (RN, RR, RL)", autoroute: "autoroute", piste: "piste" };

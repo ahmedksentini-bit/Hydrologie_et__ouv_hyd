@@ -10,10 +10,11 @@
 // Zeroud » doit pouvoir situer le Zeroud. C'est tout, et c'est déjà beaucoup.
 import { chargerFrontieres, projection, fondDeCarte, graticule, FOND,
          calqueSurvol, attacherSurvol } from "./carte-fond.js";
+import { chargerJson } from "./donnees.js";
 
 const el = (id) => document.getElementById(id);
 
-const JEU = await fetch("data/reperes-tunisie.json").then((r) => r.json());
+const JEU = await chargerJson("data/reperes-tunisie.json");
 const FRONTIERES = await chargerFrontieres();
 const PAR_ID = new Map(JEU.reperes.map((r) => [r.id, r]));
 
