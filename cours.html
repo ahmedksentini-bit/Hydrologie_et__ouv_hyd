@@ -2697,33 +2697,59 @@
      elle n'est local. Mais ses deux entrées, elles, le sont entièrement :</p>
   <ul>
     <li>l'<strong>intensité</strong> vient d'une courbe IDF. La table de Montana du
-       chapitre 3 est un catalogue de <em>stations tunisiennes</em> ; le bulletin FAO 54,
-       lui, ne fournit aucune relation intensité–durée–fréquence. Il faut donc une IDF
-       établie sur la station du projet.</li>
-    <li>le <strong>coefficient C</strong> vient de l'abaque pente × couverture végétale du
-       chapitre 3, qui est tunisien. Le transposer au Sahel, c'est emprunter une
-       régionalisation à une région qui n'est pas la sienne.</li>
+       chapitre 3 est un catalogue de <em>stations tunisiennes</em>, et le bulletin FAO 54
+       lui-même ne contient aucune relation intensité–durée–fréquence. Mais le
+       <strong>CIEH en publie une</strong> : 87 postes et zones d'Afrique de l'Ouest et
+       centrale, treize pays, sous la forme <em>i = A<sub>T</sub> · t<sup>−b</sup></em>.</li>
+    <li>le <strong>coefficient C</strong>, lui, n'a pas d'équivalent publié. L'abaque pente ×
+       couverture végétale du chapitre 3 est tunisien, et le transposer au Sahel serait
+       emprunter une régionalisation à une région qui n'est pas la sienne. Celui-là reste à
+       établir, et à justifier.</li>
   </ul>
-  <div class="hint">Le calculateur ci-dessous <strong>refuse</strong> de sortir un débit tant
-     que ces deux valeurs ne sont pas renseignées localement, et son refus nomme ce qui
-     manque. C'est volontaire : un nombre produit avec des paramètres empruntés ne porte
-     aucune marque de son emprunt.</div>
+
+  <h3>Les stations IDF du CIEH</h3>
+  <div id="faCarte"></div>
+  <p>Trois choses voyagent avec chaque coefficient, et doivent rester visibles jusqu'au
+     rapport :</p>
+  <table class="resultats"><thead><tr><th>Ce qui voyage</th><th>Pourquoi cela compte</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Le statut</strong></td><td class="motif">Seul T = 10 ans est
+        <em>publié</em> par le CIEH. T = 2 et 5 sont interpolés entre A₁ et A₁₀, T = 20 est
+        extrapolé au-delà. Une extrapolation qui perd son étiquette devient une mesure.</td></tr>
+      <tr><td><strong>La plage de durée</strong></td><td class="motif">Deux plages par poste —
+        5 à 60 min et 120 à 1440 min — chacune avec son propre exposant b.
+        <strong>Entre 60 et 120 minutes, il n'y a rien</strong>, et c'est précisément là que
+        tombent beaucoup de temps de concentration.</td></tr>
+      <tr><td><strong>L'unité</strong></td><td class="motif">La source donne i en
+        <strong>millimètres par minute</strong>. Pour des mm/h — l'unité de la rationnelle —
+        il faut a = 60 · A<sub>T</sub>. Oublier le facteur 60 divise le débit par soixante.</td></tr>
+    </tbody></table>
+  <div class="hint">Douze des 87 entrées sont des <strong>zones</strong> et non des postes :
+     le CIEH y donne un jeu de coefficients pour plusieurs villes représentatives. La carte
+     les marque d'un carré. Une zone ne se lit pas comme une mesure ponctuelle.</div>
 
   <div class="calc" id="calcFaoRat">
-    <h3>La rationnelle avec des paramètres locaux</h3>
+    <h3>La rationnelle avec une IDF du CIEH</h3>
     <div class="curseurs">
+      <div class="field"><label for="faPays">Pays</label>
+        <div class="input-wrap"><select id="faPays"></select></div></div>
+      <div class="field"><label for="faStation">Poste ou zone</label>
+        <div class="input-wrap"><select id="faStation"></select></div></div>
+      <div class="field"><label for="faT">Période de retour</label>
+        <div class="input-wrap"><select id="faT"></select></div></div>
+      <div class="field"><label for="faTc">Temps de concentration</label>
+        <div class="input-wrap"><input id="faTc" type="range" min="5" max="600" step="5" value="40"><span class="unit"><span id="faTcVal">—</span></span></div></div>
       <div class="field"><label for="faS">Surface du bassin</label>
         <div class="input-wrap"><input id="faS" type="text" inputmode="decimal" value="3,2"><span class="unit">km²</span></div></div>
-      <div class="field"><label for="faC">Coefficient C <small>— établi localement</small></label>
+      <div class="field"><label for="faC">Coefficient C <small>— à établir localement</small></label>
         <div class="input-wrap"><input id="faC" type="text" inputmode="decimal" value="0,45"></div></div>
-      <div class="field"><label for="faIdfA">IDF locale — a</label>
-        <div class="input-wrap"><input id="faIdfA" type="text" inputmode="decimal" value="800"></div></div>
-      <div class="field"><label for="faIdfB">IDF locale — b <small>— négatif</small></label>
-        <div class="input-wrap"><input id="faIdfB" type="text" inputmode="decimal" value="-0,70"></div></div>
-      <div class="field"><label for="faTc">Temps de concentration</label>
-        <div class="input-wrap"><input id="faTc" type="text" inputmode="decimal" value="40"><span class="unit">min</span></div></div>
     </div>
+    <div id="faIdfOut"></div>
     <div id="faRatOut"></div>
+    <p class="method-note">Déplacer le temps de concentration entre 60 et 120 minutes fait
+       apparaître le trou du catalogue : le calculateur refuse alors, et dit pourquoi. C'est
+       un refus utile — il n'existe aucun coefficient publié dans cette fenêtre, et
+       l'interpolation entre deux plages d'exposants différents n'aurait aucun fondement.</p>
   </div>
 
   <h3>CIEH : quarante-huit régressions, et le droit d'en choisir</h3>

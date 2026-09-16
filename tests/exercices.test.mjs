@@ -755,11 +755,20 @@ test("ch10 — les exemples du bulletin FAO 54 recalculés", () => {
   const CIEH = JSON.parse(readFileSync(new URL("../data/cieh-fao54.json", import.meta.url)));
   const ORSTOM = JSON.parse(readFileSync(new URL("../data/orstom-fao54.json", import.meta.url)));
 
-  // e2 — la rationnelle avec une IDF locale
-  const i = 800 * Math.pow(40, -0.7);
-  vaut(q(b, "ch10-e2", 2), i, "intensité de l'IDF locale");
-  vaut(q(b, "ch10-e2", 3), fao.rationnelleLocale({ C: 0.45, S: 3.2, tcMin: 40,
-    idf: { a: 800, b: -0.7 } }).Q, "débit rationnel");
+  // e2 — la rationnelle avec une IDF du CIEH, à Bobo-Dioulasso
+  const IDF = JSON.parse(readFileSync(new URL("../data/montana-afrique.json", import.meta.url)));
+  const bobo = IDF.stations.find((x) => x.station === "Bobo-Dioulasso");
+  const i10 = fao.intensiteIdf(bobo, 40, 10);
+  assert.ok(i10.publie, "à 10 ans, la valeur doit être celle publiée par le CIEH");
+  vaut(q(b, "ch10-e2", 2), i10.i, "intensité décennale à 40 min");
+  vaut(q(b, "ch10-e2", 3), fao.rationnelleLocale({ C: 0.45, S: 3.2, i: i10.i }).Q, "débit rationnel");
+
+  // e11 — les trois pièges du catalogue
+  assert.equal(fao.intensiteIdf(bobo, 90, 10).i, null, "rien entre 60 et 120 minutes");
+  const publies = fao.periodesIdf(bobo)
+    .filter((T) => fao.intensiteIdf(bobo, 40, T).publie).length;
+  vaut(q(b, "ch10-e11", 1), publies, "périodes réellement publiées");
+  assert.equal(fao.stationsIdf(IDF).filter((x) => x.est_zone).length, 12, "douze zones");
 
   // e3 — abattement de Vuillaume
   vaut(q(b, "ch10-e3", 0), fao.abattement(550, 30), "abattement");

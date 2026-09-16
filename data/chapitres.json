@@ -218,10 +218,13 @@
         "domaines ORSTOM et CIEH",
         "limite sahélien / tropical",
         "check-list annexe 1",
-        "Gradex"
+        "Gradex",
+        "stations IDF du CIEH",
+        "plages de durée",
+        "statut publié / interpolé"
       ],
       "cours": true,
-      "exercices": 10
+      "exercices": 11
     }
   ]
 }

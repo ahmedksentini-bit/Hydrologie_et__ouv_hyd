@@ -428,6 +428,106 @@ export function rationnelleLocale({ C, S, idf, tcMin, dureeMinimaleMin = 5, i = 
   return { Q: 0.278 * C * intensite * S, intensite, source, motif: null };
 }
 
+// ── Les stations IDF du CIEH : l'intensité que le bulletin ne donne pas ───
+
+/**
+ * Le bulletin FAO 54 ne contient aucune relation intensité-durée-fréquence.
+ * Le CIEH, lui, en publie une : 87 postes et zones d'Afrique de l'Ouest et
+ * centrale, sous la forme i = A_T · t^(−b), avec i en MILLIMÈTRES PAR MINUTE
+ * et t en minutes.
+ *
+ * Trois choses voyagent avec chaque valeur, et doivent rester visibles :
+ *
+ *  · le STATUT. Seul T = 10 ans est publié. T = 2 et 5 sont interpolés entre
+ *    A1 et A10, T = 20 est extrapolé au-delà. Une extrapolation qui perd son
+ *    étiquette devient une mesure.
+ *  · la PLAGE DE DURÉE. Deux plages par poste, 5 à 60 min et 120 à 1440 min,
+ *    avec leur propre exposant b. Entre 60 et 120 minutes, il n'y a RIEN — et
+ *    c'est exactement là que tombent beaucoup de temps de concentration.
+ *  · l'UNITÉ. mm/min à la source. Pour des mm/h, a = 60 · A_T.
+ */
+export const A_VERS_MM_PAR_HEURE = 60;
+
+/** Les postes d'un pays, ou tous. Les « zones » couvrent plusieurs villes. */
+export function stationsIdf(catalogue, pays = null) {
+  return catalogue.stations.filter((s) => !pays || s.pays === pays);
+}
+
+export const paysIdf = (catalogue) =>
+  [...new Set(catalogue.stations.map((s) => s.pays))].sort((a, b) => a.localeCompare(b, "fr"));
+
+/**
+ * La plage qui couvre cette durée, ou rien. AUCUNE extrapolation : une durée
+ * de 90 minutes tombe dans le trou du catalogue, et le dire est la seule
+ * réponse honnête.
+ */
+export function plagePour(station, tMin) {
+  const p = station.plages.find((x) => tMin >= x.t_min_min && tMin <= x.t_max_min);
+  if (p) return { plage: p, motif: null };
+  const bornes = station.plages.map((x) => x.libelle).join(" et ");
+  const sous = station.plages.every((x) => tMin < x.t_min_min);
+  const au = station.plages.every((x) => tMin > x.t_max_min);
+  return { plage: null, motif: sous
+    ? `durée sous la plus petite plage calée (${bornes})`
+    : au ? `durée au-delà de la plus grande plage calée (${bornes})`
+    : `durée entre les deux plages calées (${bornes}) : le CIEH n'y publie rien, `
+      + "et on ne comble pas un trou de catalogue par une interpolation" };
+}
+
+/**
+ * Intensité en mm/h à la station, pour la durée et la période demandées.
+ * Rend aussi le statut de la valeur employée — il doit suivre jusqu'au rapport.
+ */
+export function intensiteIdf(station, tMin, T) {
+  const { plage, motif } = plagePour(station, tMin);
+  if (!plage) return { i: null, motif };
+  const v = plage.A_par_T.find((x) => x.T === T);
+  if (!v) {
+    const dispo = plage.A_par_T.map((x) => `${x.T}`).join(", ");
+    return { i: null, motif: `période de retour non calée à cette station (disponibles : ${dispo} ans)` };
+  }
+  const a = A_VERS_MM_PAR_HEURE * v.A_T;
+  return {
+    i: a * Math.pow(tMin, -plage.b),
+    a, b: plage.b, plage, statut: v.statut,
+    publie: /publié/i.test(v.statut),
+    incoherence: incoherenceT(plage),
+    motif: null,
+  };
+}
+
+/**
+ * Une plage dont A DÉCROÎT avec la période de retour décrit une pluie qui
+ * faiblirait en devenant plus rare. C'est impossible, et cela se rencontre :
+ * deux entrées du catalogue le font sur leur plage longue, sans doute parce que
+ * A1 et A10 y ont été relevés dans le mauvais ordre. On ne corrige pas — la
+ * transcription est la source — mais on le signale à chaque lecture.
+ */
+export function incoherenceT(plage) {
+  const v = [...plage.A_par_T].sort((a, b) => a.T - b.T);
+  for (let i = 1; i < v.length; i++)
+    if (v[i].A_T <= v[i - 1].A_T)
+      return `A décroît de T = ${v[i - 1].T} à T = ${v[i].T} ans : l'intensité `
+        + "diminuerait en devenant plus rare. Coefficients à vérifier sur la source "
+        + "avant emploi.";
+  return null;
+}
+
+/** Les périodes de retour calées, toutes plages confondues. */
+export const periodesIdf = (station) =>
+  [...new Set(station.plages.flatMap((p) => p.A_par_T.map((v) => v.T)))].sort((a, b) => a - b);
+
+/** Distance approchée, en kilomètres, entre un point et les repères d'un poste. */
+export function distanceIdf(station, lon, lat) {
+  let d = Infinity;
+  for (const p of station.points) {
+    if (p.lon == null || p.lat == null) continue;
+    const k = Math.cos(((lat + p.lat) / 2 * Math.PI) / 180);
+    d = Math.min(d, 111.32 * Math.hypot((p.lon - lon) * k, p.lat - lat));
+  }
+  return d;
+}
+
 // ── Les domaines : ORSTOM ≠ CIEH, et ce sont des avertissements ────────────
 
 /**

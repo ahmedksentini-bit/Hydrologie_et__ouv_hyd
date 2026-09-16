@@ -10,10 +10,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as f from "../src/solvers-fao54.js";
+import { incoherenceT } from "../src/solvers-fao54.js";
 import { coefficientAbattement } from "../src/solvers-hydro.js";
 
 const lire = (n) => JSON.parse(readFileSync(new URL(`../data/${n}.json`, import.meta.url)));
 const CIEH = lire("cieh-fao54"), ORSTOM = lire("orstom-fao54"), CHECK = lire("checklist-fao54");
+const IDF = lire("montana-afrique"), FRONT = lire("frontieres-afrique");
 const a2 = (v, attendu, msg, pct = 2) =>
   assert.ok(Math.abs(v - attendu) <= (Math.abs(attendu) * pct) / 100,
     `${msg} : ${v} contre ${attendu} du manuel (± ${pct} %)`);
@@ -217,4 +219,117 @@ test("la check-list pèse plus lourd que la précision des méthodes", () => {
   // réductions de 30 % donnent 0,49, pas 0,40. C'est le seul cumul défendable.
   assert.ok(Math.abs(f.cumulerCorrections([0.7, 0.7]) - 0.49) < 1e-12);
   assert.equal(f.cumulerCorrections([]), 1, "sans correction cochée, effet neutre");
+});
+
+test("le catalogue IDF du CIEH est complet et cohérent", () => {
+  assert.equal(IDF.stations.length, 87, "87 postes et zones");
+  assert.equal(f.paysIdf(IDF).length, 13, "treize pays");
+  assert.equal(IDF.stations.filter((s) => s.est_zone).length, 12, "douze zones");
+  for (const st of IDF.stations) {
+    assert.equal(st.plages.length, 2, `${st.station} : deux plages de durée`);
+    for (const p of st.plages) {
+      assert.ok(p.b > 0, "l'exposant est stocké POSITIF, la formule étant en t^(−b)");
+      assert.ok(p.t_min_min < p.t_max_min, "plage orientée");
+      const ts = p.A_par_T.map((v) => v.T);
+      assert.deepEqual(ts, [2, 5, 10, 20], `${st.station} : quatre périodes`);
+      // Une seule valeur publiée par plage : celle de dix ans.
+      const publies = p.A_par_T.filter((v) => /publié/i.test(v.statut));
+      assert.equal(publies.length, 1, `${st.station} : une seule valeur publiée`);
+      assert.equal(publies[0].T, 10, "et c'est la décennale");
+      // A doit croître avec la période de retour. Deux entrées du catalogue
+      // font l'inverse sur leur plage longue — une pluie qui faiblirait en
+      // devenant plus rare. On ne corrige pas une transcription qu'on ne peut
+      // pas confronter à la source, mais on la NOMME, pour qu'une troisième
+      // anomalie fasse tomber ce test au lieu de passer inaperçue.
+      const connues = ["Dimbokro", "Sikasso"];
+      const decroit = incoherenceT(p) !== null;
+      if (decroit)
+        assert.ok(connues.includes(st.station) && p.libelle === "120–1440 min",
+          `${st.station} — ${p.libelle} : anomalie NOUVELLE, A décroît avec T`);
+    }
+    assert.ok(st.points.length > 0, `${st.station} : au moins un repère`);
+  }
+});
+
+test("le trou entre 60 et 120 minutes n'est jamais comblé", () => {
+  const bobo = IDF.stations.find((s) => s.station === "Bobo-Dioulasso");
+  // Les deux plages répondent chez elles.
+  assert.ok(f.intensiteIdf(bobo, 40, 10).i > 0, "40 min : plage courte");
+  assert.ok(f.intensiteIdf(bobo, 240, 10).i > 0, "240 min : plage longue");
+  // Et rien entre les deux, ni au-delà des bornes.
+  for (const t of [61, 90, 119]) {
+    const r = f.intensiteIdf(bobo, t, 10);
+    assert.equal(r.i, null, `${t} min doit être refusé`);
+    assert.match(r.motif, /entre les deux plages/);
+  }
+  assert.equal(f.intensiteIdf(bobo, 3, 10).i, null, "sous 5 minutes");
+  assert.equal(f.intensiteIdf(bobo, 2000, 10).i, null, "au-delà de 1440 minutes");
+  assert.match(f.intensiteIdf(bobo, 40, 50).motif, /période de retour non calée/);
+  // Les deux plages ont des exposants DIFFÉRENTS : c'est pourquoi on ne les
+  // raccorde pas. Si elles devenaient égales, le refus perdrait sa raison d'être.
+  assert.notEqual(bobo.plages[0].b, bobo.plages[1].b);
+});
+
+test("l'intensité se lit en mm/h, pas en mm/min", () => {
+  const bobo = IDF.stations.find((s) => s.station === "Bobo-Dioulasso");
+  const r = f.intensiteIdf(bobo, 40, 10);
+  const A = bobo.plages[0].A_par_T.find((v) => v.T === 10).A_T;
+  assert.equal(f.A_VERS_MM_PAR_HEURE, 60);
+  assert.ok(Math.abs(r.a - 60 * A) < 1e-12, "a = 60 · A_T");
+  assert.ok(Math.abs(r.i - 60 * A * Math.pow(40, -bobo.plages[0].b)) < 1e-12, "i = a · t^(−b)");
+  // Ordre de grandeur : une décennale sahélienne à 40 min se compte en
+  // centaines de mm/h. Si on tombait à quelques mm/h, le ×60 aurait sauté.
+  assert.ok(r.i > 50 && r.i < 400, `intensité invraisemblable : ${r.i}`);
+});
+
+test("le statut de chaque valeur voyage avec elle", () => {
+  const bobo = IDF.stations.find((s) => s.station === "Bobo-Dioulasso");
+  assert.equal(f.intensiteIdf(bobo, 40, 10).publie, true, "la décennale est publiée");
+  for (const T of [2, 5, 20]) {
+    const r = f.intensiteIdf(bobo, 40, T);
+    assert.equal(r.publie, false, `T = ${T} n'est pas publié`);
+    assert.match(r.statut, /[Ii]nterpolation|[Ee]xtrapolation/, "et son statut le dit");
+  }
+  // L'intensité croît avec la période de retour, publiée ou non.
+  const is = [2, 5, 10, 20].map((T) => f.intensiteIdf(bobo, 40, T).i);
+  for (let i = 1; i < is.length; i++) assert.ok(is[i] > is[i - 1], "i croît avec T");
+});
+
+test("le fond de carte africain couvre tous les postes", () => {
+  const [lon0, lat0, lon1, lat1] = FRONT.boite;
+  const principaux = new Set(FRONT.pays.filter((p) => p.principal).map((p) => p.nom));
+  for (const pays of f.paysIdf(IDF))
+    assert.ok(principaux.has(pays), `${pays} n'a pas de contour sur le fond de carte`);
+  for (const st of IDF.stations)
+    for (const pt of st.points) {
+      if (pt.lon == null) continue;
+      assert.ok(pt.lon >= lon0 && pt.lon <= lon1 && pt.lat >= lat0 && pt.lat <= lat1,
+        `${st.station} / ${pt.ville} tombe hors de la fenêtre de la carte`);
+    }
+  // Les voisins sont là pour boucher les trous : sans eux, une terre se lit
+  // comme une mer. On en veut plusieurs, et aucun ne doit porter de station.
+  assert.ok(FRONT.pays.filter((p) => !p.principal).length >= 8, "assez de voisins");
+});
+
+test("la distance à un poste se calcule, pour aider à choisir", () => {
+  const bobo = IDF.stations.find((s) => s.station === "Bobo-Dioulasso");
+  const p = bobo.points[0];
+  assert.ok(f.distanceIdf(bobo, p.lon, p.lat) < 1, "distance nulle sur le poste lui-même");
+  // Un degré de latitude vaut environ 111 km, partout.
+  assert.ok(Math.abs(f.distanceIdf(bobo, p.lon, p.lat + 1) - 111.32) < 1, "un degré ≈ 111 km");
+});
+
+test("les deux entrées incohérentes du catalogue sont signalées, pas corrigées", () => {
+  const anomalies = IDF.stations.flatMap((st) =>
+    st.plages.filter((p) => incoherenceT(p)).map((p) => `${st.station} / ${p.libelle}`));
+  assert.deepEqual(anomalies.sort(),
+    ["Dimbokro / 120–1440 min", "Sikasso / 120–1440 min"],
+    "la liste des anomalies connues a changé — vérifier la transcription");
+  // Et la lecture les porte : un calcul silencieux serait pire que l'anomalie.
+  const dim = IDF.stations.find((s) => s.station === "Dimbokro");
+  const r = f.intensiteIdf(dim, 240, 10);
+  assert.ok(r.i > 0, "la valeur se calcule quand même");
+  assert.match(r.incoherence, /décroît/, "et elle arrive marquée");
+  // La plage courte des deux stations, elle, est saine.
+  assert.equal(f.intensiteIdf(dim, 30, 10).incoherence, null);
 });

@@ -46,43 +46,43 @@
       "id": "ch10-e2",
       "titre": "La rationnelle voyage, ses paramètres non",
       "difficulte": 2,
-      "enonce": "Petit bassin de 3,2 km² au Burkina Faso, temps de concentration 40 minutes. L'ingénieur veut appliquer la méthode rationnelle.",
+      "enonce": "Petit bassin de 3,2 km² près de Bobo-Dioulasso, au Burkina Faso, temps de concentration 40 minutes. L'ingénieur veut appliquer la méthode rationnelle.",
       "questions": [
         {
           "texte": "Peut-il lire l'intensité dans la table de Montana du chapitre 3 ?",
           "type": "choix",
           "options": [
             "Oui, en prenant la station tunisienne la plus proche climatiquement",
-            "Non : cette table est un catalogue de 45 stations tunisiennes, et le bulletin FAO 54 ne fournit aucune relation intensité-durée-fréquence"
+            "Non : cette table ne contient que des stations tunisiennes — mais le CIEH publie un catalogue équivalent pour l'Afrique de l'Ouest et centrale, 87 postes et zones"
           ],
           "reponse": 1,
-          "explication": "Les coefficients a, b et c de Montana décrivent le régime pluviométrique d'UNE station. « La plus proche climatiquement » n'est pas un critère hydrologique : c'est une intuition. Il faut une IDF établie sur la station du projet, ou à défaut une intensité mesurée."
+          "explication": "Les coefficients de Montana décrivent le régime pluviométrique d'UNE station : « la plus proche climatiquement » est une intuition, pas un critère. Il ne faut pas pour autant établir une IDF de zéro : le bulletin FAO 54 n'en donne aucune, mais le CIEH en publie une, sous la forme i = A_T · t^(−b)."
         },
         {
           "texte": "Peut-il lire le coefficient C dans l'abaque pente × couverture végétale du chapitre 3 ?",
           "type": "choix",
           "options": [
             "Oui, l'abaque ne dépend que de la pente et de la végétation",
-            "Non : cet abaque est tunisien, et le transposer au Sahel revient à emprunter une régionalisation à une autre région"
+            "Non : cet abaque est tunisien, et il n'existe pas d'équivalent publié — C reste à établir sur le bassin, et à justifier"
           ],
           "reponse": 1,
-          "explication": "L'abaque encode implicitement des sols, des intensités de pluie et des états de surface tunisiens. Deux bassins de même pente et de même couverture, l'un en Tunisie et l'autre au Sahel, ne ruissellent pas pareil — c'est précisément ce que mesure Kr10 dans le jeu FAO 54."
+          "explication": "L'abaque encode implicitement des sols, des intensités et des états de surface tunisiens. Contrairement à l'intensité, C n'a pas de catalogue de remplacement : c'est la seule entrée de la rationnelle qui reste entièrement à la charge de l'ingénieur. Deux bassins de même pente et de même couverture, l'un en Tunisie et l'autre au Sahel, ne ruissellent pas pareil."
         },
         {
-          "texte": "Il dispose finalement d'une IDF locale i = 800 · t^(−0,70) avec t en minutes, et retient C = 0,45. Intensité au temps de concentration ?",
+          "texte": "À Bobo-Dioulasso, plage 5–60 min : A₁₀ = 12,5 mm/min et b = 0,50. Intensité décennale à 40 minutes, en mm/h ?",
           "type": "nombre",
           "unite": "mm/h",
-          "reponse": 60.5,
-          "tolerance": 1.0,
-          "explication": "i = 800 × 40^(−0,70) = 60,5 mm/h. L'exposant négatif porte tout le sens de la courbe IDF : plus la fenêtre est longue, plus l'intensité moyenne est faible."
+          "reponse": 118.6,
+          "tolerance": 3.0,
+          "explication": "Le CIEH publie i en MILLIMÈTRES PAR MINUTE. Pour des mm/h : a = 60 × 12,5 = 750, puis i = 750 × 40^(−0,50) = 118,6 mm/h. Oublier le facteur 60 donnerait 1,98 mm/h — et un débit soixante fois trop faible, sans rien d'absurde à l'œil sur une ligne de tableur."
         },
         {
-          "texte": "Débit de pointe par la méthode rationnelle ?",
+          "texte": "Débit de pointe, avec C = 0,45 ?",
           "type": "nombre",
           "unite": "m³/s",
-          "reponse": 24.2,
-          "tolerance": 0.6,
-          "explication": "Q = 0,278 × 0,45 × 60,5 × 3,2 = 24,2 m³/s. Le bassin fait moins de 4 km² : on est dans le domaine de la méthode, ici comme en Tunisie. Au-delà, l'hypothèse de pluie uniforme sur tout le bassin tombe — cette limite-là, elle, ne dépend pas du pays."
+          "reponse": 47.5,
+          "tolerance": 1.5,
+          "explication": "Q = 0,278 × 0,45 × 118,6 × 3,2 = 47,5 m³/s, soit 14,8 m³/s/km². Le bassin fait moins de 4 km² : on est dans le domaine de la méthode, ici comme en Tunisie. Cette limite-là ne dépend pas du pays."
         }
       ]
     },
@@ -431,6 +431,53 @@
           ],
           "reponse": 1,
           "explication": "Les méthodes sont décennales par construction et le Gradex mène au centennal. Interpoler entre les deux serait inventer une loi que le manuel n'a pas établie. Le choix de la période de retour, lui, relève du chapitre 5 — et il faut alors dire clairement quelle grandeur on livre."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e11",
+      "titre": "Le catalogue IDF du CIEH, et ses trois pièges",
+      "difficulte": 2,
+      "enonce": "Le CIEH publie 87 postes et zones sur treize pays, chacun avec deux plages de durée — 5 à 60 minutes et 120 à 1440 minutes — et quatre périodes de retour : 2, 5, 10 et 20 ans.",
+      "questions": [
+        {
+          "texte": "Le temps de concentration du bassin vaut 90 minutes. Quelle intensité lire ?",
+          "type": "choix",
+          "options": [
+            "Celle de la plage 5–60 min, prolongée jusqu'à 90 minutes",
+            "La moyenne des deux plages",
+            "Aucune : entre 60 et 120 minutes, le CIEH ne publie rien"
+          ],
+          "reponse": 2,
+          "explication": "Les deux plages ont des exposants b différents — 0,50 et 0,90 à Bobo-Dioulasso. Prolonger la première, c'est appliquer une loi hors de son calage ; moyenner les deux, c'est inventer une troisième loi. Le trou est réel, et beaucoup de temps de concentration y tombent : il faut alors une mesure locale, ou un tc établi autrement."
+        },
+        {
+          "texte": "Parmi les quatre périodes de retour proposées, combien sont réellement publiées par le CIEH ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1,
+          "tolerance": 0,
+          "explication": "Une seule : T = 10 ans. Les valeurs à 2 et 5 ans sont interpolées entre A₁ et A₁₀, celle à 20 ans est extrapolée au-delà. Le catalogue le dit pour chaque valeur, et ce statut doit voyager jusqu'au rapport : une extrapolation qui perd son étiquette devient une mesure."
+        },
+        {
+          "texte": "Douze des 87 entrées portent un nom de « zone » et non de ville. Que cela change-t-il ?",
+          "type": "choix",
+          "options": [
+            "Rien, ce sont des stations comme les autres",
+            "Les coefficients valent pour plusieurs villes représentatives : ce n'est pas une mesure ponctuelle, et le bassin doit être dans la zone, pas seulement près d'un point"
+          ],
+          "reponse": 1,
+          "explication": "La zone I du Nigeria, par exemple, couvre Port Harcourt et Calabar — deux villes distantes de 150 km. Traiter le repère cartographique comme une station, c'est croire à une précision qui n'existe pas. Sur la carte du cours, ces entrées portent un carré et non un cercle."
+        },
+        {
+          "texte": "À 40 minutes et T = 10 ans, Dakar-Yoff donne 208 mm/h contre 119 à Bobo-Dioulasso. Que faut-il en conclure ?",
+          "type": "choix",
+          "options": [
+            "L'une des deux valeurs est fausse",
+            "Le régime pluviométrique change fortement d'un poste à l'autre : c'est précisément pourquoi on ne transpose pas une IDF d'une région à une autre"
+          ],
+          "reponse": 1,
+          "explication": "Un facteur 1,7 entre deux postes du même catalogue, distants de 1 200 km. Le même raisonnement interdit d'emprunter une station tunisienne pour un bassin sahélien — et il interdit aussi de prendre un poste du catalogue « pas trop loin » sans regarder ce qui le sépare du site."
         }
       ]
     }

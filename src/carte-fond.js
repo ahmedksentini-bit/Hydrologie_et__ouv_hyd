@@ -41,10 +41,13 @@ export function projection({ lon0, lat0, lon1, lat1 }, { largeurMax, hauteurMax,
   };
 }
 
-let cache = null;
-export async function chargerFrontieres() {
-  if (!cache) cache = await fetch("data/frontieres.json").then((r) => r.json());
-  return cache;
+// Un cache par fichier : le cours a deux fonds, la Tunisie et l'Afrique de
+// l'Ouest, et un cache unique servirait l'un à la place de l'autre.
+const caches = new Map();
+export async function chargerFrontieres(fichier = "data/frontieres.json") {
+  if (!caches.has(fichier))
+    caches.set(fichier, await fetch(fichier).then((r) => r.json()));
+  return caches.get(fichier);
 }
 
 /** Test d'appartenance à un anneau, par lancer de rayon. */
@@ -66,7 +69,8 @@ const surTerre = (lon, lat, frontieres) =>
  * `px`/`py` convertissent lon/lat en pixels ; `zone` délimite la zone de tracé ;
  * `fenetre` donne les bornes géographiques affichées.
  */
-export function fondDeCarte(frontieres, px, py, zone, fenetre, idClip) {
+export function fondDeCarte(frontieres, px, py, zone, fenetre, idClip,
+                            nomMer = "Méditerranée") {
   const { x0, y0, x1, y1 } = zone;
   const { lon0, lat0, lon1, lat1 } = fenetre;
   const chemin = (anneau) => anneau
@@ -110,7 +114,7 @@ export function fondDeCarte(frontieres, px, py, zone, fenetre, idClip) {
   // point le plus éloigné de toute côte. Un ancrage choisi à la main finit
   // toujours par tomber sur un trait de côte dès que la fenêtre change.
   const sommets = frontieres.pays.flatMap((p) => p.anneaux.flat());
-  const w = largeurTexte("Méditerranée", 8.5, 1.2);
+  const w = largeurTexte(nomMer, 8.5, 1.2);
   let mer = "", meilleur = -1;
   if (x1 - x0 > w + 10) {
     for (let i = 1; i < 28; i++) for (let j = 1; j < 28; j++) {
@@ -127,7 +131,7 @@ export function fondDeCarte(frontieres, px, py, zone, fenetre, idClip) {
         meilleur = d;
         mer = `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="8.5"
           fill="#93b8cf" text-anchor="middle" letter-spacing="1.2"
-          style="text-transform:uppercase">Méditerranée</text>`;
+          style="text-transform:uppercase">${nomMer}</text>`;
       }
     }
   }
