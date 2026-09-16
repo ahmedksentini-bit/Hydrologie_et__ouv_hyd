@@ -221,10 +221,12 @@
         "Gradex",
         "stations IDF du CIEH",
         "plages de durée",
-        "statut publié / interpolé"
+        "statut publié / interpolé",
+        "isohyètes de pluie annuelle",
+        "interpolation encadrée"
       ],
       "cours": true,
-      "exercices": 11
+      "exercices": 12
     }
   ]
 }

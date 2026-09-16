@@ -2882,10 +2882,23 @@
      bornes, le calcul aboutit et dit pourquoi il est fragile. Un bassin à 1 100 mm de pluie
      annuelle n'est pas un bassin qu'on ne sait pas calculer — c'est un bassin dont le
      résultat se discute.</p>
-  <div class="hint"><strong>La limite des régimes est à 850 mm.</strong> Sous cette valeur, le
-     régime est sahélien ; au-dessus, tropical. Ce ne sont pas les mêmes tableaux. Déclarer une
-     zone qui contredit la pluie annuelle ne produit aucune erreur visible : cela fait
-     simplement lire les mauvaises lignes.</div>
+  <h3>La limite des régimes n'est pas un nombre, c'est une bande sur une carte</h3>
+  <p>Le manuel écrit que la limite des régimes sahélien et tropical « se situe aux alentours
+     de <strong>800 à 850 mm</strong> ». C'est une plage, et elle ne se lit pas sur un axe :
+     elle se lit sur la <strong>figure 3 du bulletin</strong>, les isohyètes de pluie annuelle
+     moyenne. Un bassin n'est pas « à 820 mm » dans l'absolu — il est quelque part entre deux
+     courbes, et c'est cette position qu'il faut regarder.</p>
+  <div id="faPluies"></div>
+  <p>Le calcul lit la pluie annuelle par <strong>interpolation entre les deux isohyètes
+     encadrantes</strong>, pondérée par la distance — et il refuse dès que le point n'est
+     encadré par aucune paire de courbes : au large, en plein Sahara, ou au sud du faisceau
+     relevé. Le bulletin ne dit rien au-delà de ses tracés, et une valeur inventée ne
+     porterait aucune marque de son invention.</p>
+  <div class="hint"><strong>Ce que la zone commande.</strong> Sahélien ou tropical, ce ne sont
+     pas les mêmes tableaux de K<sub>r</sub> ni les mêmes familles de temps caractéristiques.
+     Déclarer une zone qui contredit la pluie annuelle ne produit aucune erreur visible : le
+     calcul se déroule, avec les mauvaises lignes. Et dans la bande de 800 à 850 mm, il n'y a
+     pas de bonne réponse automatique — il y a un choix, qui s'écrit.</div>
 
   <h3>La check-list de l'annexe 1</h3>
   <p>Le bulletin se termine par 43 questions — 24 en zone sahélienne, 19 en zone tropicale —

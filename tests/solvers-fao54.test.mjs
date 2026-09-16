@@ -16,6 +16,7 @@ import { coefficientAbattement } from "../src/solvers-hydro.js";
 const lire = (n) => JSON.parse(readFileSync(new URL(`../data/${n}.json`, import.meta.url)));
 const CIEH = lire("cieh-fao54"), ORSTOM = lire("orstom-fao54"), CHECK = lire("checklist-fao54");
 const IDF = lire("montana-afrique"), FRONT = lire("frontieres-afrique");
+const PLUIES = lire("isohyetes-pan-fao54");
 const a2 = (v, attendu, msg, pct = 2) =>
   assert.ok(Math.abs(v - attendu) <= (Math.abs(attendu) * pct) / 100,
     `${msg} : ${v} contre ${attendu} du manuel (± ${pct} %)`);
@@ -332,4 +333,75 @@ test("les deux entrées incohérentes du catalogue sont signalées, pas corrigé
   assert.match(r.incoherence, /décroît/, "et elle arrive marquée");
   // La plage courte des deux stations, elle, est saine.
   assert.equal(f.intensiteIdf(dim, 30, 10).incoherence, null);
+});
+
+test("les isohyètes annuelles retrouvent l'ancre du manuel", () => {
+  // Le manuel situe son petit bassin par 14° N et 0° de longitude, et y lit
+  // Pan ≈ 500 mm (page 55). Le champ doit y tomber — c'est un contrôle du
+  // relevé ET de l'interpolation, indépendant de l'un comme de l'autre.
+  const a = f.panEn(PLUIES, 0, 14);
+  assert.equal(a.motif, null, "le point du manuel doit être encadré");
+  assert.ok(Math.abs(a.mm - 500) / 500 < 0.15,
+    `Pan à 14° N, 0° : ${a.mm.toFixed(0)} mm contre ~500 du manuel (tolérance 15 %)`);
+  assert.equal(a.bas, 400); assert.equal(a.haut, 600);
+});
+
+test("hors du faisceau, la carte refuse au lieu d'extrapoler", () => {
+  // Trois façons d'être dehors : au large, au nord du dernier tracé, au sud.
+  for (const [lon, lat, ou] of [[-30, 10, "au large"], [10, 30, "au nord du Sahara"],
+                                [13, -3, "au sud du faisceau"]]) {
+    const r = f.panEn(PLUIES, lon, lat);
+    assert.equal(r.mm, null, `${ou} : doit être refusé`);
+    assert.match(r.motif, /hors du faisceau|encadrement|distincte/);
+  }
+  // Et sur le faisceau, ça répond.
+  assert.ok(f.panEn(PLUIES, 15, 12).mm > 0, "N'Djamena doit être encadré");
+});
+
+test("la valeur lue est toujours entre les deux isohyètes encadrantes", () => {
+  // Un balayage : partout où le champ répond, la valeur doit être dans la
+  // fourchette. Une interpolation qui sortirait de ses bornes serait une
+  // extrapolation déguisée.
+  let repond = 0;
+  for (let lon = -17; lon <= 25; lon += 2)
+    for (let lat = 2; lat <= 21; lat += 1) {
+      const r = f.panEn(PLUIES, lon, lat);
+      if (r.mm === null) continue;
+      repond++;
+      assert.ok(r.mm >= r.bas - 1e-9 && r.mm <= r.haut + 1e-9,
+        `${lon}°, ${lat}° : ${r.mm} hors de [${r.bas} ; ${r.haut}]`);
+    }
+  assert.ok(repond > 150, `le champ doit répondre sur le Sahel (${repond} points)`);
+});
+
+test("la limite des régimes est une bande, pas un trait", () => {
+  const [bas, haut] = PLUIES.limite_regimes_mm;
+  assert.deepEqual([bas, haut], [800, 850], "800 à 850 mm, comme l'écrit le manuel");
+  assert.equal(f.regimeDe(PLUIES, 700).regime, "sahelien");
+  assert.equal(f.regimeDe(PLUIES, 700).certain, true);
+  assert.equal(f.regimeDe(PLUIES, 950).regime, "tropical");
+  // Entre les deux, on ne tranche pas tout seul.
+  const entre = f.regimeDe(PLUIES, 820);
+  assert.equal(entre.certain, false, "dans la bande, le choix revient au projeteur");
+  assert.match(entre.libelle, /transition/);
+  // Et l'isohyète qui porte le bord sec existe bien dans le relevé.
+  assert.ok(PLUIES.isohyetes.some((i) => i.mm === bas),
+    "l'isohyète 800 mm doit être tracée : c'est elle que la carte met en avant");
+});
+
+test("le relevé d'isohyètes est complet et ordonné", () => {
+  assert.equal(PLUIES.isohyetes.length, 26, "26 tronçons relevés");
+  for (const i of PLUIES.isohyetes) {
+    assert.ok(i.mm > 0, "toute isohyète porte une valeur — jamais devinée");
+    assert.ok(i.points.length >= 2, `isohyète ${i.mm} : au moins deux points`);
+  }
+  const valeurs = [...new Set(PLUIES.isohyetes.map((i) => i.mm))].sort((a, b) => a - b);
+  assert.equal(valeurs[0], 25);
+  assert.equal(valeurs[valeurs.length - 1], 6000);
+  // Le fond de carte doit couvrir le relevé, sinon des isohyètes flottent.
+  const [lon0, lat0, lon1, lat1] = FRONT.boite;
+  for (const i of PLUIES.isohyetes)
+    for (const [x, y] of i.points)
+      assert.ok(x >= lon0 && x <= lon1 && y >= lat0 && y <= lat1,
+        `isohyète ${i.mm} : point hors du fond de carte`);
 });

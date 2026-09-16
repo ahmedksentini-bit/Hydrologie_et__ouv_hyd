@@ -319,14 +319,14 @@
           "explication": "ORSTOM va jusqu'à 1500 km², le CIEH jusqu'à 1000. Noter cependant que 1200 km² est très loin du calage du CIEH (10 à 100 km²) et déjà loin du confort d'ORSTOM : la check-list demande, au-delà de 350 km², d'appliquer la méthode au tiers ou au quart aval du bassin."
         },
         {
-          "texte": "Un projet déclare « zone sahélienne » avec une pluie annuelle de 1000 mm. Que se passe-t-il ?",
+          "texte": "Un projet déclare « zone sahélienne » avec une pluie annuelle de 1 000 mm. Que se passe-t-il ?",
           "type": "choix",
           "options": [
             "Rien : la zone est une donnée indépendante de la pluie",
-            "Le calcul aboutit en lisant les mauvais tableaux : la limite des régimes est vers 850 mm, au-delà on est en tropical"
+            "Le calcul aboutit en lisant les mauvais tableaux : sur la figure 3, le bassin est nettement au sud de l'isohyète 800 mm, donc en régime tropical"
           ],
           "reponse": 1,
-          "explication": "Les tableaux de Kr et de temps caractéristiques diffèrent entre les deux régimes. Une zone déclarée qui contredit la pluie annuelle ne produit aucune erreur visible — le calcul se déroule, avec les mauvaises lignes. C'est pourquoi l'incohérence doit être signalée explicitement."
+          "explication": "Les tableaux de Kr et de temps caractéristiques diffèrent entre les deux régimes. Une zone déclarée qui contredit la pluie annuelle ne produit aucune erreur visible — le calcul se déroule, avec les mauvaises lignes. La limite se lit sur la carte des isohyètes, pas sur un axe : l'isohyète 800 mm en est le bord sec."
         },
         {
           "texte": "Hors bornes, faut-il refuser de calculer ?",
@@ -478,6 +478,58 @@
           ],
           "reponse": 1,
           "explication": "Un facteur 1,7 entre deux postes du même catalogue, distants de 1 200 km. Le même raisonnement interdit d'emprunter une station tunisienne pour un bassin sahélien — et il interdit aussi de prendre un poste du catalogue « pas trop loin » sans regarder ce qui le sépare du site."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e12",
+      "titre": "Lire la pluie annuelle sur la figure 3",
+      "difficulte": 2,
+      "enonce": "La limite des régimes sahélien et tropical se situe, écrit le manuel, « aux alentours de 800 à 850 mm ». Elle se lit sur la figure 3 du bulletin, les isohyètes de pluie annuelle moyenne, relevées de 25 à 6 000 mm.",
+      "questions": [
+        {
+          "texte": "Le manuel situe son petit bassin par 14° N et 0° de longitude, et annonce Pan ≈ 500 mm. Entre quelles isohyètes ce point tombe-t-il ?",
+          "type": "choix",
+          "options": [
+            "Entre 200 et 400 mm",
+            "Entre 400 et 600 mm",
+            "Entre 600 et 800 mm"
+          ],
+          "reponse": 1,
+          "explication": "La lecture interpolée donne 513 mm, soit 2,6 % au-dessus des 500 mm annoncés par le manuel — sur une planche au 1:20 000 000, c'est un excellent accord. Cette ancre contrôle à la fois le relevé des isohyètes et l'interpolation."
+        },
+        {
+          "texte": "Comment se lit une valeur entre deux isohyètes ?",
+          "type": "choix",
+          "options": [
+            "On prend celle de l'isohyète la plus proche",
+            "On interpole entre les deux courbes ENCADRANTES, pondéré par la distance — et on refuse si le point n'est encadré par aucune paire",
+            "On prend la moyenne des isohyètes visibles"
+          ],
+          "reponse": 1,
+          "explication": "Le test d'encadrement est tout l'intérêt : le point doit être ENTRE les deux courbes, pas seulement près d'elles. Sans lui, le champ « interpole » jusqu'au Sahara et au large, où le bulletin ne dit plus rien. Hors du faisceau, on refuse : une valeur inventée ne porterait aucune marque de son invention."
+        },
+        {
+          "texte": "Un bassin se lit à 820 mm sur la carte. Sahélien ou tropical ?",
+          "type": "choix",
+          "options": [
+            "Sahélien, puisque 820 est sous 850",
+            "Tropical, puisque 820 est au-dessus de 800",
+            "Ni l'un ni l'autre automatiquement : il est dans la bande de transition, et le choix s'écrit"
+          ],
+          "reponse": 2,
+          "explication": "Le manuel donne une plage, pas un seuil. Dans les 50 mm qui séparent 800 de 850, il n'y a pas de bonne réponse automatique : il y a un choix, à faire en regardant le bassin — sa végétation, ses sols, son régime observé — et à porter au dossier. Un logiciel qui trancherait seul cacherait la question."
+        },
+        {
+          "texte": "Pourquoi la planche ne permet-elle pas de lire Pan au millimètre ?",
+          "type": "choix",
+          "options": [
+            "Parce que le relevé est manuel",
+            "Parce que la figure est au ~1:20 000 000 : elle situe un bassin dans une BANDE d'isohyètes, et l'écart entre deux courbes voisines vaut 200 mm",
+            "Parce que les isohyètes bougent d'une année à l'autre"
+          ],
+          "reponse": 1,
+          "explication": "À cette échelle, un millimètre de papier vaut vingt kilomètres. Annoncer « Pan = 1 016 mm » a le même sens qu'annoncer « entre 1 000 et 1 100 » : la seconde formulation est simplement honnête. C'est aussi pourquoi la pluie annuelle ne sert qu'à CHOISIR une zone ou une bande de régressions, et n'entre jamais dans un calcul par un exposant."
         }
       ]
     }

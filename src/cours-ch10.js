@@ -11,14 +11,15 @@ import { abattement, pm10De, ciehToutes, syntheseCieh, kr10Geologie, proposerReg
   from "./solvers-fao54.js";
 import { chargerFrontieres, projection, fondDeCarte, graticule,
          calqueSurvol, attacherSurvol } from "./carte-fond.js";
+import { panEn, regimeDe } from "./solvers-fao54.js";
 
 const el = (id) => document.getElementById(id);
 const num = (id) => parseFloat((el(id)?.value || "").replace(",", "."));
 const fr = (x, d = 2) => Number.isFinite(x)
   ? x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }) : "—";
 
-const [CIEH, ORSTOM, CHECK, IDF] = await Promise.all(
-  ["cieh-fao54", "orstom-fao54", "checklist-fao54", "montana-afrique"]
+const [CIEH, ORSTOM, CHECK, IDF, PLUIES] = await Promise.all(
+  ["cieh-fao54", "orstom-fao54", "checklist-fao54", "montana-afrique", "isohyetes-pan-fao54"]
     .map((f) => fetch(`data/${f}.json`).then((r) => r.json())));
 const FRONTIERES = await chargerFrontieres("data/frontieres-afrique.json");
 
@@ -30,9 +31,19 @@ const CLASSES = [["PI", "PI — très imperméable"], ["I", "I — imperméable"
 
 // ── La rationnelle, et ce qu'elle exige d'être local ───────────────────────
 
-const FENETRE_IDF = { lon0: FRONTIERES.boite[0], lat0: FRONTIERES.boite[1],
-                      lon1: FRONTIERES.boite[2], lat1: FRONTIERES.boite[3] };
-let zoneIdf = null;
+// Le fond couvre les deux figures ; chacune choisit sa fenêtre. Celle des postes
+// se cale sur les postes, celle des isohyètes sur les isohyètes — sans quoi l'une
+// des deux flotte au milieu d'un cadre vide.
+const encadrer = (pts, marge) => ({
+  lon0: Math.min(...pts.map((p) => p[0])) - marge,
+  lat0: Math.min(...pts.map((p) => p[1])) - marge,
+  lon1: Math.max(...pts.map((p) => p[0])) + marge,
+  lat1: Math.max(...pts.map((p) => p[1])) + marge,
+});
+const FENETRE_IDF = encadrer(IDF.stations.flatMap((s) => s.points
+  .filter((p) => p.lon != null).map((p) => [p.lon, p.lat])), 1.5);
+const FENETRE_PLUIES = encadrer(PLUIES.isohyetes.flatMap((i) => i.points), 1.2);
+let zoneIdf = null, zonePluies = null;
 
 function stationChoisie() {
   return IDF.stations.find((x) => `${x.pays}|${x.station}` === el("faStation").value)
@@ -103,6 +114,100 @@ function carteIdf() {
 function majCarteIdf() {
   el("faCarte").innerHTML = carteIdf();
   attacherSurvol(el("faCarte"), "survolIdf", zoneIdf);
+}
+
+// ── La limite des régimes : une bande sur une carte, pas un trait sur un graphe ─
+
+const COULEUR_PLUIE = (mm) => {
+  // Du sec au humide : une rampe sobre, lisible en niveaux de gris.
+  const t = Math.min(1, Math.max(0, Math.log10(Math.max(25, mm) / 25) / Math.log10(6000 / 25)));
+  const c = [[254, 232, 190], [246, 200, 130], [160, 197, 140], [58, 150, 140], [25, 82, 118]];
+  const u = t * (c.length - 1), i = Math.min(c.length - 2, Math.floor(u)), v = u - i;
+  const m = (k) => Math.round(c[i][k] + (c[i + 1][k] - c[i][k]) * v);
+  return `rgb(${m(0)},${m(1)},${m(2)})`;
+};
+
+function cartePluies() {
+  const proj = projection(FENETRE_PLUIES, { largeurMax: 660, hauteurMax: 430,
+                                            mg: 34, md: 14, mh: 14, mb: 30 });
+  const { px, py, zone } = proj;
+  zonePluies = zone;
+  const base = fondDeCarte(FRONTIERES, px, py, zone, FENETRE_PLUIES, "clipPluies",
+                           "Océan Atlantique");
+  const [bas, haut] = PLUIES.limite_regimes_mm;
+
+  const trace = (pts) => pts
+    .map((q, i) => `${i ? "L" : "M"}${px(q[0]).toFixed(1)},${py(q[1]).toFixed(1)}`).join("");
+
+  // Les isohyètes ordinaires d'abord, la limite des régimes par-dessus.
+  const ordinaires = PLUIES.isohyetes.filter((i) => i.mm !== bas).map((i) =>
+    `<path d="${trace(i.points)}" fill="none" stroke="${COULEUR_PLUIE(i.mm)}"
+       stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>`).join("");
+  const limite = PLUIES.isohyetes.filter((i) => i.mm === bas).map((i) =>
+    `<path d="${trace(i.points)}" fill="none" stroke="#7f1d1d" stroke-width="3.2"
+       stroke-linejoin="round" stroke-linecap="round"/>`).join("");
+
+  // Une étiquette par valeur, posée sur le tronçon le plus long, à l'intérieur.
+  const dedansZone = (x, y) => x > zone.x0 + 26 && x < zone.x1 - 26
+    && y > zone.y0 + 12 && y < zone.y1 - 10;
+  const parValeur = new Map();
+  for (const i of PLUIES.isohyetes)
+    if (!parValeur.has(i.mm) || i.points.length > parValeur.get(i.mm).points.length)
+      parValeur.set(i.mm, i);
+  const etiquettes = [...parValeur.values()].map((i) => {
+    const milieu = i.points[Math.floor(i.points.length / 2)];
+    const x = px(milieu[0]), y = py(milieu[1]);
+    if (!dedansZone(x, y)) return "";
+    return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="8.5" font-weight="700"
+      fill="${i.mm === bas ? "#7f1d1d" : "#3f5766"}" text-anchor="middle"
+      stroke="#fff" stroke-width="2.8" paint-order="stroke">${i.mm}</text>`;
+  }).join("");
+
+  // Le poste retenu, et ce que la carte dit de lui.
+  const st = stationChoisie();
+  const pt = st.points.find((q) => q.lon != null);
+  const lecture = pt ? panEn(PLUIES, pt.lon, pt.lat) : { mm: null, motif: "poste sans position" };
+  const marque = pt ? `<circle cx="${px(pt.lon).toFixed(1)}" cy="${py(pt.lat).toFixed(1)}" r="5.5"
+      fill="${C.alerte}" stroke="#fff" stroke-width="1.8"/>
+    <text x="${(px(pt.lon) + 9).toFixed(1)}" y="${(py(pt.lat) + 4).toFixed(1)}" font-size="10"
+      font-weight="800" fill="${C.alerte}" stroke="#fff" stroke-width="3"
+      paint-order="stroke">${st.station}</text>` : "";
+
+  const svg = `<svg viewBox="0 0 ${proj.largeur.toFixed(0)} ${proj.hauteur.toFixed(0)}"
+      width="100%" role="img"
+      aria-label="Isohyètes de pluie annuelle et limite des régimes sahélien et tropical">
+    <defs>${base.defs}</defs>
+    ${base.fond}
+    ${graticule(px, py, zone, [-15, -10, -5, 0, 5, 10, 15, 20, 25], [0, 5, 10, 15, 20])}
+    ${base.reperes}
+    <g clip-path="url(#clipPluies)">${ordinaires}${limite}${etiquettes}${marque}</g>
+    <text x="34" y="11" font-size="10.5" font-weight="800" fill="#075985">
+      Pluie annuelle moyenne — bulletin FAO 54, figure 3</text>
+    ${calqueSurvol("survolPluies")}</svg>`;
+
+  return { svg, lecture, st };
+}
+
+function majCartePluies() {
+  const { svg, lecture, st } = cartePluies();
+  const [bas, haut] = PLUIES.limite_regimes_mm;
+  const r = lecture.mm !== null ? regimeDe(PLUIES, lecture.mm) : null;
+  el("faPluies").innerHTML = svg + `
+    <p class="diagram-note">Trait rouge épais : l'isohyète ${bas} mm, bord sec de la limite
+       des régimes. Les autres isohyètes vont de 25 à 6 000 mm, du sec au humide.
+       ${PLUIES.note}</p>
+    ${lecture.mm === null
+      ? `<p class="feedback bad">Au droit de ${st.station}, la carte ne répond pas :
+         ${lecture.motif}. C'est le comportement voulu — le relevé s'arrête où le bulletin
+         s'arrête, et une valeur inventée ne porterait aucune marque de son invention.</p>`
+      : `<p class="final-result">Au droit de <strong>${st.station}</strong>, la carte donne
+         <strong>P<sub>an</sub> ≈ ${fr(lecture.mm, 0)} mm</strong>
+         — entre les isohyètes ${lecture.bas} et ${lecture.haut} mm.
+         Régime <strong>${r.libelle}</strong>${r.certain ? "" : " : à trancher, et à écrire"}.
+         <small><br>Interpolation entre les deux isohyètes encadrantes, pondérée par la
+         distance. La planche est au 1:20 000 000 : elle situe dans une bande, elle ne donne
+         pas un millimètre.</small></p>`}`;
+  attacherSurvol(el("faPluies"), "survolPluies", zonePluies);
 }
 
 function majRationnelle() {
@@ -308,10 +413,6 @@ function planDesDomaines(S, Pan) {
     ${boite(doo.pan_min_mm, doo.pan_max_mm, 0.5, doo.s_max_km2, C.orstom, 0.14)}
     ${boite(dc.pan_min_mm, dc.pan_max_mm, 0.5, dc.s_max_km2, C.cieh, 0.16)}
     ${boite(dc.pan_min_mm, dc.pan_max_mm, dc.s_calage_min_km2, dc.s_calage_max_km2, C.cieh, 0.3)}
-    <line x1="${X(850).toFixed(1)}" y1="${MH}" x2="${X(850).toFixed(1)}" y2="${H - MB}"
-      stroke="${C.cote}" stroke-width="1.4" stroke-dasharray="5 3"/>
-    <text x="${(X(850) + 4).toFixed(1)}" y="${MH + 10}" font-size="8.5" fill="${C.cote}">850 mm —
-      sahélien / tropical</text>
     <circle cx="${X(Pan).toFixed(1)}" cy="${Y(S).toFixed(1)}" r="5.5" fill="${C.alerte}"/>
     <text x="${(X(Pan) + 9).toFixed(1)}" y="${(Y(S) + 4).toFixed(1)}" font-size="9.5"
       font-weight="800" fill="${C.alerte}">le bassin</text>
@@ -385,6 +486,7 @@ function majChecklist() {
 
 function maj() {
   majCarteIdf();
+  majCartePluies();
   majRationnelle();
   majCieh();
   majOrstom();
@@ -410,10 +512,10 @@ el("faPays").innerHTML = `<option value="">tous les pays</option>`
 remplirStations();
 remplirPeriodes();
 el("faPays").addEventListener("change", () => {
-  remplirStations(); remplirPeriodes(); majCarteIdf(); majRationnelle();
+  remplirStations(); remplirPeriodes(); majCarteIdf(); majCartePluies(); majRationnelle();
 });
 el("faStation").addEventListener("change", () => {
-  remplirPeriodes(); majCarteIdf(); majRationnelle();
+  remplirPeriodes(); majCarteIdf(); majCartePluies(); majRationnelle();
 });
 el("faT").addEventListener("change", majRationnelle);
 for (const id of ["faS", "faC", "faTc"]) el(id).addEventListener("input", majRationnelle);

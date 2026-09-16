@@ -528,6 +528,79 @@ export function distanceIdf(station, lon, lat) {
   return d;
 }
 
+// ── Les isohyètes annuelles, et la limite des régimes ─────────────────────
+
+/** Point le plus proche d'une polyligne, en degrés. Sans projection : à cette
+ *  échelle et pour un simple encadrement, la déformation ne change rien. */
+function plusProcheSur(points, lon, lat) {
+  let d2 = Infinity, cx = points[0][0], cy = points[0][1];
+  for (let i = 1; i < points.length; i++) {
+    const [x0, y0] = points[i - 1], [x1, y1] = points[i];
+    const dx = x1 - x0, dy = y1 - y0;
+    const L = dx * dx + dy * dy;
+    const t = L > 1e-18 ? Math.max(0, Math.min(1, ((lon - x0) * dx + (lat - y0) * dy) / L)) : 0;
+    const px = x0 + t * dx, py = y0 + t * dy;
+    const e = (px - lon) ** 2 + (py - lat) ** 2;
+    if (e < d2) { d2 = e; cx = px; cy = py; }
+  }
+  return { d: Math.sqrt(d2), lon: cx, lat: cy };
+}
+
+/**
+ * Pluie annuelle lue sur la figure 3 du bulletin, par interpolation entre les
+ * DEUX ISOHYÈTES ENCADRANTES les plus proches, pondérée par la distance.
+ *
+ * Le test d'encadrement est tout l'intérêt : le point doit être ENTRE les deux
+ * courbes, pas seulement près d'elles. Si P est encadré, d1 + d2 vaut à peu
+ * près l'écart entre les deux points de contact ; au large ou en plein Sahara,
+ * cette somme explose. Sans ce test, le champ « interpolait » partout.
+ *
+ * Hors du faisceau on REFUSE, avec le motif. Jamais de valeur par défaut,
+ * jamais d'extrapolation : le bulletin ne dit rien au-delà de ses tracés.
+ */
+export function panEn(champ, lon, lat) {
+  const parValeur = new Map();
+  for (const iso of champ.isohyetes) {
+    const c = plusProcheSur(iso.points, lon, lat);
+    const vu = parValeur.get(iso.mm);
+    if (!vu || c.d < vu.d) parValeur.set(iso.mm, c);
+  }
+  if (parValeur.size < 2)
+    return { mm: null, motif: "une seule valeur d'isohyète à portée — pas d'encadrement" };
+
+  const tri = [...parValeur.entries()].sort((a, b) => a[1].d - b[1].d);
+  const [v1, c1] = tri[0];
+  const second = tri.slice(1).find(([v]) => Math.abs(v - v1) > 1e-9);
+  if (!second) return { mm: null, motif: "pas de seconde isohyète de valeur distincte" };
+  const [v2, c2] = second;
+
+  const somme = c1.d + c2.d;
+  const ecart = Math.hypot(c2.lon - c1.lon, c2.lat - c1.lat);
+  if (ecart > 1e-9 && somme > ecart * 1.25)
+    return { mm: null, bas: Math.min(v1, v2), haut: Math.max(v1, v2),
+      motif: "point hors du faisceau d'isohyètes : il n'est encadré par aucune paire de "
+        + "courbes, et le bulletin ne dit rien au-delà de ses tracés" };
+
+  const mm = somme <= 1e-12 ? v1 : v1 + ((v2 - v1) * c1.d) / somme;
+  return { mm, bas: Math.min(v1, v2), haut: Math.max(v1, v2),
+           d1: c1.d, d2: c2.d, motif: null };
+}
+
+/**
+ * Le régime, d'après la pluie annuelle. La limite n'est pas une ligne : le
+ * manuel écrit « aux alentours de 800-850 mm ». Entre les deux, on ne tranche
+ * pas — on dit que le bassin est dans la bande de transition, et c'est au
+ * projeteur de choisir en connaissance de cause.
+ */
+export function regimeDe(champ, panMm) {
+  const [bas, haut] = champ.limite_regimes_mm;
+  if (!(panMm > 0)) return { regime: null, libelle: "pluie annuelle inconnue" };
+  if (panMm < bas) return { regime: "sahelien", libelle: "sahélien", certain: true };
+  if (panMm > haut) return { regime: "tropical", libelle: "tropical sec", certain: true };
+  return { regime: "sahelien", certain: false,
+    libelle: `dans la bande de transition ${bas}–${haut} mm` };
+}
+
 // ── Les domaines : ORSTOM ≠ CIEH, et ce sont des avertissements ────────────
 
 /**

@@ -32,6 +32,7 @@ VOISINS = {
     "Guinea-Bissau": "Guinée-Bissau", "Liberia": "Liberia", "Libya": "Libye",
     "Sierra Leone": "Sierra Leone", "Sudan": "Soudan",
     "São Tomé and Principe": "Sao Tomé-et-Principe", "W. Sahara": "Sahara occidental",
+    "Morocco": "Maroc", "Egypt": "Égypte", "S. Sudan": "Soudan du Sud",
 }
 MARGE = 1.5
 TOLERANCE = 0.03          # ≈ 3 km : le trait de côte reste lisible, le fichier léger
@@ -73,11 +74,17 @@ def main():
 
     pts = [(p["lon"], p["lat"]) for s in stations["stations"] for p in s["points"]
            if p.get("lon") is not None and p.get("lat") is not None]
+    # Le fond sert à DEUX figures : les postes IDF et les isohyètes annuelles,
+    # qui montent plus au nord et plus à l'est. Un seul fichier pour les deux,
+    # chaque figure choisissant ensuite sa propre fenêtre.
+    iso = json.loads((RACINE / "data/isohyetes-pan-fao54.json").read_text(encoding="utf-8"))
+    pts += [(x, y) for i in iso["isohyetes"] for x, y in i["points"]]
     lon0 = min(x for x, _ in pts) - MARGE
     lon1 = max(x for x, _ in pts) + MARGE
     lat0 = min(y for _, y in pts) - MARGE
     lat1 = max(y for _, y in pts) + MARGE
-    print(f"{len(pts)} repères · fenêtre {lon0:.1f}..{lon1:.1f} × {lat0:.1f}..{lat1:.1f}")
+    print(f"{len(pts)} repères et sommets · fenêtre "
+          f"{lon0:.1f}..{lon1:.1f} × {lat0:.1f}..{lat1:.1f}")
 
     sortie, vus = [], set()
     for f in ne["features"]:

@@ -770,6 +770,13 @@ test("ch10 — les exemples du bulletin FAO 54 recalculés", () => {
   vaut(q(b, "ch10-e11", 1), publies, "périodes réellement publiées");
   assert.equal(fao.stationsIdf(IDF).filter((x) => x.est_zone).length, 12, "douze zones");
 
+  // e12 — la lecture sur la figure 3, et la bande de transition
+  const PLUIES = JSON.parse(readFileSync(new URL("../data/isohyetes-pan-fao54.json", import.meta.url)));
+  const ancre = fao.panEn(PLUIES, 0, 14);
+  assert.equal(ancre.bas, 400, "l'option retenue est bien la bande 400–600");
+  assert.equal(ancre.haut, 600);
+  assert.equal(fao.regimeDe(PLUIES, 820).certain, false, "820 mm est dans la bande");
+
   // e3 — abattement de Vuillaume
   vaut(q(b, "ch10-e3", 0), fao.abattement(550, 30), "abattement");
 

@@ -5,7 +5,7 @@
 // page mise à jour n'atteignait jamais un visiteur déjà venu, qui gardait la
 // première version du cours indéfiniment. Sur un site en cours de rédaction,
 // c'est le pire des compromis — le cache ne doit servir que hors connexion.
-const VERSION = "hyd-v14";
+const VERSION = "hyd-v15";
 const COQUILLE = [
   "./", "./index.html", "./cours.html", "./exerciseur.html", "./fil-rouge.html",
   "./styles.css", "./enhancements.css", "./site.css",
