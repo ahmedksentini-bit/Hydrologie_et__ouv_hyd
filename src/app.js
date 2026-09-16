@@ -134,6 +134,6 @@ window.addEventListener("beforeinstallprompt", (e) => {
   b.hidden = false;
   b.addEventListener("click", async () => { b.hidden = true; invite.prompt(); invite = null; });
 });
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
-}
+// L'enregistrement du service worker est dans src/socle.js, chargé par les
+// quatre pages : le faire ici seulement laissait les lecteurs qui ouvrent
+// directement le cours sur une version périmée.
