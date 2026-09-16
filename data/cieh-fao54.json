@@ -1,0 +1,219 @@
+{
+  "source": {
+    "titre": "Crues et apports — Manuel pour l'estimation des crues décennales et des apports annuels pour les petits bassins versants non jaugés de l'Afrique sahélienne et tropicale sèche",
+    "collection": "Bulletin FAO d'irrigation et de drainage n° 54",
+    "auteurs": "CIEH · ORSTOM · LCT-CEMAGREF-ENGREF",
+    "editeur": "FAO, Rome, 1996",
+    "isbn": "92-5-203874-4",
+    "chapitre": "4 — Méthode CIEH (Puech et Chabi-Gonni 1983, révision 1994)",
+    "tableaux_transcrits": [9, 10, 11],
+    "pages_pdf": [88, 89, 90, 91, 92],
+    "transcription": "Relevé visuel des pages rendues du scan. La couche OCR du PDF est fausse sur ces pages (colonnes décalées, exposants erronés) et n'a pas été utilisée."
+  },
+
+  "equation": {
+    "reference": "équation 4.1",
+    "forme": "Q10 = a · S^s · Ig^i · Pan^p · Pm10^pm · Kr10^k · Dd^d",
+    "unites": {
+      "Q10": "m3/s — débit de pointe décennal",
+      "S": "km2 — superficie du bassin",
+      "Ig": "m/km — indice global de pente (Igcor si corrigé)",
+      "Pan": "mm — pluie annuelle moyenne",
+      "Pm10": "mm — pluie journalière décennale moyennée sur le bassin = P10 · A",
+      "Kr10": "% — coefficient de ruissellement décennal (valeur en pourcent, pas en fraction)",
+      "Dd": "km/km2 — densité de drainage"
+    },
+    "note_pan": "Aucune régression du tableau 11 ne porte d'exposant sur Pan : la pluie annuelle sert uniquement de critère de sélection de zone climatique.",
+    "note_kr10": "Kr10 entre en pourcent (ex. 32 pour 32 %), conformément aux exemples chiffrés du manuel."
+  },
+
+  "abattement": {
+    "reference": "équation 1.9, page 17",
+    "forme": "A = 1 - [ (161 - 0,042 · Pan) / 1000 · log10(S) ]",
+    "usage": "Pm10 = P10 · A",
+    "domaine": "S en km2, Pan en mm"
+  },
+
+  "kr10_geologie": {
+    "reference": "tableau 9 — Puech et Chabi-Gonni, 1983",
+    "forme": "Kr10 (%) = a · Pan^b",
+    "avertissement": "Coefficients de corrélation faibles (r de 0,36 à 0,66). Le manuel les donne « sous toutes réserves », en l'absence de toute autre information sur Kr10.",
+    "categories": [
+      { "categorie": "granite + gneiss", "a": 2300, "b": -0.67, "r": 0.661, "n": 72 },
+      { "categorie": "grès", "a": 300, "b": -0.375, "r": 0.361, "n": 18 },
+      { "categorie": "sables", "a": 2e7, "b": -2.2, "r": 0.602, "n": 7 },
+      { "categorie": "argiles", "a": 300, "b": -0.3, "r": 0.376, "n": 12 },
+      { "categorie": "schistes", "a": 370, "b": -0.375, "r": 0.370, "n": 24 }
+    ]
+  },
+
+  "kr10_superficie": {
+    "reference": "tableau 10",
+    "avertissement": "Ne donne des valeurs exploitables qu'au-delà de 100 km2 ; en deçà la variabilité est trop grande.",
+    "lignes": [
+      { "s_km2": 1, "mediane": 50, "maximum": null, "maximum_note": "> 90", "ecart_type": 30 },
+      { "s_km2": 10, "mediane": 35, "maximum": 85, "ecart_type": 20 },
+      { "s_km2": 100, "mediane": 27, "maximum": 60, "ecart_type": 15 },
+      { "s_km2": 1000, "mediane": 18, "maximum": 40, "ecart_type": 10 }
+    ]
+  },
+
+  "regressions": {
+    "reference": "tableau 11 — Coefficients de l'équation 4.1 (étude 1994)",
+    "note_selection": "Le manuel recommande de retenir plusieurs régressions couvrant le bassin, de privilégier les r2 élevés et les échantillons n élevés, puis de comparer les résultats de façon critique.",
+    "lignes": [
+      { "no": 1, "groupe": "Découpage climatique sans Kr10 — avec S et Ig", "description": "Pan 0-400 mm", "n": 71, "r2": 0.760, "r": 0.874, "a": 2.83, "s": 0.624, "ig": 0.491 },
+      { "no": 2, "groupe": "Découpage climatique sans Kr10 — avec S et Ig", "description": "Pan 400-800 mm", "n": 128, "r2": 0.570, "r": 0.755, "a": 2.03, "s": 0.590, "ig": 0.588 },
+      { "no": 3, "groupe": "Découpage climatique sans Kr10 — avec S et Ig", "description": "Pan 1200-1600 mm", "n": 87, "r2": 0.579, "r": 0.761, "a": 1.33, "s": 0.596, "ig": 0.457 },
+
+      { "no": 4, "groupe": "Découpage climatique sans Kr10 — avec S, Ig et Dd", "description": "Pan 0-400 mm", "n": 33, "r2": 0.629, "r": 0.793, "a": 2.43, "s": 0.583, "ig": 0.506, "dd": 0.320 },
+      { "no": 5, "groupe": "Découpage climatique sans Kr10 — avec S, Ig et Dd", "description": "Pan 400-800 mm", "n": 69, "r2": 0.598, "r": 0.773, "a": 1.83, "s": 0.620, "ig": 0.618, "dd": 0.121 },
+      { "no": 6, "groupe": "Découpage climatique sans Kr10 — avec S, Ig et Dd", "description": "Pan 800-1200 mm", "n": 87, "r2": 0.591, "r": 0.769, "a": 2.01, "s": 0.649, "ig": 0.066, "dd": 0.824 },
+
+      { "no": 7, "groupe": "Découpage climatique avec Kr10 — avec S et Kr10", "description": "Pan 0-400 mm", "n": 66, "r2": 0.758, "r": 0.870, "a": 0.553, "s": 0.655, "kr10": 0.802 },
+      { "no": 8, "groupe": "Découpage climatique avec Kr10 — avec S et Kr10", "description": "Pan 400-800 mm", "n": 116, "r2": 0.736, "r": 0.858, "a": 0.461, "s": 0.540, "kr10": 0.941 },
+
+      { "no": 9, "groupe": "Découpage climatique avec Kr10 — avec S, Ig et Kr10", "description": "Pan 0-400 mm", "n": 65, "r2": 0.847, "r": 0.920, "a": 0.167, "s": 0.745, "ig": 0.731, "kr10": 0.475 },
+      { "no": 10, "groupe": "Découpage climatique avec Kr10 — avec S, Ig et Kr10", "description": "Pan 400-800 mm", "n": 116, "r2": 0.806, "r": 0.898, "a": 0.0833, "s": 0.696, "ig": 0.953, "kr10": 0.534 },
+
+      { "no": 11, "groupe": "Zone Pan < 1000 mm — tous les bassins", "description": "S, Kr10", "n": 180, "r2": 0.716, "r": 0.846, "a": 0.410, "s": 0.524, "kr10": 0.982 },
+      { "no": 12, "groupe": "Zone Pan < 1000 mm — tous les bassins", "description": "S, Ig, Kr10", "n": 176, "r2": 0.795, "r": 0.892, "a": 0.095, "s": 0.643, "ig": 0.406, "kr10": 1.038 },
+
+      { "no": 13, "groupe": "Longitude < 10° Ouest (Sénégal et Mauritanie seulement)", "description": "S, Ig", "n": 21, "r2": 0.569, "r": 0.754, "a": 1.78, "s": 0.557, "ig": 0.805 },
+      { "no": 14, "groupe": "Longitude < 10° Ouest (Sénégal et Mauritanie seulement)", "description": "S, Ig, Pm10", "n": 21, "r2": 0.581, "r": 0.762, "a": 55.0, "s": 0.462, "ig": 0.667, "pm10": -0.652 },
+      { "no": 15, "groupe": "Longitude < 10° Ouest (Sénégal et Mauritanie seulement)", "description": "S, Ig, Kr10", "n": 20, "r2": 0.722, "r": 0.850, "a": 0.224, "s": 0.540, "ig": 0.622, "kr10": 0.767 },
+      { "no": 16, "groupe": "Longitude < 10° Ouest (Sénégal et Mauritanie seulement)", "description": "S, Kr10", "n": 20, "r2": 0.645, "r": 0.803, "a": 0.661, "s": 0.375, "kr10": 0.910 },
+
+      { "no": 17, "groupe": "Longitude comprise entre 10° Ouest et 10° Est", "description": "S, Kr10, Pm10", "n": 117, "r2": 0.764, "r": 0.874, "a": 30.2, "s": 0.492, "pm10": -0.972, "kr10": 0.948 },
+      { "no": 18, "groupe": "Longitude comprise entre 10° Ouest et 10° Est", "description": "S, Ig, Kr10", "n": 117, "r2": 0.788, "r": 0.888, "a": 0.0678, "s": 0.661, "ig": 0.412, "kr10": 1.105 },
+
+      { "no": 19, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Pm10", "n": 46, "r2": 0.646, "r": 0.804, "a": 0.00372, "s": 0.605, "pm10": 1.778 },
+      { "no": 20, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Ig", "n": 45, "r2": 0.645, "r": 0.803, "a": 2.72, "s": 0.626, "ig": 0.360 },
+      { "no": 21, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Ig, Pm10", "n": 45, "r2": 0.679, "r": 0.824, "a": 0.00638, "s": 0.694, "ig": 0.305, "pm10": 1.411 },
+      { "no": 22, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Kr10", "n": 39, "r2": 0.77, "r": 0.877, "a": 0.610, "s": 0.523, "kr10": 0.908 },
+      { "no": 23, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Ig, Kr10", "n": 39, "r2": 0.821, "r": 0.906, "a": 0.134, "s": 0.678, "ig": 0.374, "kr10": 0.940 },
+      { "no": 24, "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "description": "S, Pm10, Kr10", "n": 39, "r2": 0.805, "r": 0.897, "a": 0.00243, "s": 0.608, "pm10": 1.263, "kr10": 0.882 },
+
+      { "no": 25, "groupe": "Afrique de l'Ouest (de 10° E à 10° W)", "description": "S, Kr10", "n": 295, "r2": 0.628, "r": 0.792, "a": 1.41, "s": 0.542, "kr10": 0.511 },
+      { "no": 26, "groupe": "Afrique de l'Ouest (de 10° E à 10° W)", "description": "S, Kr10, Pm10", "n": 295, "r2": 0.654, "r": 0.809, "a": 146, "s": 0.479, "pm10": -0.969, "kr10": 0.457 },
+      { "no": 27, "groupe": "Afrique de l'Ouest (de 10° E à 10° W)", "description": "S, Kr10, Ig", "n": 288, "r2": 0.650, "r": 0.806, "a": 0.560, "s": 0.619, "ig": 0.279, "kr10": 0.510 },
+
+      { "no": 28, "groupe": "Afrique centrale", "description": "S, Kr10", "n": 50, "r2": 0.738, "r": 0.859, "a": 0.521, "s": 0.625, "kr10": 0.876 },
+      { "no": 29, "groupe": "Afrique centrale", "description": "S, Kr10, Ig, Pm10", "n": 49, "r2": 0.815, "r": 0.903, "a": 893, "s": 0.773, "ig": 0.567, "pm10": -2.051, "kr10": 0.923 },
+      { "no": 30, "groupe": "Afrique centrale", "description": "S, Kr10, Ig", "n": 49, "r2": 0.778, "r": 0.882, "a": 0.109, "s": 0.771, "ig": 0.419, "kr10": 0.887 },
+
+      { "no": 31, "groupe": "Sénégal + Mauritanie", "description": "S, Pm10", "n": 40, "r2": 0.563, "r": 0.750, "a": 5450000, "s": 0.215, "pm10": -2.830 },
+      { "no": 32, "groupe": "Sénégal + Mauritanie", "description": "S, Kr10", "n": 35, "r2": 0.843, "r": 0.918, "a": 0.288, "s": 0.405, "kr10": 1.117 },
+      { "no": 33, "groupe": "Sénégal + Mauritanie", "description": "S, Kr10, Ig", "n": 35, "r2": 0.851, "r": 0.922, "a": 0.195, "s": 0.471, "ig": 0.239, "kr10": 1.046 },
+
+      { "no": 34, "groupe": "Côte d'Ivoire", "description": "S", "n": 37, "r2": 0.713, "r": 0.844, "a": 4.83, "s": 0.562 },
+      { "no": 35, "groupe": "Côte d'Ivoire", "description": "S, Ig", "n": 34, "r2": 0.729, "r": 0.854, "a": 2.29, "s": 0.651, "ig": 0.216 },
+      { "no": 36, "groupe": "Côte d'Ivoire", "description": "S, Pm10", "n": 36, "r2": 0.706, "r": 0.840, "a": 0.000174, "s": 0.645, "pm10": 2.149 },
+      { "no": 37, "groupe": "Côte d'Ivoire", "description": "S, Kr10", "n": 31, "r2": 0.791, "r": 0.889, "a": 0.380, "s": 0.586, "kr10": 0.805 },
+      { "no": 38, "groupe": "Côte d'Ivoire", "description": "S, Kr10, Ig", "n": 28, "r2": 0.787, "r": 0.887, "a": 0.275, "s": 0.618, "ig": 0.099, "kr10": 0.798 },
+
+      { "no": 39, "groupe": "Burkina Faso", "description": "S, Kr10", "n": 61, "r2": 0.818, "r": 0.904, "a": 0.410, "s": 0.425, "kr10": 0.923 },
+      { "no": 40, "groupe": "Burkina Faso", "description": "S, Kr10, Ig", "n": 60, "r2": 0.824, "r": 0.908, "a": 0.254, "s": 0.462, "ig": 0.101, "kr10": 0.976 },
+
+      { "no": 41, "groupe": "Burkina Faso + Mali + Niger", "description": "S, Kr10", "n": 137, "r2": 0.688, "r": 0.829, "a": 0.407, "s": 0.532, "kr10": 0.941 },
+      { "no": 42, "groupe": "Burkina Faso + Mali + Niger", "description": "S, Kr10, Ig", "n": 133, "r2": 0.755, "r": 0.869, "a": 0.0912, "s": 0.643, "ig": 0.399, "kr10": 1.019 },
+      { "no": 43, "groupe": "Burkina Faso + Mali + Niger", "description": "S, Pm10", "n": 133, "r2": 0.589, "r": 0.767, "a": 35600, "s": 0.342, "pm10": -1.808,
+        "note": "Libellé imprimé « S A*P10 » ; la seule variable pluviométrique du tableau étant Pm10, l'exposant est porté sur Pm10." },
+      { "no": 44, "groupe": "Burkina Faso + Mali + Niger", "description": "S, Kr10, Pm10", "n": 133, "r2": 0.757, "r": 0.870, "a": 203, "s": 0.459, "pm10": -1.301, "kr10": 0.813 },
+      { "no": 45, "groupe": "Burkina Faso + Mali + Niger", "description": "S, Ig, Pm10", "n": 130, "r2": 0.592, "r": 0.769, "a": 22400, "s": 0.363, "ig": 0.059, "pm10": -1.748 },
+
+      { "no": 46, "groupe": "Tchad + Nord Cameroun (Pan < 1000 mm)", "description": "S, Ig", "n": 55, "r2": 0.638, "r": 0.799, "a": 1.28, "s": 0.412, "ig": 0.739 },
+      { "no": 47, "groupe": "Tchad + Nord Cameroun (Pan < 1000 mm)", "description": "S, Kr10", "n": 49, "r2": 0.838, "r": 0.915, "a": 0.525, "s": 0.530, "kr10": 0.950 },
+      { "no": 48, "groupe": "Tchad + Nord Cameroun (Pan < 1000 mm)", "description": "S, Kr10, Ig", "n": 48, "r2": 0.884, "r": 0.940, "a": 0.105, "s": 0.709, "ig": 0.432, "kr10": 0.949 }
+    ]
+  },
+
+  "domaine_application": {
+    "page": 96,
+    "note": "« La méthode est applicable entre les isohyètes de 400 et 4200 mm (dans ce manuel, seules ont été retenues les équations concernant les zones de précipitation annuelle inférieure à 1150 mm) et a été développée surtout sur la base d'informations concernant des bassins compris entre 10 et 100 km². On estime que son domaine d'application s'étend au maximum jusqu'à 1000 km². »",
+    "pan_min_mm": 400,
+    "pan_max_mm": 1150,
+    "pan_max_methode_mm": 4200,
+    "s_calage_min_km2": 10,
+    "s_calage_max_km2": 100,
+    "s_max_km2": 1000,
+    "frange_littorale_km": [10, 20],
+    "frange_note": "Comme pour la méthode Orstom, la frange littorale de 10 à 20 km bordant l'Atlantique est écartée (check-list 1a)."
+  },
+
+  "criteres_selection": {
+    "note": "Critères d'applicabilité de chaque découpage du tableau 11, transcrits depuis les intitulés du manuel (tableau 5 et têtes de sections du tableau 11). Servent à PROPOSER les régressions applicables — le choix final reste à l'utilisateur, comme le demande le manuel.",
+    "note_pays": "Les découpages par pays ne sont jamais proposés automatiquement : ils demanderaient des frontières nationales, dont le dépôt ne dispose pas. Ils restent sélectionnables à la main. Leur champ « pays » n'est là que pour l'affichage.",
+    "groupes": [
+      { "groupe": "Découpage climatique sans Kr10 — avec S et Ig", "par_ligne": true },
+      { "groupe": "Découpage climatique sans Kr10 — avec S, Ig et Dd", "par_ligne": true },
+      { "groupe": "Découpage climatique avec Kr10 — avec S et Kr10", "par_ligne": true },
+      { "groupe": "Découpage climatique avec Kr10 — avec S, Ig et Kr10", "par_ligne": true },
+      { "groupe": "Zone Pan < 1000 mm — tous les bassins", "pan_max": 1000 },
+      { "groupe": "Longitude < 10° Ouest (Sénégal et Mauritanie seulement)", "lon_max": -10 },
+      { "groupe": "Longitude comprise entre 10° Ouest et 10° Est", "lon_min": -10, "lon_max": 10 },
+      { "groupe": "Longitude supérieure à 10° Est (Tchad et nord Cameroun seulement)", "lon_min": 10 },
+      { "groupe": "Afrique de l'Ouest (de 10° E à 10° W)", "lon_min": -10, "lon_max": 10 },
+      { "groupe": "Afrique centrale", "lon_min": 10 },
+      { "groupe": "Sénégal + Mauritanie", "pays": ["Sénégal", "Mauritanie"] },
+      { "groupe": "Côte d'Ivoire", "pays": ["Côte d'Ivoire"] },
+      { "groupe": "Burkina Faso", "pays": ["Burkina Faso"] },
+      { "groupe": "Burkina Faso + Mali + Niger", "pays": ["Burkina Faso", "Mali", "Niger"] },
+      { "groupe": "Tchad + Nord Cameroun (Pan < 1000 mm)", "pays": ["Tchad", "Cameroun"], "pan_max": 1000 }
+    ],
+    "bandes_pan_par_ligne": [
+      { "no": 1, "pan_min": 0, "pan_max": 400 },
+      { "no": 2, "pan_min": 400, "pan_max": 800 },
+      { "no": 3, "pan_min": 1200, "pan_max": 1600 },
+      { "no": 4, "pan_min": 0, "pan_max": 400 },
+      { "no": 5, "pan_min": 400, "pan_max": 800 },
+      { "no": 6, "pan_min": 800, "pan_max": 1200 },
+      { "no": 7, "pan_min": 0, "pan_max": 400 },
+      { "no": 8, "pan_min": 400, "pan_max": 800 },
+      { "no": 9, "pan_min": 0, "pan_max": 400 },
+      { "no": 10, "pan_min": 400, "pan_max": 800 }
+    ]
+  },
+
+  "precision": {
+    "reference": "tableaux 7 et 8",
+    "definition": "Pa = pourcentage de bassins dont le rapport Q_calculé / Q_observé est compris entre a et 1/a.",
+    "commentaire": "Le manuel conclut qu'aucune méthode globale de ce type ne peut descendre sous un taux d'erreur moyen de 50 %.",
+    "ensembles": [
+      { "ensemble": "Pan 0-400 mm", "variables": "S, Ig", "p01": 7, "p02": 18, "p05": 58, "n": 71 },
+      { "ensemble": "Pan 0-400 mm", "variables": "S, Kr10", "p01": 5, "p02": 14, "p05": 37, "n": 68 },
+      { "ensemble": "Pan 400-800 mm", "variables": "S, Ig", "p01": 4, "p02": 11, "p05": 37, "n": 128 },
+      { "ensemble": "Pan 400-800 mm", "variables": "S, Kr10", "p01": 10, "p02": 17, "p05": 58, "n": 117 },
+      { "ensemble": "Pan 0-1000 mm et longitude entre 10° W et 10° E", "variables": "S, Ig, Kr10", "p01": 7, "p02": 18, "p05": 66, "n": 122 },
+      { "ensemble": "Burkina Faso", "variables": "S, Kr10", "p01": 10, "p02": 33, "p05": 85, "n": 61 },
+      { "ensemble": "Côte d'Ivoire", "variables": "S, Kr10", "p01": 22, "p02": 60, "p05": 75, "n": 28 }
+    ]
+  },
+
+  "ancres_validation": {
+    "avertissement": "Les numéros d'équation cités dans les exemples imprimés du manuel ne correspondent PAS toujours à la numérotation du tableau 11 (le tableau a été renuméroté en 1994). Les ancres ci-dessous sont rattachées à la ligne du tableau dont elles reprennent réellement les coefficients ; le numéro imprimé est conservé pour mémoire.",
+    "abattement": [
+      { "page": 71, "pan": 500, "s_km2": 6, "a_attendu": 0.89 },
+      { "page": 73, "pan": 550, "s_km2": 30, "a_attendu": 0.80 }
+    ],
+    "kr10_geologie": [
+      { "page": 72, "categorie": "grès", "pan": 500, "kr10_attendu": 29 },
+      { "page": 73, "categorie": "granite + gneiss", "pan": 550, "kr10_attendu": 34 }
+    ],
+    "q10": [
+      { "page": 72, "no_imprime": 10, "no_tableau": 10, "s_km2": 6, "ig": 20, "kr10": 32, "q10_attendu": 32 },
+      { "page": 72, "no_imprime": 12, "no_tableau": 26, "s_km2": 6, "pm10": 76.5, "kr10": 32, "q10_attendu": 25 },
+      { "page": 72, "no_imprime": 26, "no_tableau": 40, "s_km2": 6, "ig": 20, "kr10": 32, "q10_attendu": 23 },
+      { "page": 72, "no_imprime": 28, "no_tableau": 42, "s_km2": 6, "ig": 20, "kr10": 32, "q10_attendu": 33 },
+      { "page": 72, "no_imprime": 36, "no_tableau": 12, "s_km2": 6, "ig": 20, "kr10": 32, "q10_attendu": 37 },
+
+      { "page": 73, "no_imprime": 5, "no_tableau": 5, "s_km2": 30, "ig": 15, "dd": 5.7, "q10_attendu": 99,
+        "note": "Le manuel imprime « 57 » pour Dd dans cette ligne ; la donnée du bassin est Dd = 5,7 km/km2, et seule cette valeur redonne 99 m3/s." },
+      { "page": 73, "no_imprime": 10, "no_tableau": 10, "s_km2": 30, "ig": 15, "kr10": 34, "q10_attendu": 77,
+        "note": "Le manuel imprime « 32^0,534 » dans cette ligne, valeur reprise par erreur du premier exemple ; le texte de la page retient Kr10 = 34 %, seule valeur qui redonne les 77 m3/s imprimés." },
+      { "page": 73, "no_imprime": 34, "no_tableau": 48, "s_km2": 30, "ig": 15, "kr10": 34, "q10_attendu": 107 },
+      { "page": 73, "no_imprime": 35, "no_tableau": 11, "s_km2": 30, "kr10": 34, "q10_attendu": 78 },
+      { "page": 73, "no_imprime": 47, "no_tableau": 23, "s_km2": 30, "ig": 15, "kr10": 34, "q10_attendu": 101 }
+    ]
+  }
+}

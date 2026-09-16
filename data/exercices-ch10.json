@@ -1,0 +1,438 @@
+{
+  "chapitre": "ch10",
+  "exercices": [
+    {
+      "id": "ch10-e1",
+      "titre": "Deux jeux, et l'interdiction de les mélanger",
+      "difficulte": 1,
+      "enonce": "Un bureau d'études tunisien est chargé d'un franchissement au sud du Burkina Faso. Le bassin fait 45 km², la pluie annuelle vaut 800 mm. L'ingénieur ouvre sa feuille de calcul habituelle, qui contient SOGREAH, Ghorbel, Kallel, Fersi, Frigui et Francou–Rodier.",
+      "questions": [
+        {
+          "texte": "Que valent ces six méthodes sur ce bassin ?",
+          "type": "choix",
+          "options": [
+            "Elles restent valables : ce sont des formules hydrologiques générales",
+            "Elles ne valent rien ici : ce sont des régionalisations calées sur des bassins tunisiens, et rien dans leurs formules ne signale la sortie du domaine",
+            "Elles valent, à condition de corriger la pluie annuelle"
+          ],
+          "reponse": 1,
+          "explication": "Une régionalisation n'est pas une loi physique : c'est un ajustement statistique sur un échantillon de bassins. Hors de cet échantillon, les coefficients n'ont plus de justification. Le piège est que la formule accepte n'importe quel nombre et en rend un autre — rien, dans le résultat, ne dit qu'il ne veut rien dire."
+        },
+        {
+          "texte": "L'ingénieur calcule finalement le débit par Ghorbel (jeu tunisien) et par le CIEH (jeu FAO 54), et propose la moyenne des deux. Que penser de cette moyenne ?",
+          "type": "choix",
+          "options": [
+            "C'est prudent : deux méthodes valent mieux qu'une",
+            "Elle n'estime rien : les deux jeux n'ont ni les mêmes grandeurs d'entrée, ni les mêmes domaines, ni les mêmes bassins de calage",
+            "Elle est acceptable si les deux valeurs sont proches"
+          ],
+          "reponse": 1,
+          "explication": "Moyenner deux estimations n'a de sens que si elles estiment la même chose à partir de données comparables. Ici, l'une vient de bassins tunisiens décrits par Ic et Δh, l'autre de bassins sahéliens décrits par Ig, Kr10 et Dd. Leur moyenne est un nombre sans référent. Que les deux valeurs soient proches n'y change rien : ce serait une coïncidence, pas une confirmation."
+        },
+        {
+          "texte": "Quelle méthode du chapitre 4, et une seule, traverse la frontière ?",
+          "type": "choix",
+          "options": [
+            "SOGREAH, parce qu'elle est fondée sur la pluie",
+            "La méthode rationnelle, parce que c'est un bilan et non une régression",
+            "Francou–Rodier, parce que c'est une enveloppe mondiale"
+          ],
+          "reponse": 1,
+          "explication": "Q = 0,278·C·i·S est un bilan volumique : il ne contient aucun coefficient régional. Ce qui est local, ce sont ses deux entrées — l'intensité et le coefficient C. Francou–Rodier, malgré son allure universelle, a un K qui est un choix régional : elle ne traverse rien toute seule."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e2",
+      "titre": "La rationnelle voyage, ses paramètres non",
+      "difficulte": 2,
+      "enonce": "Petit bassin de 3,2 km² au Burkina Faso, temps de concentration 40 minutes. L'ingénieur veut appliquer la méthode rationnelle.",
+      "questions": [
+        {
+          "texte": "Peut-il lire l'intensité dans la table de Montana du chapitre 3 ?",
+          "type": "choix",
+          "options": [
+            "Oui, en prenant la station tunisienne la plus proche climatiquement",
+            "Non : cette table est un catalogue de 45 stations tunisiennes, et le bulletin FAO 54 ne fournit aucune relation intensité-durée-fréquence"
+          ],
+          "reponse": 1,
+          "explication": "Les coefficients a, b et c de Montana décrivent le régime pluviométrique d'UNE station. « La plus proche climatiquement » n'est pas un critère hydrologique : c'est une intuition. Il faut une IDF établie sur la station du projet, ou à défaut une intensité mesurée."
+        },
+        {
+          "texte": "Peut-il lire le coefficient C dans l'abaque pente × couverture végétale du chapitre 3 ?",
+          "type": "choix",
+          "options": [
+            "Oui, l'abaque ne dépend que de la pente et de la végétation",
+            "Non : cet abaque est tunisien, et le transposer au Sahel revient à emprunter une régionalisation à une autre région"
+          ],
+          "reponse": 1,
+          "explication": "L'abaque encode implicitement des sols, des intensités de pluie et des états de surface tunisiens. Deux bassins de même pente et de même couverture, l'un en Tunisie et l'autre au Sahel, ne ruissellent pas pareil — c'est précisément ce que mesure Kr10 dans le jeu FAO 54."
+        },
+        {
+          "texte": "Il dispose finalement d'une IDF locale i = 800 · t^(−0,70) avec t en minutes, et retient C = 0,45. Intensité au temps de concentration ?",
+          "type": "nombre",
+          "unite": "mm/h",
+          "reponse": 60.5,
+          "tolerance": 1.0,
+          "explication": "i = 800 × 40^(−0,70) = 60,5 mm/h. L'exposant négatif porte tout le sens de la courbe IDF : plus la fenêtre est longue, plus l'intensité moyenne est faible."
+        },
+        {
+          "texte": "Débit de pointe par la méthode rationnelle ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 24.2,
+          "tolerance": 0.6,
+          "explication": "Q = 0,278 × 0,45 × 60,5 × 3,2 = 24,2 m³/s. Le bassin fait moins de 4 km² : on est dans le domaine de la méthode, ici comme en Tunisie. Au-delà, l'hypothèse de pluie uniforme sur tout le bassin tombe — cette limite-là, elle, ne dépend pas du pays."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e3",
+      "titre": "L'abattement, avant toute chose",
+      "difficulte": 1,
+      "enonce": "Les deux méthodes du bulletin partent de la même grandeur : la pluie journalière décennale ramenée à la surface du bassin, Pm10 = P10 · A, avec A donné par l'équation 1.9 de Vuillaume : A = 1 − [(161 − 0,042·Pan)/1000] · log₁₀(S).",
+      "questions": [
+        {
+          "texte": "Bassin de 30 km², pluie annuelle 550 mm : coefficient d'abattement ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.796,
+          "tolerance": 0.01,
+          "explication": "A = 1 − [(161 − 0,042×550)/1000] × log₁₀(30) = 1 − 0,1379 × 1,477 = 0,796. Le manuel imprime 0,80 : il arrondit ses intermédiaires."
+        },
+        {
+          "texte": "Même pluie annuelle, bassin de 6 km² au lieu de 30 : l'abattement augmente ou diminue ?",
+          "type": "choix",
+          "options": [
+            "Il diminue : un petit bassin reçoit moins",
+            "Il augmente : plus le bassin est petit, plus la pluie ponctuelle le représente bien"
+          ],
+          "reponse": 1,
+          "explication": "A = 0,89 à 6 km² contre 0,80 à 30 km². L'abattement corrige le fait qu'une averse ne tombe pas uniformément : sur un petit bassin, la mesure au pluviomètre représente presque toute la surface ; sur un grand, elle surestime la lame moyenne. À la limite S = 1 km², log₁₀(S) = 0 et A = 1."
+        },
+        {
+          "texte": "Cette équation appartient-elle au jeu FAO 54 ou est-elle déjà connue ?",
+          "type": "choix",
+          "options": [
+            "Elle est propre au bulletin FAO 54",
+            "C'est exactement l'abattement du chapitre 2 : une seule équation, utilisée par les deux jeux"
+          ],
+          "reponse": 1,
+          "explication": "C'est la même équation 1.9. Le jeu tunisien ne l'applique pas systématiquement — l'effet de surface y est porté par S^0,75 chez SOGREAH et par S dans la rationnelle — mais la formule est la même, et il ne faut jamais cumuler les deux corrections."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e4",
+      "titre": "CIEH : l'équation 4.1, et le pourcent",
+      "difficulte": 2,
+      "enonce": "Bassin de 30 km² au Burkina, Ig = 15 m/km, Pan = 550 mm, P10 = 88 mm, donc Pm10 = 70,4 mm. Le coefficient de ruissellement décennal vaut Kr10 = 34 %. La densité de drainage est de 5,7 km/km². C'est l'exemple chiffré du bulletin, page 73.",
+      "questions": [
+        {
+          "texte": "Régression n° 10 : Q10 = 0,0833 · S^0,696 · Ig^0,953 · Kr10^0,534. Débit décennal ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 77.2,
+          "tolerance": 2.0,
+          "explication": "0,0833 × 30^0,696 × 15^0,953 × 34^0,534 = 77,2 m³/s. Le manuel imprime 77 : on retrouve sa valeur à moins de 1 %."
+        },
+        {
+          "texte": "Un collègue saisit Kr10 = 0,34 au lieu de 34, « pour rester en fraction comme partout ailleurs ». Que devient le débit ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 6.6,
+          "tolerance": 0.4,
+          "explication": "6,6 m³/s au lieu de 77,2 : un facteur 11,7, soit 100^0,534. L'erreur ne produit ni message ni valeur absurde à l'œil — un débit de 6,6 m³/s sur 30 km² est simplement faible. C'est le genre de faute qui traverse un dossier entier."
+        },
+        {
+          "texte": "Régression n° 5 : Q10 = 1,83 · S^0,62 · Ig^0,618 · Dd^0,121. Débit décennal ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 99.2,
+          "tolerance": 2.5,
+          "explication": "1,83 × 30^0,62 × 15^0,618 × 5,7^0,121 = 99,2 m³/s, contre 99 imprimés. Noter que le manuel écrit « 57 » pour Dd dans cette ligne : c'est une coquille d'impression, la donnée du bassin étant 5,7 km/km². Avec 57 on obtiendrait 131 m³/s."
+        },
+        {
+          "texte": "Aucune des 48 régressions ne porte d'exposant sur la pluie annuelle Pan. Pourquoi ?",
+          "type": "choix",
+          "options": [
+            "Parce que Pan est déjà contenue dans Pm10",
+            "Parce que Pan sert à CHOISIR la bande climatique, donc la régression : elle n'entre pas dans le calcul",
+            "Parce que son influence est négligeable"
+          ],
+          "reponse": 1,
+          "explication": "Le tableau 11 est découpé en bandes de pluie annuelle — 0-400, 400-800, 800-1200, 1200-1600 mm — et chaque bande a ses propres coefficients. Pan agit par le choix de la ligne, pas par un exposant. Un exposant sur Pan dans une transcription est le signe d'une colonne mal relue."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e5",
+      "titre": "CIEH : choisir les régressions, ou moyenner des régions",
+      "difficulte": 2,
+      "enonce": "Le tableau 11 donne 48 régressions : par bande de pluie annuelle, par tranche de longitude, et par pays. Le bassin de l'exercice précédent est à 1,5° de longitude ouest, sous 550 mm de pluie annuelle.",
+      "questions": [
+        {
+          "texte": "Combien de régressions ce site autorise-t-il, sur les 48 ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 11,
+          "tolerance": 1,
+          "explication": "Onze. Les autres sont calées sur d'autres bandes de pluie, d'autres longitudes, ou sur des pays que le projet ne renseigne pas. Le manuel demande de « procéder à une analyse critique des résultats » : c'est ici que cela commence."
+        },
+        {
+          "texte": "Que vaut la médiane des 48 lignes appliquées sans regarder le site, comparée à celle des 11 autorisées ?",
+          "type": "choix",
+          "options": [
+            "Elle est plus forte : plus de méthodes, plus de sécurité",
+            "Elle est plus faible, et surtout elle n'estime rien : elle mélange des régions",
+            "Elle est identique, la médiane étant robuste"
+          ],
+          "reponse": 1,
+          "explication": "74 m³/s contre 77. L'écart est ici modeste, et c'est justement le danger : il ne saute pas aux yeux. Le problème n'est pas l'ampleur de l'écart, c'est que la première valeur est la médiane d'un ensemble sans signification — la moitié des lignes décrivent des bassins que le projet n'a jamais vus."
+        },
+        {
+          "texte": "Pourquoi les découpages PAR PAYS ne sont-ils jamais proposés automatiquement ?",
+          "type": "choix",
+          "options": [
+            "Parce qu'ils sont moins fiables",
+            "Parce qu'il faudrait connaître les frontières, et qu'un bassin proche d'une limite doit être tranché par l'ingénieur",
+            "Parce que le manuel les déconseille"
+          ],
+          "reponse": 1,
+          "explication": "Une régression « Sénégal + Mauritanie » suppose qu'on sache de quel côté de la frontière se trouve le bassin. Un automatisme au kilomètre près trancherait à la place de l'ingénieur, sans le dire. La règle vaut plus généralement : une proposition coche, elle ne décide pas."
+        },
+        {
+          "texte": "Faut-il retenir une seule régression, la meilleure au sens du r² ?",
+          "type": "choix",
+          "options": [
+            "Oui, c'est la plus fiable",
+            "Non : le manuel demande d'en appliquer plusieurs et de comparer ; le débit retenu est la médiane, et la fourchette s'affiche"
+          ],
+          "reponse": 1,
+          "explication": "Un r² élevé mesure l'ajustement aux bassins de calage, pas la ressemblance de ces bassins avec le vôtre. Retenir une seule ligne, c'est faire disparaître la dispersion — qui est l'information la plus honnête que la méthode produise."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e6",
+      "titre": "ORSTOM : la chaîne, maillon par maillon",
+      "difficulte": 3,
+      "enonce": "Même bassin : 30 km², Igcor = 15 m/km, zone sahélienne, Pan = 550 mm, P10 = 88 mm. Le lit est à 80 % imperméable (classe I) et à 20 % relativement imperméable (classe RI), soit un ordinal d'infiltrabilité de 1,2. Le réseau est en arête de poisson, d'où α10 = 1,9. L'écoulement retardé est évalué à 4 % après examen du terrain.",
+      "questions": [
+        {
+          "texte": "Coefficient de ruissellement décennal Kr10, par les équations 3.2 et 3.3 ?",
+          "type": "nombre",
+          "unite": "%",
+          "reponse": 43.5,
+          "tolerance": 1.5,
+          "explication": "On calcule Kr70 = 39,9 % et Kr100 = 45,9 % pour cet ordinal et cette pente, puis on interpole linéairement sur P10 : Kr10 = 39,9 + (45,9 − 39,9)×(88 − 70)/30 = 43,5 %. Le manuel retient 44 %, arrondi."
+        },
+        {
+          "texte": "Temps de base Tb10 ?",
+          "type": "nombre",
+          "unite": "min",
+          "reponse": 224.6,
+          "tolerance": 6,
+          "explication": "Le manuel ne donne pas de relation directe entre 10 et 45 km² pour Ig = 15 : il calcule Tb10 aux deux bornes (187 et 238 min) et interpole LOGARITHMIQUEMENT sur S. D'où 225 min à 30 km², et non 212 comme le donnerait une interpolation linéaire."
+        },
+        {
+          "texte": "Débit moyen Qm10 = 16,7 · Pm10 · Kr10 · S / Tb10, avec Kr10 en fraction ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 68.0,
+          "tolerance": 2.0,
+          "explication": "16,7 × 70,1 × 0,435 × 30 / 224,6 = 68,0 m³/s. Attention : Pm10 en mm, S en km², Tb10 en minutes, et Kr10 en FRACTION ici — alors qu'il entre en pourcent dans l'équation 4.1 du CIEH. C'est le même symbole avec deux unités selon la méthode."
+        },
+        {
+          "texte": "Débit décennal Q10 = (1 + r) · α10 · Qm10 ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 134.5,
+          "tolerance": 4.0,
+          "explication": "1,04 × 1,9 × 68,0 = 134,5 m³/s. Le manuel imprime 136,8 : l'écart de 2 % vient de ses arrondis successifs (Kr10 à 44 %, Pm10 à 70,4 mm). Avec α = 2,6 au lieu de 1,9, on obtiendrait 184 m³/s — le réseau en arête de poisson vaut 27 % de moins sur la pointe."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e7",
+      "titre": "ORSTOM : le refus qui protège",
+      "difficulte": 2,
+      "enonce": "Second exemple du manuel, page 55 : bassin de 6 km², Igcor = 20 m/km, classe RI, Pan = 500 mm, P10 = 86 mm, zone sahélienne.",
+      "questions": [
+        {
+          "texte": "Les équations 3.2 et 3.3 donnent-elles Kr10 sur ce bassin ?",
+          "type": "choix",
+          "options": [
+            "Oui : il suffit d'appliquer Kr = a/(S+b) + c avec S = 6",
+            "Non : leur domaine est S > 10 km² ET Igcor ≤ 15 m/km ; ici les deux conditions tombent"
+          ],
+          "reponse": 1,
+          "explication": "Les hyperboles ne sont pas valides sous 10 km², ni au-delà de 15 m/km. Le manuel n'y a que les figures 9 et 10, des abaques graphiques. Le calcul est possible techniquement — la formule accepte S = 6 — et c'est exactement pourquoi il faut refuser : rien dans le nombre obtenu ne signalerait qu'il vient d'une extrapolation."
+        },
+        {
+          "texte": "Que doit faire l'ingénieur ?",
+          "type": "choix",
+          "options": [
+            "Prendre la valeur à S = 10 km², la plus proche",
+            "Lire Kr10 sur les figures 9 et 10 et le saisir : ici 33 %",
+            "Utiliser le tableau 9 du CIEH, par géologie"
+          ],
+          "reponse": 1,
+          "explication": "La lecture graphique est la méthode prévue par le manuel dans ce domaine. Le tableau 9 du CIEH est une autre estimation, avec des coefficients de corrélation de 0,36 à 0,66 — le manuel le donne « sous toutes réserves », en l'absence de toute autre information. L'injecter dans ORSTOM comme une lecture d'abaque ferait passer une corrélation faible pour une mesure."
+        },
+        {
+          "texte": "Avec Kr10 = 33 % saisi, la chaîne donne Q10 ≈ 47 m³/s sur 6 km². Débit spécifique ?",
+          "type": "nombre",
+          "unite": "m³/s/km²",
+          "reponse": 7.8,
+          "tolerance": 0.5,
+          "explication": "47 / 6 = 7,8 m³/s/km². Les petits bassins sahéliens produisent des débits spécifiques très élevés : la pluie tombe en quelques dizaines de minutes sur toute la surface. C'est l'ordre de grandeur à avoir en tête pour juger un résultat."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e8",
+      "titre": "Deux méthodes, deux domaines qui ne coïncident pas",
+      "difficulte": 2,
+      "enonce": "Le même bulletin porte les deux méthodes. Leurs limites d'application, elles, ne sont pas les mêmes : ORSTOM couvre 150 à 1200 mm de pluie annuelle et jusqu'à 1500 km² ; le CIEH couvre 400 à 1150 mm, avec un calage sur 10 à 100 km² et un maximum de 1000 km².",
+      "questions": [
+        {
+          "texte": "Bassin de 50 km² sous 300 mm de pluie annuelle. Quelles méthodes s'appliquent ?",
+          "type": "choix",
+          "options": [
+            "Les deux",
+            "ORSTOM seulement : 300 mm est sous la borne de 400 mm du CIEH",
+            "Le CIEH seulement"
+          ],
+          "reponse": 1,
+          "explication": "300 mm est dans les bornes d'ORSTOM (150-1200) et hors de celles du CIEH (400-1150). Le piège est que les régressions CIEH rendraient un nombre sans broncher : leur domaine est une information du manuel, pas une barrière du calcul."
+        },
+        {
+          "texte": "Bassin de 1200 km² sous 800 mm. Quelles méthodes s'appliquent ?",
+          "type": "choix",
+          "options": [
+            "Les deux",
+            "ORSTOM seulement : 1200 km² dépasse le maximum de 1000 km² du CIEH",
+            "Aucune"
+          ],
+          "reponse": 1,
+          "explication": "ORSTOM va jusqu'à 1500 km², le CIEH jusqu'à 1000. Noter cependant que 1200 km² est très loin du calage du CIEH (10 à 100 km²) et déjà loin du confort d'ORSTOM : la check-list demande, au-delà de 350 km², d'appliquer la méthode au tiers ou au quart aval du bassin."
+        },
+        {
+          "texte": "Un projet déclare « zone sahélienne » avec une pluie annuelle de 1000 mm. Que se passe-t-il ?",
+          "type": "choix",
+          "options": [
+            "Rien : la zone est une donnée indépendante de la pluie",
+            "Le calcul aboutit en lisant les mauvais tableaux : la limite des régimes est vers 850 mm, au-delà on est en tropical"
+          ],
+          "reponse": 1,
+          "explication": "Les tableaux de Kr et de temps caractéristiques diffèrent entre les deux régimes. Une zone déclarée qui contredit la pluie annuelle ne produit aucune erreur visible — le calcul se déroule, avec les mauvaises lignes. C'est pourquoi l'incohérence doit être signalée explicitement."
+        },
+        {
+          "texte": "Hors bornes, faut-il refuser de calculer ?",
+          "type": "choix",
+          "options": [
+            "Oui, systématiquement",
+            "Non : ce sont des avertissements. Le calcul aboutit et dit pourquoi il est fragile — un bassin à 1100 mm n'est pas incalculable, son résultat se discute"
+          ],
+          "reponse": 1,
+          "explication": "Il faut distinguer deux situations. Hors du domaine d'une RELATION — les hyperboles de Kr sous 10 km² — il n'y a rien à calculer : on refuse. Hors des bornes générales de la MÉTHODE, le calcul garde un sens, atténué : on avertit. Confondre les deux mène soit à bloquer des projets calculables, soit à publier des extrapolations muettes."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e9",
+      "titre": "La check-list de l'annexe 1",
+      "difficulte": 2,
+      "enonce": "Le bulletin se termine par 43 questions à poser au bassin : 24 en zone sahélienne, 19 en zone tropicale. Leurs corrections vont de −55 % à +120 %.",
+      "questions": [
+        {
+          "texte": "Les méthodes annoncent une précision de l'ordre de ±50 %. Que faut-il en conclure sur la check-list ?",
+          "type": "choix",
+          "options": [
+            "C'est un raffinement secondaire",
+            "Ses corrections pèsent plus lourd que le choix de la méthode elle-même",
+            "Elle ne sert qu'aux cas particuliers"
+          ],
+          "reponse": 1,
+          "explication": "Une correction de −55 % ou de +120 % déplace le résultat davantage que l'écart entre ORSTOM et CIEH. Passer la check-list n'est pas une finition : c'est une étape du calcul, et son omission est une omission de calcul."
+        },
+        {
+          "texte": "Le logiciel doit-il appliquer ces corrections automatiquement ?",
+          "type": "choix",
+          "options": [
+            "Oui, elles sont tabulées",
+            "Non : elles reposent sur des observations de terrain et de photographies aériennes dont aucun logiciel ne dispose, et le manuel les donne « à titre indicatif »"
+          ],
+          "reponse": 1,
+          "explication": "Dégradation hydrographique, cultures en billons, marécages aval, forme du réseau : rien de tout cela ne se lit dans un MNT. L'ingénieur coche et saisit la valeur dans la fourchette affichée, et chaque correction retenue doit être tracée. Une réduction de 55 % qui disparaîtrait du rapport serait pire qu'une erreur de calcul."
+        },
+        {
+          "texte": "L'item 1a : le bassin est dans la bande de 10 à 20 km bordant l'océan. Conséquence ?",
+          "type": "choix",
+          "options": [
+            "Une correction de Kr10",
+            "Les méthodes ORSTOM et CIEH ne s'appliquent pas : les hyétogrammes y sont beaucoup plus longs et complexes, avec des P10 de l'ordre de 200 mm",
+            "Une correction du temps de base"
+          ],
+          "reponse": 1,
+          "explication": "C'est le seul item bloquant, et il l'est dans les deux zones. Il n'est pas non plus détectable automatiquement, faute d'un trait de côte fiable : c'est une case à cocher, et personne d'autre que l'ingénieur ne peut la cocher."
+        },
+        {
+          "texte": "Deux items retenus imposent chacun une réduction de 30 % sur le même paramètre. Que vaut la correction cumulée ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 0.49,
+          "tolerance": 0.005,
+          "explication": "0,70 × 0,70 = 0,49, et non 1 − 0,30 − 0,30 = 0,40. Le manuel ne dit rien de la combinaison de ses corrections ; le cumul multiplicatif est le seul défendable, et il reste conservateur face à une somme."
+        }
+      ]
+    },
+    {
+      "id": "ch10-e10",
+      "titre": "Du décennal au centennal : le Gradex",
+      "difficulte": 3,
+      "enonce": "Les deux méthodes du bulletin sont décennales par construction. Pour le bassin de 30 km² (Tb10 = 225 min, Kr10 = 43,5 %, Q10 = 134,5 m³/s), on veut la crue centennale. Le manuel propose la méthode du Gradex : C = 1 + [(P100 − P10)/P10] · (Tb/24)^0,12 / Kr10, puis Q100 = C · Q10.",
+      "questions": [
+        {
+          "texte": "Dans quelles unités entrent Tb et Kr10 dans cette formule ?",
+          "type": "choix",
+          "options": [
+            "Tb en minutes, Kr10 en pourcent",
+            "Tb en HEURES et Kr10 en FRACTION — 0,435 et non 43,5",
+            "Tb en heures, Kr10 en pourcent"
+          ],
+          "reponse": 1,
+          "explication": "C'est le seul endroit du chapitre où Kr10 s'écrit en fraction : il entre en pourcent dans l'équation 4.1 du CIEH et en fraction ici, comme dans Qm10. Se tromper d'unité sur Kr fait varier C d'un facteur cent ; se tromper sur Tb le fait varier de (60)^0,12, soit 1,6."
+        },
+        {
+          "texte": "À défaut de P100 mesurée, le manuel approche (P100 − P10)/P10 par 0,45 en zone sahélienne. Coefficient de passage C ?",
+          "type": "nombre",
+          "unite": "",
+          "reponse": 1.83,
+          "tolerance": 0.06,
+          "explication": "Tb = 225/60 = 3,75 h, donc (3,75/24)^0,12 = 0,794. C = 1 + 0,45 × 0,794 / 0,435 = 1,83."
+        },
+        {
+          "texte": "Débit centennal ?",
+          "type": "nombre",
+          "unite": "m³/s",
+          "reponse": 245.7,
+          "tolerance": 8,
+          "explication": "1,83 × 134,5 = 246 m³/s. Le rapport Q100/Q10 vaut ici 1,83 — bien plus que le rapport des pluies (1,45), parce que le Gradex suppose qu'au-delà du décennal TOUT supplément de pluie ruisselle : le coefficient de ruissellement tend vers 1."
+        },
+        {
+          "texte": "Le maître d'ouvrage demande la crue cinquantennale. Que donne le bulletin ?",
+          "type": "choix",
+          "options": [
+            "Une interpolation entre Q10 et Q100",
+            "Rien : il ne fournit que le décennal et le passage au centennal, et rien entre les deux",
+            "Un abaque par période de retour"
+          ],
+          "reponse": 1,
+          "explication": "Les méthodes sont décennales par construction et le Gradex mène au centennal. Interpoler entre les deux serait inventer une loi que le manuel n'a pas établie. Le choix de la période de retour, lui, relève du chapitre 5 — et il faut alors dire clairement quelle grandeur on livre."
+        }
+      ]
+    }
+  ]
+}

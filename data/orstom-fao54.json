@@ -1,0 +1,263 @@
+{
+  "source": {
+    "titre": "Crues et apports — Manuel pour l'estimation des crues décennales et des apports annuels pour les petits bassins versants non jaugés de l'Afrique sahélienne et tropicale sèche",
+    "collection": "Bulletin FAO d'irrigation et de drainage n° 54",
+    "editeur": "FAO, Rome, 1996",
+    "chapitre": "3 — Méthode Orstom (dite « méthode Rodier »)",
+    "tableaux_transcrits": [1, 2, 3, 4],
+    "pages_pdf": [54, 55, 60, 64, 66, 68, 70, 71, 74, 75, 76, 77, 78, 79],
+    "transcription": "Relevé visuel des pages rendues du scan ; la couche OCR est fausse sur les exposants et les tableaux."
+  },
+
+  "classes_infiltrabilite": {
+    "note": "Ordinal croissant du plus imperméable au plus perméable. L'interpolation entre classes est linéaire sur cet ordinal : RI se retrouve ainsi à mi-chemin de I et P, ce que fait le manuel dans ses exemples chiffrés. Un bassin hétérogène s'exprime par un ordinal fractionnaire (80 % I + 20 % RI ⇒ 1,2).",
+    "ordinaux": { "PI": 0, "I": 1, "RI": 2, "P": 3, "TP": 4 },
+    "libelles": {
+      "PI": "particulièrement imperméable",
+      "I": "imperméable",
+      "RI": "relativement imperméable",
+      "P": "perméable",
+      "TP": "très perméable"
+    }
+  },
+
+  "kr": {
+    "equation": "Kr70 ou Kr100 = a / (S + b) + c   (équations 3.2 et 3.3, en %)",
+    "procedure": "Calculer Kr70 puis Kr100 en interpolant sur la classe d'infiltrabilité puis sur Ig, enfin interpoler linéairement sur P10 entre 70 et 100 mm.",
+    "sahelien": {
+      "domaine": {
+        "s_min_km2": 10,
+        "ig_max_m_par_km": 15,
+        "motif_hors_domaine": "Sous 10 km², ou pour Igcor > 15 m/km, le manuel ne donne que les courbes des figures 9 et 10 : aucune relation analytique n'existe et ces abaques ne sont pas digitalisés."
+      },
+      "kr70": [
+        { "classe": "PI", "ig": 15, "a": 3650, "b": 51, "c": 27 },
+        { "classe": "PI", "ig": 7, "a": 2636, "b": 41, "c": 23 },
+        { "classe": "PI", "ig": 3, "a": 2239, "b": 39, "c": 22 },
+        { "classe": "I", "ig": 15, "a": 1455, "b": 33, "c": 21 },
+        { "classe": "I", "ig": 7, "a": 1140, "b": 30, "c": 20 },
+        { "classe": "I", "ig": 3, "a": 825, "b": 25, "c": 19 },
+        { "classe": "RI", "ig": 15, "a": 329, "b": 18.5, "c": 16.5 },
+        { "classe": "RI", "ig": 7, "a": 239, "b": 17.7, "c": 14.5 },
+        { "classe": "RI", "ig": 3, "a": 164, "b": 17, "c": 10.5 },
+        { "classe": "P", "ig": 7, "a": 131, "b": 13.8, "c": 5 },
+        { "classe": "TP", "ig": 7, "a": 35, "b": 5, "c": 1.5 }
+      ],
+      "kr100": [
+        { "classe": "PI", "ig": 15, "a": 5528, "b": 69, "c": 28 },
+        { "classe": "PI", "ig": 7, "a": 3656, "b": 51, "c": 26 },
+        { "classe": "PI", "ig": 3, "a": 2727, "b": 44, "c": 25 },
+        { "classe": "I", "ig": 15, "a": 1833, "b": 38, "c": 24 },
+        { "classe": "I", "ig": 7, "a": 1476, "b": 37, "c": 22 },
+        { "classe": "I", "ig": 3, "a": 1125, "b": 32.5, "c": 20 },
+        { "classe": "RI", "ig": 15, "a": 421, "b": 20.5, "c": 17.5 },
+        { "classe": "RI", "ig": 7, "a": 300, "b": 20, "c": 15 },
+        { "classe": "RI", "ig": 3, "a": 250, "b": 20, "c": 12 },
+        { "classe": "P", "ig": 15, "a": 200, "b": 20, "c": 8 },
+        { "classe": "P", "ig": 7, "a": 150, "b": 20, "c": 6 },
+        { "classe": "TP", "ig": 7, "a": 67, "b": 14, "c": 2 }
+      ]
+    },
+    "tropical": {
+      "domaine": {
+        "s_min_km2": 1,
+        "s_max_km2": 1500,
+        "motif_hors_domaine": "Les courbes et formules valent de 1 à 1500-2000 km² (page 41)."
+      },
+      "kr70": [
+        { "classe": "I", "ig": 15, "a": 2000, "b": 100, "c": 29.5 },
+        { "classe": "I", "ig": 7, "a": 1620, "b": 100, "c": 27.5 },
+        { "classe": "I", "ig": 3, "a": 1250, "b": 100, "c": 25 },
+        { "classe": "RI", "ig": 15, "a": 250, "b": 20, "c": 21.7 },
+        { "classe": "RI", "ig": 7, "a": 200, "b": 20, "c": 18.5 },
+        { "classe": "RI", "ig": 3, "a": 150, "b": 20, "c": 15 },
+        { "classe": "P", "ig": 7, "a": 50, "b": 15, "c": 8 }
+      ],
+      "kr70_tp_median": 2,
+      "kr100": [
+        { "classe": "I", "ig": 15, "a": 2400, "b": 100, "c": 32 },
+        { "classe": "I", "ig": 7, "a": 1940, "b": 100, "c": 30 },
+        { "classe": "I", "ig": 3, "a": 1440, "b": 100, "c": 28 },
+        { "classe": "RI", "ig": 15, "a": 325, "b": 30, "c": 26 },
+        { "classe": "RI", "ig": 7, "a": 240, "b": 30, "c": 22 },
+        { "classe": "RI", "ig": 3, "a": 200, "b": 30, "c": 17 },
+        { "classe": "P", "ig": 7, "a": 55, "b": 17, "c": 9.5 }
+      ],
+      "kr100_tp_median": 3
+    }
+  },
+
+  "temps": {
+    "note_formes": "linear : k·S + d · power : k·S^e + d · powerShift : k·(S − shift)^e + d. Tous les temps sont en minutes. « infiltrabilite » absent = branche valable quelle que soit la classe.",
+    "note_interpolation": "interpLog donne les deux superficies entre lesquelles le manuel demande une interpolation logarithmique. La borne haute est la borne INFÉRIEURE de la plage imprimée (« 45-50 km² » ⇒ 45), conformément aux exemples chiffrés.",
+
+    "tb10_sahelien": [
+      { "ig": 3, "branches": [
+        { "type": "powerShift", "k": 215, "shift": 0.5, "e": 0.45, "d": 300, "sMax": 7 },
+        { "type": "power", "k": 250, "e": 0.35, "d": 300, "sMin": 7 }
+      ]},
+      { "ig": 7, "branches": [
+        { "type": "linear", "k": 13.9, "d": 255, "sMax": 6, "infiltrabilite": "I" },
+        { "type": "linear", "k": 19.6, "d": 218, "sMax": 6, "infiltrabilite": "P" },
+        { "type": "power", "k": 126, "e": 0.35, "d": 100, "sMin": 6 }
+      ]},
+      { "ig": 10, "interpLog": { "sLow": 10, "sHigh": 20 }, "branches": [
+        { "type": "linear", "k": 8.9, "d": 183, "sMax": 10, "infiltrabilite": "I" },
+        { "type": "linear", "k": 8.9, "d": 165, "sMax": 10, "infiltrabilite": "P" },
+        { "type": "power", "k": 81, "e": 0.35, "d": 80, "sMin": 20 }
+      ]},
+      { "ig": 15, "interpLog": { "sLow": 10, "sHigh": 45 }, "branches": [
+        { "type": "linear", "k": 5, "d": 139, "sMax": 10, "infiltrabilite": "I" },
+        { "type": "linear", "k": 5, "d": 120, "sMax": 10, "infiltrabilite": "P" },
+        { "type": "power", "k": 55, "e": 0.35, "d": 30, "sMin": 45 }
+      ]},
+      { "ig": 25, "interpLog": { "sLow": 10, "sHigh": 100 }, "branches": [
+        { "type": "linear", "k": 4.1, "d": 116.5, "sMax": 10, "infiltrabilite": "I" },
+        { "type": "linear", "k": 4.1, "d": 101, "sMax": 10, "infiltrabilite": "P" },
+        { "type": "power", "k": 42, "e": 0.35, "d": 20, "sMin": 100 }
+      ]},
+      { "ig": 60, "sMaxClasse": 12, "branches": [
+        { "type": "linear", "k": 2.7, "d": 97, "sMax": 12, "infiltrabilite": "I" },
+        { "type": "linear", "k": 2.3, "d": 77, "sMax": 12, "infiltrabilite": "P" }
+      ]}
+    ],
+
+    "tb10_tropical": {
+      "forme": "Tb10 = a · S^0,36 + b",
+      "lignes": [
+        { "ig": 1, "a": 560, "b": 400 },
+        { "ig": 3, "a": 325, "b": 315 },
+        { "ig": 7, "a": 163, "b": 142 },
+        { "ig": 10, "a": 95, "b": 80 },
+        { "ig": 15, "a": 75, "b": 55 },
+        { "ig": 25, "a": 44, "b": 28 },
+        { "ig": 30, "a": 35, "b": 20 }
+      ],
+      "exposant": 0.36
+    },
+
+    "tm10_sahelien": [
+      { "ig": 3, "branches": [
+        { "type": "powerShift", "k": 71, "shift": 0.5, "e": 0.50, "d": 75, "sMax": 11 },
+        { "type": "power", "k": 100, "e": 0.35, "d": 75, "sMin": 11 }
+      ]},
+      { "ig": 7, "reductionP": [ { "s": 1, "pct": 10 }, { "s": 5, "pct": 8 } ], "branches": [
+        { "type": "linear", "k": 2.5, "d": 60, "sMax": 6, "infiltrabilite": "I" },
+        { "type": "power", "k": 32, "e": 0.35, "d": 23, "sMin": 6 }
+      ]},
+      { "ig": 15, "interpLog": { "sLow": 10, "sHigh": 45 },
+        "reductionP": [ { "s": 1, "pct": 15 }, { "s": 5, "pct": 5 } ], "branches": [
+        { "type": "linear", "k": 1.2, "d": 44, "sMax": 10, "infiltrabilite": "I" },
+        { "type": "power", "k": 13, "e": 0.35, "d": 15, "sMin": 45 }
+      ]},
+      { "ig": 25, "interpLog": { "sLow": 10, "sHigh": 100 },
+        "reductionP": [ { "s": 1, "pct": 28 }, { "s": 5, "pct": 18 } ], "branches": [
+        { "type": "linear", "k": 1.02, "d": 33.8, "sMax": 10, "infiltrabilite": "I" },
+        { "type": "power", "k": 9, "e": 0.35, "d": 10, "sMin": 100 }
+      ]},
+      { "ig": 60, "sMaxClasse": 12,
+        "reductionP": [ { "s": 1, "pct": 30 }, { "s": 5, "pct": 20 }, { "s": 10, "pct": 18 } ], "branches": [
+        { "type": "linear", "k": 0.45, "d": 27.5, "sMax": 12, "infiltrabilite": "I" }
+      ]}
+    ],
+
+    "tm10_tropical_ratio_tb": 0.33
+  },
+
+  "debits": {
+    "qm10": "Qm10 (m3/s) = 16,7 · Pm10 (mm) · Kr10 (fraction) · S (km2) / Tb10 (min)",
+    "alpha10_defaut": 2.6,
+    "alpha10_note": "Coefficient de pointe. Voisin de 2,6 quelle que soit la superficie ; à corriger selon l'aspect du réseau hydrographique (check-list 3a1) — 1,9 par exemple pour un réseau en arêtes de poisson unilatérales.",
+    "qr10": "Qr10 = alpha10 · Qm10",
+    "ecoulement_retarde": {
+      "note": "Qret10 = ratio · Qr10, et Q10 = (1 + ratio) · Qr10.",
+      "sahelien": [
+        { "cas": "infiltrabilité I", "ratio": 0.03 },
+        { "cas": "infiltrabilité P", "ratio": 0.06 }
+      ],
+      "tropical": [
+        { "cas": "petits bassins imperméables (quelques dizaines de km²)", "ratio": 0.03 },
+        { "cas": "petits bassins perméables", "ratio": 0.05 },
+        { "cas": "grands bassins imperméables, réseau bien marqué", "ratio_min": 0.10, "ratio_max": 0.15 },
+        { "cas": "grands bassins perméables, lits larges", "ratio_min": 0.15, "ratio_max": 0.20 }
+      ]
+    }
+  },
+
+  "domaine_application": {
+    "page": 32,
+    "note": "« Limites et contraintes d'application ». Hors de ces bornes, les relations n'ont pas été établies : le moteur avertit, il n'invente pas de prolongement.",
+    "pan_min_mm": 150,
+    "pan_max_mm": 1200,
+    "pan_limite_sahelien_tropical_mm": 850,
+    "pan_limite_note": "La limite des régimes sahélien et tropical se situe aux alentours de 800-850 mm. Zone sahélienne : 150 à 850 mm (zone subdésertique incluse). Zone tropicale sèche : 850 à 1200 mm.",
+    "lon_max_deg": 24,
+    "lon_note": "La zone géographique s'étend de l'Atlantique jusqu'à 24° de longitude est.",
+    "s_max_km2": 1500,
+    "s_note": "De quelques dizaines d'hectares à plus de 1500 km².",
+    "frange_littorale_km": [10, 20],
+    "frange_note": "Écarter la frange littorale de 10 à 20 km bordant l'Atlantique : hauteur et durée des fortes pluies y sont plus du double de l'intérieur des terres, et la distribution des intensités plus complexe. Les méthodes Orstom et CIEH n'y sont pas applicables (check-list 1a). Non détectable automatiquement — à cocher dans la check-list."
+  },
+
+  "crue_de_projet": {
+    "page": 29,
+    "formule": "C = 1 + ((P100 - P10)/P10) · (Tb/24)^0,12 / Kr10",
+    "unites": "Tb en HEURES, Kr10 en FRACTION (0,33 et non 33). Q100 = C · Q10.",
+    "methode": "Gradex (Grésillon et al., 1977). Au-delà de la période de retour décennale, on suppose que tout supplément de pluie ruisselle. C'est la méthode qui donne les estimations les plus fortes en Afrique de l'Ouest et du centre — sécurité maximale.",
+    "exposant_tb": 0.12,
+    "rapport_p100_p10_defaut": {
+      "note": "(P100 - P10)/P10, en première approximation selon le manuel.",
+      "sahelien": 0.45,
+      "tropical": 0.38
+    },
+    "avertissement": "Le choix de la période de retour dépasse le cadre du manuel. C ne vaut que pour la crue centennale ; le manuel ne donne aucun coefficient pour les autres périodes de retour."
+  },
+
+  "volumes": {
+    "vr10": "Vr10 (m3) = 10^3 · Pm10 (mm) · Kr10 (fraction) · S (km2)",
+    "vc10": "Vc10 = Vr10 + Qret10 · Tb10 (Tb10 en secondes)"
+  },
+
+  "abattement": {
+    "reference": "équation 1.9 (Vuillaume), page 17 — identique à celle de la méthode CIEH",
+    "forme": "A = 1 - [ (161 - 0,042 · Pan) / 1000 · log10(S) ]",
+    "usage": "Pm10 = P10 · A"
+  },
+
+  "ancres_validation": {
+    "note": "Exemples chiffrés du manuel, pages 55 à 60. Deux coquilles d'impression sont signalées ci-dessous ; sans elles les valeurs publiées ne se retrouvent pas.",
+
+    "petit_bassin": {
+      "page": 55,
+      "description": "S = 6 km², Igcor = 20 m/km, infiltrabilité RI, Pan = 500 mm, P10 = 86 mm, zone sahélienne",
+      "s_km2": 6, "ig": 20, "classe": "RI", "pan": 500, "p10": 86,
+      "kr10_graphique": 33,
+      "note_kr": "Kr10 lu sur les figures 9 et 10 : S < 10 km² et Igcor > 15 m/km, hors du domaine analytique. Le moteur refuse de le calculer et exige une saisie.",
+      "attendus": {
+        "abattement": 0.89, "pm10": 76.5, "lr10": 25.2, "vr10": 151200,
+        "tb10_min": 147, "qm10": 17.1, "alpha10": 2.6, "qr10": 44.5,
+        "ratio_retarde": 0.05, "q10": 46.7, "vret10": 19625, "vc10": 170825,
+        "tm10_min": 44
+      }
+    },
+
+    "bassin_moyen": {
+      "page": 58,
+      "description": "S = 30 km², Igcor = 15 m/km, 80 % I + 20 % RI (ordinal 1,2), Pan = 550 mm, P10 = 88 mm, zone sahélienne",
+      "s_km2": 30, "ig": 15, "ordinal_infiltrabilite": 1.2, "pan": 550, "p10": 88,
+      "attendus": {
+        "abattement": 0.80, "pm10": 70.4,
+        "kr70": 40, "kr100": 46, "kr10": 44,
+        "lr10": 31.0, "vr10": 930000,
+        "tb10_s10": 187, "tb10_s45": 238, "tb10_min": 224,
+        "qm10": 69.2, "alpha10": 1.9, "qr10": 131.5,
+        "ratio_retarde": 0.04, "q10": 136.8, "vret10": 70700, "vc10": 1000300,
+        "tm10_s10": 56, "tm10_s45": 64, "tm10_min": 62
+      },
+      "coquilles": [
+        "Page 58, ligne « pour S = 45 km² : Tb10 = 55 · 30^0,35 + 30 = 238 » : l'exposant s'applique à 45, pas à 30 — 55·45^0,35+30 = 238, alors que 55·30^0,35+30 = 211.",
+        "Page 60, Vc10 : le texte additionne 930 000 + 70 300 alors que Vret10 vient d'être calculé à 70 700. Le total imprimé, 1 000 300 m³, correspond à 70 300."
+      ]
+    }
+  }
+}

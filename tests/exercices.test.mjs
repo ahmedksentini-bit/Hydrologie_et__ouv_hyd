@@ -8,6 +8,7 @@ import * as o from "../src/solvers-ouvrages.js";
 import * as dim from "../src/solvers-dimensionnement.js";
 import * as st from "../src/solvers-stats.js";
 import * as riv from "../src/solvers-riviere.js";
+import * as fao from "../src/solvers-fao54.js";
 
 const banque = (ch) => JSON.parse(readFileSync(new URL(`../data/exercices-${ch}.json`, import.meta.url)));
 const q = (b, exoId, i) => b.exercices.find((e) => e.id === exoId).questions[i];
@@ -15,7 +16,7 @@ const vaut = (question, valeur, msg) =>
   assert.ok(Math.abs(valeur - question.reponse) <= question.tolerance,
     `${msg} : solveur ${valeur.toFixed(3)}, banque ${question.reponse} (± ${question.tolerance})`);
 
-for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9"]) {
+for (const ch of ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10"]) {
   test(`banque ${ch} — structure`, () => {
     const b = banque(ch);
     assert.equal(b.chapitre, ch);
@@ -747,4 +748,68 @@ test("ch9 — l'oued de démonstration recalculé", () => {
   // e9 — le débit que le levé permet encore de calculer
   vaut(q(b, "ch9-e9", 2), riv.debitA(S, S.zMax, J).Q, "débit à la limite du levé");
   assert.equal(riv.tirantNormal(S, 185, J), null, "185 m³/s est bien hors du levé");
+});
+
+test("ch10 — les exemples du bulletin FAO 54 recalculés", () => {
+  const b = banque("ch10");
+  const CIEH = JSON.parse(readFileSync(new URL("../data/cieh-fao54.json", import.meta.url)));
+  const ORSTOM = JSON.parse(readFileSync(new URL("../data/orstom-fao54.json", import.meta.url)));
+
+  // e2 — la rationnelle avec une IDF locale
+  const i = 800 * Math.pow(40, -0.7);
+  vaut(q(b, "ch10-e2", 2), i, "intensité de l'IDF locale");
+  vaut(q(b, "ch10-e2", 3), fao.rationnelleLocale({ C: 0.45, S: 3.2, tcMin: 40,
+    idf: { a: 800, b: -0.7 } }).Q, "débit rationnel");
+
+  // e3 — abattement de Vuillaume
+  vaut(q(b, "ch10-e3", 0), fao.abattement(550, 30), "abattement");
+
+  // e4 — deux régressions du manuel, et l'erreur de pourcent
+  const r10 = CIEH.regressions.lignes.find((r) => r.no === 10);
+  const r5 = CIEH.regressions.lignes.find((r) => r.no === 5);
+  vaut(q(b, "ch10-e4", 0), fao.ciehQ10(r10, { S: 30, Ig: 15, Kr10: 34 }).Q10, "CIEH n° 10");
+  vaut(q(b, "ch10-e4", 1), fao.ciehQ10(r10, { S: 30, Ig: 15, Kr10: 0.34 }).Q10, "Kr10 en fraction");
+  vaut(q(b, "ch10-e4", 2), fao.ciehQ10(r5, { S: 30, Ig: 15, Dd: 5.7 }).Q10, "CIEH n° 5");
+  // Et l'erreur de pourcent vaut bien un facteur 100^0,534.
+  const rapport = fao.ciehQ10(r10, { S: 30, Ig: 15, Kr10: 34 }).Q10
+                / fao.ciehQ10(r10, { S: 30, Ig: 15, Kr10: 0.34 }).Q10;
+  assert.ok(Math.abs(rapport - Math.pow(100, r10.kr10)) < 1e-9, "le facteur est 100^k");
+
+  // e5 — la sélection par le site
+  const prop = fao.proposerRegressions(CIEH, { Pan: 550, lonDeg: -1.5, pays: null });
+  vaut(q(b, "ch10-e5", 0), prop.filter((x) => x.retenue).length, "régressions autorisées");
+
+  // e6 — la chaîne ORSTOM du bassin moyen
+  const e = { S: 30, Ig: 15, ordinal: 1.2, Pan: 550, P10: 88, zone: "sahelien",
+              alpha10: 1.9, ratioRetarde: 0.04 };
+  vaut(q(b, "ch10-e6", 0), fao.orstomKr10(ORSTOM, e).Kr10, "Kr10");
+  vaut(q(b, "ch10-e6", 1), fao.orstomTb10(ORSTOM, e), "temps de base");
+  const ro = fao.orstomChaine(ORSTOM, e);
+  vaut(q(b, "ch10-e6", 2), ro.Qm10, "débit moyen");
+  vaut(q(b, "ch10-e6", 3), ro.Q10, "Q10");
+
+  // e7 — le petit bassin, et son débit spécifique
+  const petit = fao.orstomChaine(ORSTOM, { S: 6, Ig: 20, classe: "RI", Pan: 500, P10: 86,
+    zone: "sahelien", Kr10Saisi: 33, ratioRetarde: 0.05 });
+  vaut(q(b, "ch10-e7", 2), petit.Q10 / 6, "débit spécifique du petit bassin");
+
+  // e9 — le cumul multiplicatif
+  vaut(q(b, "ch10-e9", 3), fao.cumulerCorrections([0.7, 0.7]), "cumul de deux réductions");
+
+  // e10 — le Gradex
+  vaut(q(b, "ch10-e10", 1), ro.C100, "coefficient de passage");
+  vaut(q(b, "ch10-e10", 2), ro.Q100, "débit centennal");
+});
+
+test("les deux jeux de méthodes ne se rencontrent jamais dans le cours", () => {
+  // Un débit tunisien et un débit FAO 54 n'estiment pas la même chose à partir
+  // des mêmes données : aucun module ne doit importer les deux et les additionner.
+  const fr = readFileSync(new URL("../src/solvers-fil-rouge.js", import.meta.url), "utf-8");
+  assert.ok(!/solvers-fao54/.test(fr), "le fil rouge, tunisien, ne doit pas importer le jeu FAO 54");
+  const ch10 = readFileSync(new URL("../src/cours-ch10.js", import.meta.url), "utf-8");
+  assert.ok(!/GHORBEL|sogreah|kallel|frigui|francou/i.test(ch10),
+    "le chapitre 10 ne doit pas convoquer les régionalisations tunisiennes");
+  // Et la synthèse du chapitre 4 ne connaît pas le CIEH.
+  const hyd = readFileSync(new URL("../src/solvers-hydro.js", import.meta.url), "utf-8");
+  assert.ok(!/cieh|orstom/i.test(hyd), "solvers-hydro ne doit rien savoir du jeu FAO 54");
 });

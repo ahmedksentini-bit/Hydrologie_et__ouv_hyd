@@ -1,0 +1,407 @@
+{
+  "source": {
+    "titre": "Check-list pour les méthodes de prédétermination des crues",
+    "reference": "Bulletin FAO d'irrigation et de drainage n° 54, annexe 1, pages 215 à 233",
+    "objectifs": [
+      "délimiter géographiquement les zones d'application des méthodes",
+      "orienter vers la ou les méthodes les plus pertinentes",
+      "affiner les résultats par un ajustement de S, Kr, alpha, Tb, Tm et Qr10"
+    ],
+    "note": "Proposée initialement pour la méthode Orstom, elle s'utilise aussi avec profit pour la méthode CIEH.",
+    "avertissement": "Le manuel qualifie ses valeurs de correction d'« à titre indicatif ». Elles reposent sur des observations de terrain et de photographies aériennes que le logiciel n'a pas. AUCUNE n'est appliquée automatiquement : l'utilisateur coche ce qui s'applique et saisit la valeur retenue dans la fourchette."
+  },
+
+  "parametres": {
+    "S": "superficie retenue pour le calcul (km²)",
+    "Kr": "coefficient de ruissellement décennal (%)",
+    "alpha": "coefficient de pointe alpha10",
+    "Tb": "temps de base (min)",
+    "Tm": "temps de montée (min)",
+    "Q_orstom": "débit de pointe issu de la méthode Orstom",
+    "Q_cieh": "débit de pointe issu des régressions CIEH"
+  },
+
+  "zones": [
+    {
+      "id": "sahelienne",
+      "titre": "I. Région sahélienne",
+      "page": 216,
+      "items": [
+        {
+          "code": "1a", "bloquant": true,
+          "titre": "Le bassin est situé dans la bande de 10-20 km qui borde l'océan",
+          "texte": "Les hyétogrammes de pluie décennale à considérer sont beaucoup plus longs et plus complexes qu'à l'intérieur (P10 de l'ordre de 200 mm). Les méthodes Orstom et CIEH ne s'appliquent pas.",
+          "corrections": []
+        },
+        {
+          "code": "2a",
+          "titre": "Superficie inférieure à 10 km²",
+          "texte": "Utiliser de préférence la méthode Orstom avec les diagrammes spécifiques à cette gamme de superficie (faisceaux de droites) pour Tb et Tm. Inutile de découper l'averse en tranches unitaires.",
+          "corrections": []
+        },
+        {
+          "code": "2b",
+          "titre": "Superficie comprise entre 10 et 60 km²",
+          "texte": "Utiliser de préférence la méthode Orstom avec Kr = a/(b+S) + c, et pour Tb les courbes de raccordement. Si Ig ≤ 7 m/km, Tb et Tm sont ceux de l'hydrogramme unitaire.",
+          "corrections": []
+        },
+        {
+          "code": "2c",
+          "titre": "Superficie comprise entre 60 et 120 km²",
+          "texte": "Méthode Orstom avec Kr = a/(b+S) + c, sauf si Ig > 15 m/km : utiliser alors pour Tb les courbes de raccordement citées en 2a.",
+          "corrections": []
+        },
+        {
+          "code": "2d",
+          "titre": "Superficie comprise entre 120 et 350 km²",
+          "texte": "Méthode Orstom sur tout le bassin si Ig > 4 m/km, ou sur la moitié / le tiers aval si Ig < 4 m/km, surtout si la forme est très allongée. Exige un minimum d'expérience en hydrologie. Les régressions CIEH sont utilisables mais valent surtout pour des bassins ni trop imperméables ni trop perméables, avec peu de dégradation hydrographique.",
+          "corrections": [
+            { "parametre": "S", "type": "fraction_aval", "min": 0.33, "max": 0.5,
+              "libelle": "Ne retenir que la moitié ou le tiers aval du bassin (si Ig < 4 m/km)" }
+          ]
+        },
+        {
+          "code": "2e",
+          "titre": "Superficie comprise entre 350 et 1500 km²",
+          "texte": "Appliquer la méthode Orstom au tiers ou au quart aval du bassin, en examinant de très près la dégradation hydrographique — exige une sérieuse expérience. Confronter avec la méthode CIEH. Être très vigilant en cas de tributaire aval ruisselant très bien : c'est lui qui donnera le débit de pointe, même si sa surface n'est que de 10-20 % du bassin.",
+          "corrections": [
+            { "parametre": "S", "type": "fraction_aval", "min": 0.25, "max": 0.33,
+              "libelle": "Ne retenir que le tiers ou le quart aval du bassin" }
+          ]
+        },
+        {
+          "code": "3a1a",
+          "titre": "Bassin en deux parties (amont et aval) raccordées par un goulet d'étranglement",
+          "texte": "Calculer séparément les hydrogrammes des deux bassins partiels, avec un décalage fonction de la distance entre centres de gravité et de la pente du lit. Vitesses de propagation observées : 0,6 m/s (lit très encombré, Mali) à 1,5 m/s (lit dégagé, Tchad et Mauritanie).",
+          "corrections": []
+        },
+        {
+          "code": "3a1b",
+          "titre": "Deux ou plusieurs ensembles de cours d'eau à apports décalés",
+          "texte": "Bassins allongés avec cours d'eau d'importances inégales.",
+          "corrections": [
+            { "parametre": "alpha", "type": "valeur_max", "max": 2.6,
+              "libelle": "Prendre alpha < 2,6 (voir 3a1c pour les valeurs)" },
+            { "parametre": "Q_cieh", "type": "reduction_pct", "min": 0, "max": 30,
+              "libelle": "Réduire le débit CIEH de x % (30 % au maximum sur les bassins observés)" },
+            { "parametre": "Tb", "type": "majoration_pct", "min": 0, "max": 30,
+              "libelle": "Majorer le temps de base de y % (30 % au maximum)" }
+          ]
+        },
+        {
+          "code": "3a1c",
+          "titre": "Réseau en arête de poisson, tous les tributaires d'un seul côté",
+          "texte": "Le coefficient alpha est inférieur à 2,6. alpha = 1,9 pour une structure absolument unilatérale (réduction de 25 % du débit maximum) ; alpha = 2,4 pour la même disposition à peine marquée (réduction de 8 %).",
+          "corrections": [
+            { "parametre": "alpha", "type": "valeur", "min": 1.9, "max": 2.4,
+              "libelle": "alpha = 1,9 (unilatéral net) à 2,4 (à peine marqué)" }
+          ]
+        },
+        {
+          "code": "3a1d",
+          "titre": "Réseau très radial (éventail)",
+          "texte": "Si l'éventail est très ouvert, la longueur du rectangle équivalent est perpendiculaire aux lignes de plus grande pente — attention à l'estimation de l'indice de pente. Si un tributaire important est nettement plus long, c'est lui qui définit le temps de base : celui-ci peut rester normal mais alpha est à majorer de 20 à 23 % (exemple Kaouara : alpha = 3 au lieu de 2,6).",
+          "corrections": [
+            { "parametre": "Tb", "type": "reduction_pct", "min": 30, "max": 55,
+              "libelle": "Réduire Tb de 30 % (éventail esquissé) à 55 % (éventail parfait)" },
+            { "parametre": "Tm", "type": "reduction_pct", "min": 30, "max": 55,
+              "libelle": "Réduire Tm dans les mêmes proportions" },
+            { "parametre": "Q_cieh", "type": "majoration_pct", "min": 40, "max": 120,
+              "libelle": "Majorer le débit CIEH de 40 à 120 %" },
+            { "parametre": "alpha", "type": "majoration_pct", "min": 20, "max": 23,
+              "libelle": "Variante tributaire long : majorer alpha de 20 à 23 % (Tb reste normal)" }
+          ]
+        },
+        {
+          "code": "3a1e",
+          "titre": "Bassin de forme allongée (Icomp > 1,30)",
+          "texte": "Réduire le débit maximum obtenu pour des conditions moyennes.",
+          "corrections": [
+            { "parametre": "Q_orstom", "type": "reduction_pct", "min": 20, "max": 50,
+              "libelle": "Réduire Q de x % : 20 % pour Ic = 1,30 · 30 % pour 1,42 · 40 % pour 1,54 · 50 % pour 1,92",
+              "bareme": [
+                { "ic": 1.30, "pct": 20 }, { "ic": 1.42, "pct": 30 },
+                { "ic": 1.54, "pct": 40 }, { "ic": 1.92, "pct": 50 }
+              ] }
+          ]
+        },
+        {
+          "code": "3a1f",
+          "titre": "Zone marécageuse à l'aval ou à l'amont",
+          "texte": "Voir les items 3a2a, 3a2b ou 3a2c.",
+          "corrections": []
+        },
+        {
+          "code": "3a2a",
+          "titre": "Rupture de pente très forte à l'aval, plaine d'inondation ou mare temporaire",
+          "texte": "À titre indicatif, pour un bassin de 2,36 km² avec un marécage temporaire couvrant 5 % de la superficie : x de l'ordre de 50 % et y de 30 %.",
+          "corrections": [
+            { "parametre": "Tb", "type": "majoration_pct", "min": 0, "max": 50,
+              "libelle": "Majorer Tb de x % selon l'importance de la zone à faible pente" },
+            { "parametre": "Tm", "type": "majoration_pct", "min": 0, "max": 50,
+              "libelle": "Majorer Tm dans les mêmes proportions" },
+            { "parametre": "Q_cieh", "type": "reduction_pct", "min": 0, "max": 30,
+              "libelle": "Réduire le débit CIEH de y %" }
+          ]
+        },
+        {
+          "code": "3a2c",
+          "titre": "Partie plate imperméable et bien drainée à l'amont",
+          "texte": "Pas de changement par rapport aux méthodes habituelles.",
+          "corrections": []
+        },
+        {
+          "code": "3a2e",
+          "titre": "Lit mineur à capacité limitée, écoulements importants en lit majeur",
+          "texte": "Le coefficient de pointe est abaissé.",
+          "corrections": [
+            { "parametre": "alpha", "type": "valeur", "min": 1.8, "max": 2.2,
+              "libelle": "alpha = 1,8 si plus de 50 % de la section mouillée est en lit majeur ; 2,2 si environ 30 %" }
+          ]
+        },
+        {
+          "code": "3a3a",
+          "titre": "Zone perméable à l'amont (sables éoliens, blocs cristallins, grès, schistes, cuirasse démantelée)",
+          "texte": "Éliminer la superficie de ces zones de la superficie S et faire tous les calculs sur la superficie S' réduite.",
+          "corrections": [
+            { "parametre": "S", "type": "surface_reduite",
+              "libelle": "Retrancher la superficie perméable amont — calculer sur S'" }
+          ]
+        },
+        {
+          "code": "3a3b",
+          "titre": "Bassin couvert de blocs (forte rugosité) avec ruissellement repérable",
+          "texte": "À titre indicatif, x = 85 % pour un bassin de 1,05 km² couvert de roches décomposées en boules.",
+          "corrections": [
+            { "parametre": "Tb", "type": "majoration_pct", "min": 0, "max": 85, "libelle": "Majorer Tb de x %" },
+            { "parametre": "Tm", "type": "majoration_pct", "min": 0, "max": 85, "libelle": "Majorer Tm de x %" }
+          ]
+        },
+        {
+          "code": "3a4a",
+          "titre": "Zones cultivées dépassant 20 % de la superficie",
+          "texte": "La mise en culture de sols nus encroûtés, rare au Sahel, diminue Kr, mais la mise en culture de sols bien enherbés l'augmente, sauf bonnes mesures de conservation — ce qui est rare. En cas de formations pelliculaires sur sols cultivés sans conservation, Kr10 est majoré.",
+          "corrections": [
+            { "parametre": "Kr", "type": "majoration_pct", "min": 20, "max": 50,
+              "libelle": "Majorer Kr10 de 50 % si ~60 % de sols cultivés, de 20 % si ~40 %",
+              "bareme": [ { "cultive_pct": 40, "pct": 20 }, { "cultive_pct": 60, "pct": 50 } ] }
+          ]
+        },
+        {
+          "code": "3a4b",
+          "titre": "Abords du lit aval couverts d'une végétation arbustive dense",
+          "texte": "Tant que cette végétation persiste le débit maximum pourrait être réduit jusqu'à 50 %. Si elle a peu de chances de se maintenir, mieux vaut faire comme si elle n'existait pas pour le calcul des fortes crues.",
+          "corrections": [
+            { "parametre": "Q_orstom", "type": "reduction_pct", "min": 0, "max": 50,
+              "libelle": "Réduire Q jusqu'à 50 % — à ne retenir que si la végétation est pérenne" }
+          ]
+        },
+        {
+          "code": "3a4c",
+          "titre": "Mesures de conservation des sols bien réalisées",
+          "texte": "Les débits calculés par les processus habituels sont beaucoup trop forts, au moins pour la fréquence décennale. Pour des fréquences plus rares ce n'est pas évident, les aménagements étant susceptibles de céder.",
+          "corrections": []
+        },
+        {
+          "code": "3a5a",
+          "titre": "Écoulement perturbé par un ouvrage (piste recoupant le bassin)",
+          "texte": "Vérifier si une buse ou un pont laisse transiter le débit maximum. La piste risque d'être emportée, ce qui renforcerait le débit maximum naturel ; elle peut au contraire arrêter l'écoulement, ou ne produire aucun effet.",
+          "corrections": []
+        },
+        {
+          "code": "3b1",
+          "titre": "Bassin de moins de 50-80 km², fortement dégradé à l'amont",
+          "texte": "Procéder comme en 3a3a sur S' (partie aval non dégradée). Cette réduction de S à S' est risquée si la zone dégradée est relativement importante.",
+          "corrections": [
+            { "parametre": "S", "type": "surface_reduite", "libelle": "Calculer sur la partie aval non dégradée S'" },
+            { "parametre": "Q_orstom", "type": "majoration_pct", "min": 10, "max": 20,
+              "libelle": "Majorer Q10 de 10 à 20 % pour tenir compte d'apports amont éventuels" }
+          ]
+        },
+        {
+          "code": "3b3",
+          "titre": "Dégradation limitée à une portion des lits majeurs",
+          "texte": "À titre indicatif, sur un bassin de 87 km² avec un lit majeur très encombré par la végétation, x est de l'ordre de 70 %.",
+          "corrections": [
+            { "parametre": "Q_orstom", "type": "reduction_pct", "min": 0, "max": 70,
+              "libelle": "Réduire Q de x % selon la longueur relative des lits majeurs dégradés" }
+          ]
+        },
+        {
+          "code": "3b4",
+          "titre": "Bassin fortement dégradé",
+          "texte": "Reconstituer qualitativement l'écoulement à partir de l'infiltrabilité, des pentes et du réseau observé sur photographies aériennes. Le passage au quantitatif est très risqué.",
+          "corrections": []
+        }
+      ]
+    },
+
+    {
+      "id": "tropicale",
+      "titre": "II. Région tropicale sèche",
+      "page": 223,
+      "items": [
+        {
+          "code": "1a", "bloquant": true,
+          "titre": "Le bassin est situé dans la bande de 10-20 km qui borde l'océan",
+          "texte": "La pluie journalière décennale y est de l'ordre de 150-200 mm et le hyétogramme beaucoup plus long que celui des orages convectifs. Les méthodes Orstom et CIEH ne s'appliquent pas.",
+          "corrections": []
+        },
+        {
+          "code": "2a1",
+          "titre": "S < 15 km², terrains imperméables (Kr100 > 20-25 %), Ig > 12 m/km très cultivé, ou Ig > 20 m/km",
+          "texte": "La durée du corps d'averse efficace dépasse celle de l'averse unitaire : la formule classique donne un Tb trop faible. Pour Ig = 15 m/km : Tb' = 1,2·Tb à S = 10 km², 1,4·Tb à S = 2 km². Pour Ig = 30 m/km : Tb' = 1,3·Tb à S = 10 km², 1,6·Tb à S = 2 km².",
+          "corrections": [
+            { "parametre": "Tb", "type": "majoration_pct", "min": 20, "max": 60,
+              "libelle": "Majorer Tb : +20 à +40 % pour Ig = 15 m/km, +30 à +60 % pour Ig = 30 m/km, selon S",
+              "bareme": [
+                { "ig": 15, "s": 10, "pct": 20 }, { "ig": 15, "s": 2, "pct": 40 },
+                { "ig": 30, "s": 10, "pct": 30 }, { "ig": 30, "s": 2, "pct": 60 }
+              ] },
+            { "parametre": "Q_cieh", "type": "reduction_pct", "min": 17, "max": 38,
+              "libelle": "Réduire le débit CIEH de 17 à 19 % (premier cas) ou 23 à 38 % (second cas)" },
+            { "parametre": "alpha", "type": "majoration_pct", "min": 10, "max": 10,
+              "libelle": "Majorer alpha de 10 % s'il est inférieur à 3" }
+          ]
+        },
+        {
+          "code": "2a2",
+          "titre": "S < 15 km² mais Kr100 < 20-25 %, terrains perméables et/ou Ig plus faible",
+          "texte": "Le corps efficace de l'averse décennale dure moins que l'averse unitaire : utiliser la méthode Orstom SANS les corrections de 2a1.",
+          "corrections": []
+        },
+        {
+          "code": "2b",
+          "titre": "Superficie comprise entre 15 et 60 km²",
+          "texte": "Méthode Orstom avec Kr = a/(b+S) + c, Tb = a'·S^0,36 + b', alpha = 2,6. Vérifier s'il y a lieu d'employer le concept de bassin réduit. La méthode CIEH est utilisable mais demande de la vigilance dès que les conditions s'écartent de la moyenne.",
+          "corrections": []
+        },
+        {
+          "code": "2c",
+          "titre": "Superficie comprise entre 60 et 120 km²",
+          "texte": "Méthode Orstom, en étant particulièrement attentif à l'hétérogénéité des sols et à la présence de bas-fonds inondables.",
+          "corrections": []
+        },
+        {
+          "code": "2d",
+          "titre": "Superficie comprise entre 120 et 350 km²",
+          "texte": "Méthode Orstom applicable sans réserve si Ig > 4 m/km et bassin homogène. Sinon, appliquer à la moitié ou au tiers aval et comparer au calcul sur la superficie totale.",
+          "corrections": [
+            { "parametre": "S", "type": "fraction_aval", "min": 0.33, "max": 0.5,
+              "libelle": "Moitié ou tiers aval du bassin (si Ig < 4 m/km ou bassin hétérogène)" }
+          ]
+        },
+        {
+          "code": "2e",
+          "titre": "Superficie comprise entre 350 et 1500 km²",
+          "texte": "Utiliser de préférence la méthode CIEH. La méthode Orstom demande généralement de considérer la surface réduite à la moitié ou au tiers du bassin.",
+          "corrections": [
+            { "parametre": "S", "type": "fraction_aval", "min": 0.33, "max": 0.5,
+              "libelle": "Surface réduite à la moitié ou au tiers du bassin" }
+          ]
+        },
+        {
+          "code": "3a1f",
+          "titre": "Réseau à caractère radial net, éventail plus ou moins marqué",
+          "texte": "Attention à l'estimation de l'indice de pente si l'éventail est très ouvert.",
+          "corrections": []
+        },
+        {
+          "code": "3a1g",
+          "titre": "Réseau à structure dendritique",
+          "texte": "Si un tributaire actif est plus long que tous les autres, c'est lui qui définit le temps de base. Une simple fourche à deux branches sensiblement égales peut réduire Tb de 15 à 30 %.",
+          "corrections": [
+            { "parametre": "Tb", "type": "reduction_pct", "min": 30, "max": 55,
+              "libelle": "Tributaires de même longueur : réduire Tb de 55 à 30 % selon l'ouverture de l'éventail" },
+            { "parametre": "alpha", "type": "majoration_pct", "min": 20, "max": 25,
+              "libelle": "Variante tributaire long : majorer alpha de 20 à 25 %" },
+            { "parametre": "Q_cieh", "type": "majoration_pct", "min": 40, "max": 120,
+              "libelle": "Majorer le débit CIEH de 120 à 40 % selon l'ouverture de l'éventail" }
+          ]
+        },
+        {
+          "code": "3a2a",
+          "titre": "Rupture de pente forte à l'aval, plaine d'inondation ou mare temporaire",
+          "texte": "À titre indicatif, pour un bassin de 2,36 km² avec un marécage temporaire couvrant 5 % de la superficie : x de l'ordre de 50 % et y de 30 %.",
+          "corrections": [
+            { "parametre": "Tb", "type": "majoration_pct", "min": 0, "max": 50, "libelle": "Majorer Tb de x %" },
+            { "parametre": "Tm", "type": "majoration_pct", "min": 0, "max": 50, "libelle": "Majorer Tm de x %" },
+            { "parametre": "Q_cieh", "type": "reduction_pct", "min": 0, "max": 30, "libelle": "Réduire le débit CIEH de y %" }
+          ]
+        },
+        {
+          "code": "3a2c",
+          "titre": "Partie plate imperméable et assez bien drainée à l'amont",
+          "texte": "Pas de changement par rapport aux méthodes habituelles, le coefficient de ruissellement Kr étant tout de même un peu surestimé.",
+          "corrections": []
+        },
+        {
+          "code": "3a3a",
+          "titre": "Zone perméable à l'amont (blocs cristallins, grès diaclasés, cuirasse latéritique fissurée)",
+          "texte": "Éliminer ces zones de la superficie et calculer sur S' réduite.",
+          "corrections": [
+            { "parametre": "S", "type": "surface_reduite", "libelle": "Retrancher la superficie perméable amont" }
+          ]
+        },
+        {
+          "code": "3a3b",
+          "titre": "Bassin couvert de blocs (forte rugosité) avec ruissellement repérable",
+          "texte": "À titre indicatif, x = 85 % pour un bassin de 1,05 km².",
+          "corrections": [
+            { "parametre": "Tb", "type": "majoration_pct", "min": 0, "max": 85, "libelle": "Majorer Tb de x %" },
+            { "parametre": "Tm", "type": "majoration_pct", "min": 0, "max": 85, "libelle": "Majorer Tm de x %" }
+          ]
+        },
+        {
+          "code": "3a4a",
+          "titre": "Zones cultivées dépassant 20 % de la superficie",
+          "texte": "La mise en culture tend à augmenter Kr, sauf bonnes mesures de conservation — ce qui est rare. Si le sol est propice à la formation de pellicules, Kr10 est majoré.",
+          "corrections": [
+            { "parametre": "Kr", "type": "majoration_pct", "min": 20, "max": 50,
+              "libelle": "Majorer Kr10 de 50 % pour 60 % de sols cultivés, de 20 % pour 40 %",
+              "bareme": [ { "cultive_pct": 40, "pct": 20 }, { "cultive_pct": 60, "pct": 50 } ] }
+          ]
+        },
+        {
+          "code": "3a4b",
+          "titre": "Abords du lit aval couverts d'une végétation arbustive dense",
+          "texte": "Le débit maximum décennal pourrait être réduit jusqu'à 50 % tant que la couverture persiste.",
+          "corrections": [
+            { "parametre": "Q_orstom", "type": "reduction_pct", "min": 0, "max": 50, "libelle": "Réduire Q jusqu'à 50 %" }
+          ]
+        },
+        {
+          "code": "3a5a",
+          "titre": "Piste ou route recoupant le bassin",
+          "texte": "Vérifier si une buse ou un pont laisse transiter le débit maximum. La piste peut être emportée (débit renforcé), arrêter l'écoulement, ou ne produire aucun effet.",
+          "corrections": []
+        },
+        {
+          "code": "3a5b",
+          "titre": "Présence d'un barrage ou d'une retenue",
+          "texte": "Un barrage amortit les crues naturelles, mais la submersion des fonds de vallées concentre plus rapidement les pointes des tributaires, et un plan d'eau imperméable conduit à un ruissellement de 100 % sur toute sa surface. À considérer surtout lorsque le réservoir couvre une partie notable du bassin.",
+          "corrections": []
+        },
+        {
+          "code": "3b1",
+          "titre": "Bassin fortement dégradé à l'amont",
+          "texte": "Procéder comme en 3a3a sur S'. Cette réduction est risquée si la zone dégradée est importante et la pluie annuelle supérieure à 1000 mm, sauf sols très perméables.",
+          "corrections": [
+            { "parametre": "S", "type": "surface_reduite", "libelle": "Calculer sur la partie aval non dégradée S'" },
+            { "parametre": "Q_orstom", "type": "majoration_pct", "min": 10, "max": 20,
+              "libelle": "Majorer Q10 de 10 à 20 % pour d'éventuels apports amont" }
+          ]
+        },
+        {
+          "code": "3b2",
+          "titre": "Dégradation limitée à une portion du lit majeur, à l'aval",
+          "texte": "À titre indicatif, sur un bassin de 87 km² avec un lit majeur très encombré, x est de l'ordre de 70 %. La rizière est une des couvertures qui réduisent le moins les débits. Pour des bassins de 400 à 1000 km², il est normal de trouver des débits spécifiques décennaux de 40 à 100 l/s/km² si le lit majeur est dégradé sur une longue distance.",
+          "corrections": [
+            { "parametre": "Q_orstom", "type": "reduction_pct", "min": 0, "max": 70,
+              "libelle": "Réduire Q de x % selon la longueur relative, la pente et la couverture des lits majeurs dégradés" }
+          ]
+        }
+      ]
+    }
+  ]
+}

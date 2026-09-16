@@ -15,6 +15,11 @@
       "id": "B",
       "titre": "Ouvrages hydrauliques",
       "resume": "Du débit de projet à l'ouvrage dimensionné."
+    },
+    {
+      "id": "C",
+      "titre": "Hors de Tunisie",
+      "resume": "Le jeu FAO 54 pour l'Afrique de l'Ouest et centrale — exclusif du jeu tunisien."
     }
   ],
   "chapitres": [
@@ -188,6 +193,32 @@
         "conjuguée de Bélanger",
         "position du ressaut",
         "sensibilité au Strickler"
+      ],
+      "cours": true,
+      "exercices": 10
+    },
+    {
+      "id": "ch10",
+      "number": 10,
+      "partie": "C",
+      "title": "Le bulletin FAO 54 : CIEH, ORSTOM et la rationnelle en Afrique",
+      "description": "Méthode CIEH et ses 48 régressions, méthode ORSTOM et sa chaîne analytique, rationnelle avec des paramètres locaux, domaines d'application comparés, check-list de l'annexe 1.",
+      "notions": [
+        "bulletin FAO 54",
+        "régressions CIEH",
+        "équation 4.1",
+        "Kr10 en pourcent",
+        "méthode ORSTOM",
+        "Kr70 et Kr100",
+        "ordinal d'infiltrabilité",
+        "temps de base Tb10",
+        "coefficient de pointe alpha10",
+        "écoulement retardé",
+        "abattement de Vuillaume",
+        "domaines ORSTOM et CIEH",
+        "limite sahélien / tropical",
+        "check-list annexe 1",
+        "Gradex"
       ],
       "cours": true,
       "exercices": 10
