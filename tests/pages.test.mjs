@@ -73,7 +73,7 @@ test("hors ligne, une donnée absente ne se déguise pas en page d'accueil", () 
   // requête absente du cache. Un fetch de .json recevait « <!doctype … »,
   // jetait au premier .json(), et le chapitre restait vide, sans message.
   const sw = lire("sw.js");
-  assert.match(sw, /request\.mode === "navigate"/,
+  assert.match(sw, /request\.mode [!=]== "navigate"/,
     "le repli sur la coquille doit être réservé aux navigations");
   // Et le chargeur doit reconnaître le cas s'il se reproduisait autrement.
   const d = lire("src/donnees.js");
@@ -85,6 +85,25 @@ test("hors ligne, une donnée absente ne se déguise pas en page d'accueil", () 
     assert.ok(!/fetch\([^)]*\)\s*\.then\(\s*\(?r\)?\s*=>\s*r\.json\(\)/.test(src),
       `${f} décode du JSON sans passer par chargerJson`);
   }
+});
+
+test("hors ligne, une page redirigée par l'hébergeur reste servie", () => {
+  // Cloudflare Pages redirige /cours.html vers /cours : une réponse redirigée
+  // mise en cache doit être recopiée avant de servir une navigation, et les
+  // deux formes d'adresse doivent être préchargées.
+  const sw = lire("sw.js");
+  assert.match(sw, /r\.redirected/, "le service worker doit nettoyer les réponses redirigées");
+  for (const p of ["cours", "exerciseur", "fil-rouge"])
+    assert.ok(sw.includes(`"./${p}"`), `forme /${p} absente de la coquille`);
+});
+
+test("une adresse inconnue répond par une vraie page 404", () => {
+  // Sans 404.html, Cloudflare Pages renvoie l'accueil avec un statut 200 pour
+  // toute adresse inconnue — y compris un .json mal nommé.
+  const html = lire("404.html");
+  assert.match(html, /href="\/styles\.css"/,
+    "la page 404 doit charger ses styles en chemin absolu (elle peut être servie à toute profondeur)");
+  assert.match(html, /href="\/"/, "lien vers l'accueil");
 });
 
 test("chaque chapitre annoncé disponible a bien sa section et sa banque", () => {

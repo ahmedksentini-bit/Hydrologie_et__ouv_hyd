@@ -11,11 +11,19 @@ import vm from "node:vm";
 const ORIGINE = "https://hyd.ksr-infra.org";
 const source = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
+/** Réponse simulée : Response ne permet pas de fixer `redirected` à true. */
+const reponseCache = (texte, { redirected = false, type = "text/html" } = {}) => ({
+  status: 200, statusText: "OK", redirected, ok: true,
+  headers: new Headers({ "Content-Type": type }),
+  blob: async () => new Blob([texte], { type }),
+  text: async () => texte,
+});
+
 function monter({ cache = {}, enLigne = false, appels = [] }) {
   const ecouteurs = {};
   const cle = (x) => new URL(typeof x === "string" ? x : x.url, `${ORIGINE}/sw.js`).pathname;
   const contexte = {
-    self: null, location: { origin: ORIGINE }, URL, Request, Response, Headers, Promise, console,
+    self: null, location: { origin: ORIGINE }, URL, Request, Response, Headers, Blob, Promise, console,
     caches: {
       match: async (x) => cache[cle(x)] ?? undefined,
       open: async () => ({ put: async () => {} }),
@@ -67,6 +75,29 @@ test("en ligne : une lecture partielle garde son en-tête Range", async () => {
   await servir("/docs/fascicule-debits-de-projet.pdf", "cors", { Range: "bytes=0-65535" });
   assert.equal(appels[0].cache, "no-cache");
   assert.equal(appels[0].requete.headers.get("Range"), "bytes=0-65535");
+});
+
+// Cloudflare Pages redirige /cours.html vers /cours : le précache garde une
+// réponse « redirigée », que le navigateur refuse pour afficher une page.
+test("hors ligne : une page précachée par redirection est servie proprement", async () => {
+  const servir = monter({ cache: { "/cours.html": reponseCache("COURS", { redirected: true }) } });
+  const r = await servir("/cours.html");
+  assert.equal(r.redirected, false, "la réponse servie ne doit plus être marquée redirigée");
+  assert.equal(r.status, 200);
+  assert.equal(await r.text(), "COURS");
+});
+
+test("hors ligne : /cours.html trouve la page gardée sous /cours, et inversement", async () => {
+  const servir = monter({ cache: { "/cours": reponseCache("COURS"), "/fil-rouge.html": reponseCache("FIL", { redirected: true }) } });
+  assert.equal(await (await servir("/cours.html")).text(), "COURS");
+  assert.equal(await (await servir("/fil-rouge")).text(), "FIL");
+});
+
+test("hors ligne : une adresse inconnue retombe sur un accueil propre", async () => {
+  const servir = monter({ cache: { "/index.html": reponseCache("ACCUEIL", { redirected: true }) } });
+  const page = await servir("/chapitre-inexistant");
+  assert.equal(page.redirected, false, "l'accueil de repli doit être une réponse propre");
+  assert.equal(await page.text(), "ACCUEIL");
 });
 
 test("hors ligne : la coquille pour une navigation, une panne franche pour une donnée", async () => {

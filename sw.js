@@ -5,9 +5,13 @@
 // page mise à jour n'atteignait jamais un visiteur déjà venu, qui gardait la
 // première version du cours indéfiniment. Sur un site en cours de rédaction,
 // c'est le pire des compromis — le cache ne doit servir que hors connexion.
-const VERSION = "hyd-v18";
+const VERSION = "hyd-v19";
 const COQUILLE = [
   "./", "./index.html", "./cours.html", "./exerciseur.html", "./fil-rouge.html",
+  // Les pages sous leurs deux formes d'adresse : Cloudflare Pages sert /cours
+  // et redirige /cours.html ; un serveur local ne connaît que /cours.html. La
+  // forme absente échoue à l'installation sans conséquence (allSettled).
+  "./cours", "./exerciseur", "./fil-rouge",
   "./styles.css", "./enhancements.css", "./site.css",
   "./src/app.js", "./src/exerciseur.js", "./src/exercices.js", "./src/donnees.js", "./src/socle.js",
   "./src/solvers-hydro.js", "./src/solvers-ouvrages.js", "./src/solvers-averse.js", "./src/solvers-chronique.js", "./src/solvers-concentration.js", "./src/solvers-riviere.js", "./src/solvers-fao54.js", "./src/solvers-fil-rouge.js", "./src/solvers-dimensionnement.js",
@@ -49,6 +53,41 @@ self.addEventListener("message", (e) => {
   if (e.data?.type === "version") e.ports?.[0]?.postMessage({ version: VERSION });
 });
 
+// Cloudflare Pages redirige /cours.html vers /cours (et /index.html vers /).
+// Une réponse issue d'une redirection ne peut pas servir une navigation : le
+// navigateur la refuse et affiche une erreur réseau. On la recopie donc en
+// réponse « propre » avant de la rendre depuis le cache.
+const propre = (r) => (r && r.redirected
+  ? r.blob().then((corps) => new Response(corps, { status: r.status, statusText: r.statusText, headers: r.headers }))
+  : r);
+
+/** La même page sous son autre forme d'adresse : /cours ↔ /cours.html, / ↔ /index.html. */
+function variantes(url) {
+  const p = new URL(url).pathname;
+  if (p.endsWith("/")) return [p + "index.html"];
+  if (p.endsWith("/index.html")) return [p.slice(0, -"index.html".length)];
+  if (p.endsWith(".html")) return [p.slice(0, -".html".length)];
+  if (!/\.[a-z0-9]+$/i.test(p)) return [p + ".html"];
+  return [];
+}
+
+async function depuisLeCache(request) {
+  const direct = await caches.match(request);
+  if (direct) return propre(direct);
+  // Hors ligne et absent du cache. Le repli sur la coquille ne vaut QUE pour
+  // une navigation : servir index.html à la place d'un .json ou d'un .js
+  // transforme une panne réseau franche en erreur d'analyse au fond d'un
+  // module, et le chapitre reste vide sans un mot. Une panne doit se voir
+  // comme une panne.
+  if (request.mode !== "navigate") return null;
+  for (const v of variantes(request.url)) {
+    const r = await caches.match(v);
+    if (r) return propre(r);
+  }
+  const accueil = (await caches.match("./")) ?? (await caches.match("./index.html"));
+  return accueil ? propre(accueil) : null;
+}
+
 self.addEventListener("fetch", (e) => {
   const { request } = e;
   if (request.method !== "GET") return;
@@ -71,16 +110,8 @@ self.addEventListener("fetch", (e) => {
         }
         return reponse;
       })
-      .catch(() => caches.match(request).then((c) => {
-        if (c) return c;
-        // Hors ligne et absent du cache. Le repli sur la coquille ne vaut QUE
-        // pour une navigation : servir index.html à la place d'un .json ou
-        // d'un .js transforme une panne réseau franche en erreur d'analyse au
-        // fond d'un module, et le chapitre reste vide sans un mot. Une panne
-        // doit se voir comme une panne.
-        if (request.mode === "navigate") return caches.match("./index.html");
-        return new Response(`Ressource indisponible hors ligne : ${new URL(request.url).pathname}`,
-          { status: 504, statusText: "Hors ligne", headers: { "Content-Type": "text/plain" } });
-      }))
+      .catch(async () => (await depuisLeCache(request))
+        ?? new Response(`Ressource indisponible hors ligne : ${new URL(request.url).pathname}`,
+          { status: 504, statusText: "Hors ligne", headers: { "Content-Type": "text/plain" } }))
   );
 });
