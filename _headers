@@ -1,0 +1,14 @@
+# Cloudflare Pages : scripts, styles et données se revalident à chaque visite.
+# Le site change de contenu sous les mêmes adresses (modules ES sans empreinte
+# dans le nom) : un script gardé plusieurs heures par le navigateur ferait
+# tourner une page neuve avec des modules d'hier. Réponse 304 si rien n'a changé.
+# (La durée de cache fixée pour tout le domaine chez Cloudflare peut l'emporter
+# sur ce fichier : c'est le service worker qui revalide, dans tous les cas.)
+/src/*
+  Cache-Control: public, max-age=0, must-revalidate
+/data/*
+  Cache-Control: public, max-age=0, must-revalidate
+/*.css
+  Cache-Control: public, max-age=0, must-revalidate
+/sw.js
+  Cache-Control: no-cache

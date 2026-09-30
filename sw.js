@@ -5,7 +5,7 @@
 // page mise à jour n'atteignait jamais un visiteur déjà venu, qui gardait la
 // première version du cours indéfiniment. Sur un site en cours de rédaction,
 // c'est le pire des compromis — le cache ne doit servir que hors connexion.
-const VERSION = "hyd-v17";
+const VERSION = "hyd-v18";
 const COQUILLE = [
   "./", "./index.html", "./cours.html", "./exerciseur.html", "./fil-rouge.html",
   "./styles.css", "./enhancements.css", "./site.css",
@@ -19,10 +19,16 @@ const COQUILLE = [
   "./data/abaques-bceom.json", "./data/bassin-demo.json", "./data/chapitres.json", "./data/checklist-fao54.json", "./data/cieh-fao54.json", "./data/exercices-ch1.json", "./data/exercices-ch10.json", "./data/exercices-ch2.json", "./data/exercices-ch3.json", "./data/exercices-ch4.json", "./data/exercices-ch5.json", "./data/exercices-ch6.json", "./data/exercices-ch7.json", "./data/exercices-ch8.json", "./data/exercices-ch9.json", "./data/fil-rouge.json", "./data/frontieres-afrique.json", "./data/frontieres.json", "./data/isohyetes-pan-fao54.json", "./data/montana-afrique.json", "./data/orstom-fao54.json", "./data/oued-demo.json", "./data/reperes-tunisie.json", "./data/stations-montana.json", "./data/stations-sogreah.json",
 ];
 
+// Cloudflare fait garder les scripts et les données plusieurs heures par le
+// navigateur. Sans précaution, une page neuve tournerait avec des modules
+// d'hier gardés sous la même adresse. Tout passe donc en requête
+// conditionnelle (no-cache) : le serveur renvoie le fichier s'il a changé, et
+// sinon une réponse 304 légère — rien n'est téléchargé deux fois.
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(VERSION)
-      .then((c) => Promise.allSettled(COQUILLE.map((u) => c.add(u))))
+      .then((c) => Promise.allSettled(COQUILLE.map((u) => fetch(u, { cache: "no-cache" })
+        .then((r) => (r.ok ? c.put(u, r) : null)))))
       .then(() => self.skipWaiting())
   );
 });
@@ -48,13 +54,18 @@ self.addEventListener("fetch", (e) => {
   if (request.method !== "GET") return;
   if (new URL(request.url).origin !== location.origin) return;
 
+  // Une navigation garde sa requête d'origine (le HTML est déjà servi sans
+  // durée de cache) ; toute autre ressource est revalidée auprès du serveur,
+  // avec ses en-têtes d'origine (une lecture partielle garde son Range).
+  const reseau = request.mode === "navigate" ? fetch(request) : fetch(new Request(request, { cache: "no-cache" }));
   e.respondWith(
-    fetch(request)
+    reseau
       .then((reponse) => {
-        // On ne met en cache que les réponses réellement servies.
-        if (reponse && reponse.ok) {
+        // Seule une réponse complète est gardée : ni redirection (statut 0),
+        // ni morceau de fichier (206).
+        if (reponse && reponse.status === 200) {
           const copie = reponse.clone();
-          caches.open(VERSION).then((c) => c.put(request, copie));
+          caches.open(VERSION).then((c) => c.put(request, copie)).catch(() => {});
         }
         return reponse;
       })

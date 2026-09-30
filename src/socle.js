@@ -11,7 +11,7 @@
 //    indéfiniment l'ancienne version, avec ses anciens défauts. D'où
 //    l'enregistrement depuis chaque page.
 
-const VERSION_ATTENDUE = "hyd-v17";
+const VERSION_ATTENDUE = "hyd-v18";
 
 function banniere(titre, detail) {
   let boite = document.getElementById("bandeau-panne");
@@ -59,12 +59,27 @@ export function diagnostic() {
   ].join(" · ");
 }
 
+/** Vrai pour une adresse d'un autre site : extension du navigateur, mesure d'audience… */
+function etranger(adresse) {
+  if (!adresse || typeof adresse !== "string") return false;
+  try { return new URL(adresse, location.href).origin !== location.origin; } catch { return false; }
+}
+
 window.addEventListener("error", (e) => {
   // Les erreurs de chargement de ressource portent un `target` et pas de message.
-  if (e.target && e.target !== window && e.target.tagName)
+  if (e.target && e.target !== window && e.target.tagName) {
+    const adresse = e.target.src || e.target.href || "";
+    // Seules les ressources du site disent quelque chose du cours. La mesure
+    // d'audience que Cloudflare ajoute aux pages, par exemple, est arrêtée par
+    // les bloqueurs de publicité : ce n'est pas une panne.
+    if (etranger(adresse)) return;
     return banniere("Une ressource n'a pas pu être chargée",
-      `${echappe(e.target.tagName.toLowerCase())} — ${echappe(e.target.src || e.target.href || "")}
+      `${echappe(e.target.tagName.toLowerCase())} — ${echappe(adresse)}
        <br><small>${echappe(diagnostic())}</small>`);
+  }
+  // Même chose pour un script étranger qui plante : le navigateur n'en livre
+  // que « Script error. », sans fichier.
+  if (etranger(e.filename) || (!e.filename && e.message === "Script error.")) return;
   banniere("Une partie de la page n'a pas pu s'exécuter",
     `${echappe(e.message || "erreur inconnue")}<br><small>${echappe(diagnostic())}</small>`);
 }, true);
