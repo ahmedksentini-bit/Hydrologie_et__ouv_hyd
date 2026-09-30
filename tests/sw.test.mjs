@@ -31,11 +31,11 @@ function monter({ cache = {}, enLigne = false, appels = [] }) {
   contexte.self = { addEventListener: (type, f) => { ecouteurs[type] = f; }, skipWaiting: () => {}, clients: { claim: async () => {} } };
   vm.createContext(contexte);
   vm.runInContext(source, contexte);
-  return async (chemin, mode = "navigate", entetes = {}) => {
+  return async (chemin, mode = "navigate", entetes = {}, cache = "default") => {
     let promesse = null;
     const url = `${ORIGINE}${chemin}`;
     // Une requête de navigation ne se construit pas (mode interdit) : on la simule.
-    const request = mode === "navigate" ? { method: "GET", url, mode } : new Request(url, { mode, headers: entetes });
+    const request = mode === "navigate" ? { method: "GET", url, mode, cache } : new Request(url, { mode, headers: entetes, cache });
     ecouteurs.fetch({ request, respondWith: (p) => { promesse = p; } });
     return promesse;
   };
@@ -57,6 +57,8 @@ test("en ligne : scripts et données sont revalidés, pas lus dans le cache HTTP
   assert.equal(appels[0].cache, "no-cache");
   assert.equal(appels[1].cache, "no-cache");
   assert.equal(appels[2].cache, "default", "une navigation garde sa requête d'origine");
+  await servir("/src/cours-ch3-idf.js", "cors", {}, "reload");
+  assert.equal(appels[3].cache, "reload", "un mode de cache choisi par la page est respecté");
 });
 
 test("en ligne : une lecture partielle garde son en-tête Range", async () => {

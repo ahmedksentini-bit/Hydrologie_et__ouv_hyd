@@ -56,8 +56,10 @@ self.addEventListener("fetch", (e) => {
 
   // Une navigation garde sa requête d'origine (le HTML est déjà servi sans
   // durée de cache) ; toute autre ressource est revalidée auprès du serveur,
-  // avec ses en-têtes d'origine (une lecture partielle garde son Range).
-  const reseau = request.mode === "navigate" ? fetch(request) : fetch(new Request(request, { cache: "no-cache" }));
+  // avec ses en-têtes d'origine (une lecture partielle garde son Range). Une
+  // requête qui choisit elle-même son mode de cache le garde.
+  const revalider = request.mode !== "navigate" && request.cache === "default";
+  const reseau = fetch(revalider ? new Request(request, { cache: "no-cache" }) : request);
   e.respondWith(
     reseau
       .then((reponse) => {
